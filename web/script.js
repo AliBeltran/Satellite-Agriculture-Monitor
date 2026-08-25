@@ -1,6 +1,7 @@
 /* ============================================================
    SATELLITE AGRICULTURE MONITOR
-   Functional Geospatial Application
+   Interactive Geospatial Application
+   Designed by Ali Beltran
    ============================================================ */
 
 
@@ -18,53 +19,23 @@ const appState = {
 
     fieldLayer: null,
 
-    selectedField: null,
-
     uploadedGeoJSON: null,
 
     fieldAreaAcres: null,
 
-    scanRunning: false,
+    selectedFieldName: null,
 
     activeLayer: "satellite",
 
-    observationIndex: 4
+    observationIndex: 4,
+
+    scanRunning: false
 
 };
 
 
 /* ============================================================
-   SAMPLE FIELD DATA
-   ============================================================ */
-
-const sampleFields = {
-
-    "North Pivot": {
-        health: 87,
-        ndvi: 0.72,
-        uniformity: 92,
-        stress: "LOW"
-    },
-
-    "South Pasture": {
-        health: 64,
-        ndvi: 0.51,
-        uniformity: 74,
-        stress: "MODERATE"
-    },
-
-    "West Hay Field": {
-        health: 91,
-        ndvi: 0.81,
-        uniformity: 95,
-        stress: "LOW"
-    }
-
-};
-
-
-/* ============================================================
-   DOM REFERENCES
+   DOM ELEMENTS
    ============================================================ */
 
 const introScreen =
@@ -79,14 +50,38 @@ const loadingBar =
 const loadingText =
     document.getElementById("loadingText");
 
-const fieldSelect =
-    document.getElementById("fieldSelect");
+const emptyState =
+    document.getElementById("emptyState");
+
+const fieldState =
+    document.getElementById("fieldState");
 
 const fieldName =
     document.getElementById("fieldName");
 
 const fieldMeta =
     document.getElementById("fieldMeta");
+
+const analysisPanel =
+    document.getElementById("analysisPanel");
+
+const layerPanel =
+    document.getElementById("layerPanel");
+
+const timeline =
+    document.getElementById("timeline");
+
+const mapLegend =
+    document.getElementById("mapLegend");
+
+const mapControls =
+    document.getElementById("mapControls");
+
+const mapUpload =
+    document.getElementById("mapUpload");
+
+const geojsonInput =
+    document.getElementById("geojsonInput");
 
 const healthValue =
     document.getElementById("healthValue");
@@ -100,12 +95,6 @@ const uniformityValue =
 const stressValue =
     document.getElementById("stressValue");
 
-const geojsonInput =
-    document.getElementById("geojsonInput");
-
-const mapUpload =
-    document.getElementById("mapUpload");
-
 const scanButton =
     document.getElementById("scanButton");
 
@@ -115,9 +104,46 @@ const timelineSlider =
 const timelineDate =
     document.getElementById("timelineDate");
 
+const appMessage =
+    document.getElementById("appMessage");
+
+const resetMapButton =
+    document.getElementById("resetMap");
+
 
 /* ============================================================
-   INTRO ANIMATION
+   INITIALIZATION
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeApplication
+);
+
+
+function initializeApplication() {
+
+    initializeMap();
+
+    initializeNavigation();
+
+    initializeUpload();
+
+    initializeLayers();
+
+    initializeTimeline();
+
+    initializeScanButton();
+
+    initializeResetButton();
+
+    startIntro();
+
+}
+
+
+/* ============================================================
+   INTRO SCREEN
    ============================================================ */
 
 function startIntro() {
@@ -132,78 +158,127 @@ function startIntro() {
 
         "LOADING FIELD ENGINE",
 
-        "INITIALIZING ANALYSIS SYSTEM",
+        "INITIALIZING REMOTE SENSING SYSTEM",
 
         "SYSTEM READY"
 
     ];
 
+
     const timer =
-        setInterval(() => {
+        setInterval(
+            function() {
 
-            progress +=
-                Math.random() * 12 + 8;
+                progress +=
+                    Math.random() * 10 + 7;
 
-            if (progress >= 100) {
 
-                progress = 100;
+                if (progress >= 100) {
 
-                clearInterval(timer);
+                    progress = 100;
 
-                loadingText.textContent =
-                    "SYSTEM READY";
+                    clearInterval(timer);
 
-                setTimeout(() => {
+                }
 
-                    introScreen.classList.add(
-                        "hidden"
+
+                if (loadingBar) {
+
+                    loadingBar.style.width =
+                        `${progress}%`;
+
+                }
+
+
+                const messageIndex =
+                    Math.min(
+                        Math.floor(
+                            progress / 20
+                        ),
+                        messages.length - 1
                     );
 
-                    mainInterface.classList.add(
-                        "visible"
+
+                if (loadingText) {
+
+                    loadingText.textContent =
+                        messages[messageIndex];
+
+                }
+
+
+                if (progress >= 100) {
+
+                    setTimeout(
+                        launchApplication,
+                        700
                     );
 
-                    setTimeout(() => {
+                }
 
-                        if (appState.map) {
-
-                            appState.map.invalidateSize();
-
-                        }
-
-                    }, 500);
-
-                }, 700);
-
-            }
-
-            loadingBar.style.width =
-                `${progress}%`;
-
-            const index =
-                Math.min(
-                    Math.floor(progress / 20),
-                    messages.length - 1
-                );
-
-            loadingText.textContent =
-                messages[index];
-
-        }, 300);
+            },
+            300
+        );
 
 }
 
 
 /* ============================================================
-   INITIALIZE MAP
+   LAUNCH MAIN INTERFACE
+   ============================================================ */
+
+function launchApplication() {
+
+    if (introScreen) {
+
+        introScreen.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (mainInterface) {
+
+        mainInterface.classList.add(
+            "visible"
+        );
+
+    }
+
+
+    setTimeout(
+        function() {
+
+            if (appState.map) {
+
+                appState.map.invalidateSize();
+
+            }
+
+        },
+        600
+    );
+
+}
+
+
+/* ============================================================
+   MAP INITIALIZATION
    ============================================================ */
 
 function initializeMap() {
 
-    if (typeof L === "undefined") {
+    if (
+        typeof L === "undefined"
+    ) {
 
         console.error(
-            "Leaflet is not loaded."
+            "Leaflet could not be loaded."
+        );
+
+        showMessage(
+            "The mapping engine could not be loaded."
         );
 
         return;
@@ -222,14 +297,17 @@ function initializeMap() {
 
             }
         ).setView(
-            [41.1402, -104.8202],
-            11
+            [
+                39.8283,
+                -98.5795
+            ],
+            4
         );
 
 
-    /* --------------------------------------------------------
+    /* ========================================================
        SATELLITE IMAGERY
-       -------------------------------------------------------- */
+       ======================================================== */
 
     appState.satelliteLayer =
         L.tileLayer(
@@ -245,9 +323,9 @@ function initializeMap() {
         );
 
 
-    /* --------------------------------------------------------
-       STREET / REFERENCE MAP
-       -------------------------------------------------------- */
+    /* ========================================================
+       STREET MAP
+       ======================================================== */
 
     appState.streetLayer =
         L.tileLayer(
@@ -263,25 +341,30 @@ function initializeMap() {
         );
 
 
-    /* Start with satellite */
+    /* Start with satellite imagery */
 
     appState.satelliteLayer.addTo(
         appState.map
     );
 
 
-    /* --------------------------------------------------------
+    /* ========================================================
        MAP CLICK
-       -------------------------------------------------------- */
+       ======================================================== */
 
     appState.map.on(
         "click",
         function(event) {
 
+            const latitude =
+                event.latlng.lat.toFixed(5);
+
+            const longitude =
+                event.latlng.lng.toFixed(5);
+
+
             console.log(
-                "Map coordinate:",
-                event.latlng.lat,
-                event.latlng.lng
+                `Map coordinate: ${latitude}, ${longitude}`
             );
 
         }
@@ -291,10 +374,249 @@ function initializeMap() {
 
 
 /* ============================================================
-   GEOJSON FILE READER
+   NAVIGATION
    ============================================================ */
 
-function readGeoJSONFile(file) {
+function initializeNavigation() {
+
+    const navItems =
+        document.querySelectorAll(
+            ".nav-item"
+        );
+
+
+    navItems.forEach(
+        function(item) {
+
+            item.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+
+
+                    navItems.forEach(
+                        function(nav) {
+
+                            nav.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    item.classList.add(
+                        "active"
+                    );
+
+
+                    const view =
+                        item.dataset.view;
+
+
+                    handleNavigation(
+                        view
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+function handleNavigation(
+    view
+) {
+
+    if (
+        view === "overview"
+    ) {
+
+        showMessage(
+            "Overview mode active."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        view === "fields"
+    ) {
+
+        if (
+            !appState.uploadedGeoJSON
+        ) {
+
+            showMessage(
+                "Upload a field boundary to begin."
+            );
+
+            return;
+
+        }
+
+
+        focusField();
+
+        return;
+
+    }
+
+
+    if (
+        view === "satellite"
+    ) {
+
+        setMapLayer(
+            "satellite"
+        );
+
+        activateLayerButton(
+            "satellite"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        view === "analysis"
+    ) {
+
+        if (
+            !appState.uploadedGeoJSON
+        ) {
+
+            showMessage(
+                "Upload a field boundary before opening analysis."
+            );
+
+            return;
+
+        }
+
+
+        if (analysisPanel) {
+
+            analysisPanel.classList.remove(
+                "hidden"
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   FILE UPLOAD
+   ============================================================ */
+
+function initializeUpload() {
+
+    if (!geojsonInput) {
+        return;
+    }
+
+
+    geojsonInput.addEventListener(
+        "change",
+        function() {
+
+            const file =
+                this.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            readGeoJSONFile(
+                file
+            );
+
+        }
+    );
+
+
+    if (mapUpload) {
+
+        mapUpload.addEventListener(
+            "dragover",
+            function(event) {
+
+                event.preventDefault();
+
+                mapUpload.classList.add(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        mapUpload.addEventListener(
+            "dragleave",
+            function() {
+
+                mapUpload.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        mapUpload.addEventListener(
+            "drop",
+            function(event) {
+
+                event.preventDefault();
+
+                mapUpload.classList.remove(
+                    "dragging"
+                );
+
+
+                const files =
+                    event.dataTransfer.files;
+
+
+                if (
+                    files &&
+                    files.length > 0
+                ) {
+
+                    readGeoJSONFile(
+                        files[0]
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   READ GEOJSON
+   ============================================================ */
+
+function readGeoJSONFile(
+    file
+) {
 
     if (!file) {
         return;
@@ -306,12 +628,16 @@ function readGeoJSONFile(file) {
 
 
     if (
-        !fileName.endsWith(".geojson") &&
-        !fileName.endsWith(".json")
+        !fileName.endsWith(
+            ".geojson"
+        ) &&
+        !fileName.endsWith(
+            ".json"
+        )
     ) {
 
         showMessage(
-            "Please select a GeoJSON file."
+            "Please upload a .geojson or .json field boundary."
         );
 
         return;
@@ -343,7 +669,9 @@ function readGeoJSONFile(file) {
 
             catch(error) {
 
-                console.error(error);
+                console.error(
+                    error
+                );
 
                 showMessage(
                     "The selected file is not valid GeoJSON."
@@ -364,7 +692,9 @@ function readGeoJSONFile(file) {
         };
 
 
-    reader.readAsText(file);
+    reader.readAsText(
+        file
+    );
 
 }
 
@@ -375,21 +705,29 @@ function readGeoJSONFile(file) {
 
 function processGeoJSON(
     geojson,
-    fileName = "Uploaded Field"
+    fileName
 ) {
 
     if (!geojson) {
+
+        showMessage(
+            "No geographic data was found."
+        );
+
         return;
+
     }
 
 
     if (
-        geojson.type !== "FeatureCollection" &&
-        geojson.type !== "Feature"
+        geojson.type !==
+            "FeatureCollection" &&
+        geojson.type !==
+            "Feature"
     ) {
 
         showMessage(
-            "This file does not contain a supported GeoJSON feature."
+            "The file must contain a GeoJSON Feature or FeatureCollection."
         );
 
         return;
@@ -401,96 +739,46 @@ function processGeoJSON(
         geojson;
 
 
-    /* Remove previous field */
+    /* ========================================================
+       REMOVE PREVIOUS FIELD
+       ======================================================== */
 
-    if (appState.fieldLayer) {
+    if (
+        appState.fieldLayer
+    ) {
 
         appState.map.removeLayer(
             appState.fieldLayer
         );
 
+        appState.fieldLayer =
+            null;
+
     }
 
 
-    /* --------------------------------------------------------
-       CREATE FIELD LAYER
-       -------------------------------------------------------- */
+    /* ========================================================
+       CREATE GEOJSON LAYER
+       ======================================================== */
 
     appState.fieldLayer =
         L.geoJSON(
             geojson,
             {
 
-                style: {
-
-                    color:
-                        "#c2e3b5",
-
-                    weight:
-                        3,
-
-                    opacity:
-                        1,
-
-                    fillColor:
-                        "#8fbf83",
-
-                    fillOpacity:
-                        0.18
-
-                },
+                style:
+                    getFieldStyle(),
 
 
                 onEachFeature:
-                    function(feature, layer) {
+                    function(
+                        feature,
+                        layer
+                    ) {
 
-                        layer.on(
-                            "click",
-                            function(event) {
-
-                                L.DomEvent.stopPropagation(
-                                    event
-                                );
-
-
-                                selectUploadedField(
-                                    feature,
-                                    layer
-                                );
-
-                            }
-                        );
-
-
-                        layer.on(
-                            "mouseover",
-                            function() {
-
-                                layer.setStyle({
-
-                                    weight: 4,
-
-                                    color:
-                                        "#e4f5dc",
-
-                                    fillOpacity:
-                                        0.30
-
-                                });
-
-                            }
-                        );
-
-
-                        layer.on(
-                            "mouseout",
-                            function() {
-
-                                appState.fieldLayer.resetStyle(
-                                    layer
-                                );
-
-                            }
+                        setupFieldInteraction(
+                            feature,
+                            layer
                         );
 
                     }
@@ -504,25 +792,75 @@ function processGeoJSON(
     );
 
 
-    /* --------------------------------------------------------
-       FIT MAP TO FIELD
-       -------------------------------------------------------- */
+    /* ========================================================
+       CALCULATE FIELD AREA
+       ======================================================== */
+
+    const acres =
+        calculateGeoJSONArea(
+            geojson
+        );
+
+
+    appState.fieldAreaAcres =
+        acres;
+
+
+    /* ========================================================
+       DETERMINE FIELD NAME
+       ======================================================== */
+
+    const detectedName =
+        detectFieldName(
+            geojson,
+            fileName
+        );
+
+
+    appState.selectedFieldName =
+        detectedName;
+
+
+    /* ========================================================
+       UPDATE INTERFACE
+       ======================================================== */
+
+    updateFieldDisplay(
+        detectedName,
+        acres
+    );
+
+
+    activateFieldInterface();
+
+
+    /* ========================================================
+       ZOOM TO FIELD
+       ======================================================== */
 
     const bounds =
         appState.fieldLayer.getBounds();
 
 
-    if (bounds.isValid()) {
+    if (
+        bounds.isValid()
+    ) {
 
         appState.map.fitBounds(
             bounds,
             {
 
                 padding:
-                    [100, 100],
+                    [120, 120],
 
                 maxZoom:
-                    17
+                    17,
+
+                animate:
+                    true,
+
+                duration:
+                    1.4
 
             }
         );
@@ -530,81 +868,305 @@ function processGeoJSON(
     }
 
 
-    /* --------------------------------------------------------
-       CALCULATE AREA
-       -------------------------------------------------------- */
+    /* ========================================================
+       HIDE UPLOAD PANEL
+       ======================================================== */
 
-    const areaAcres =
-        calculateGeoJSONArea(
-            geojson
+    if (mapUpload) {
+
+        mapUpload.classList.add(
+            "hidden"
         );
-
-
-    appState.fieldAreaAcres =
-        areaAcres;
-
-
-    /* --------------------------------------------------------
-       FIELD NAME
-       -------------------------------------------------------- */
-
-    let detectedName =
-        fileName
-            .replace(
-                /\.geojson$|\.json$/i,
-                ""
-            );
-
-
-    if (
-        geojson.features &&
-        geojson.features[0] &&
-        geojson.features[0].properties
-    ) {
-
-        const properties =
-            geojson.features[0].properties;
-
-
-        detectedName =
-            properties.name ||
-            properties.Name ||
-            properties.field ||
-            properties.Field ||
-            detectedName;
 
     }
 
 
-    fieldName.textContent =
-        detectedName.toUpperCase();
-
-
-    fieldMeta.textContent =
-        `${areaAcres.toFixed(2)} ACRES · UPLOADED FIELD`;
-
-
-    /* Hide upload window */
-
-    mapUpload.classList.add(
-        "hidden"
-    );
-
-
-    /* Run initial scan */
+    /* ========================================================
+       INITIAL FIELD SCAN
+       ======================================================== */
 
     runFieldScan(
         false
+    );
+
+
+    showMessage(
+        `Field loaded successfully — ${acres.toFixed(2)} acres.`
     );
 
 }
 
 
 /* ============================================================
-   SELECT UPLOADED FIELD
+   FIELD NAME DETECTION
    ============================================================ */
 
-function selectUploadedField(
+function detectFieldName(
+    geojson,
+    fileName
+) {
+
+    let name =
+        fileName
+            .replace(
+                /\.geojson$/i,
+                ""
+            )
+            .replace(
+                /\.json$/i,
+                ""
+            );
+
+
+    const features =
+        geojson.type ===
+            "FeatureCollection"
+            ? geojson.features
+            : [geojson];
+
+
+    if (
+        features.length > 0 &&
+        features[0].properties
+    ) {
+
+        const properties =
+            features[0].properties;
+
+
+        const possibleNames = [
+
+            properties.name,
+
+            properties.Name,
+
+            properties.NAME,
+
+            properties.field,
+
+            properties.Field,
+
+            properties.FIELD,
+
+            properties.field_name,
+
+            properties.FieldName,
+
+            properties.Farm,
+
+            properties.farm
+
+        ];
+
+
+        for (
+            const possibleName
+            of possibleNames
+        ) {
+
+            if (
+                possibleName !==
+                    undefined &&
+                possibleName !==
+                    null &&
+                String(
+                    possibleName
+                ).trim() !== ""
+            ) {
+
+                name =
+                    String(
+                        possibleName
+                    );
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    return name;
+
+}
+
+
+/* ============================================================
+   FIELD DISPLAY
+   ============================================================ */
+
+function updateFieldDisplay(
+    name,
+    acres
+) {
+
+    if (fieldName) {
+
+        fieldName.textContent =
+            name.toUpperCase();
+
+    }
+
+
+    if (fieldMeta) {
+
+        fieldMeta.textContent =
+            `${acres.toFixed(2)} ACRES · FIELD BOUNDARY LOADED`;
+
+    }
+
+}
+
+
+/* ============================================================
+   ACTIVATE FIELD INTERFACE
+   ============================================================ */
+
+function activateFieldInterface() {
+
+    if (emptyState) {
+
+        emptyState.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (fieldState) {
+
+        fieldState.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (analysisPanel) {
+
+        analysisPanel.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (layerPanel) {
+
+        layerPanel.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (timeline) {
+
+        timeline.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (mapLegend) {
+
+        mapLegend.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    if (mapControls) {
+
+        mapControls.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   FIELD INTERACTION
+   ============================================================ */
+
+function setupFieldInteraction(
+    feature,
+    layer
+) {
+
+    layer.on(
+        "mouseover",
+        function() {
+
+            layer.setStyle({
+
+                weight:
+                    4,
+
+                color:
+                    "#e4f5dc",
+
+                fillColor:
+                    "#8fbf83",
+
+                fillOpacity:
+                    0.32
+
+            });
+
+        }
+    );
+
+
+    layer.on(
+        "mouseout",
+        function() {
+
+            if (
+                appState.fieldLayer
+            ) {
+
+                appState.fieldLayer.resetStyle(
+                    layer
+                );
+
+            }
+
+        }
+    );
+
+
+    layer.on(
+        "click",
+        function(event) {
+
+            L.DomEvent.stopPropagation(
+                event
+            );
+
+
+            selectFieldFeature(
+                feature,
+                layer
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   SELECT FIELD FEATURE
+   ============================================================ */
+
+function selectFieldFeature(
     feature,
     layer
 ) {
@@ -616,14 +1178,21 @@ function selectUploadedField(
     const name =
         properties.name ||
         properties.Name ||
+        appState.selectedFieldName ||
         "SELECTED FIELD";
+
+
+    appState.selectedFieldName =
+        name;
 
 
     fieldName.textContent =
         name.toUpperCase();
 
 
-    if (appState.fieldAreaAcres) {
+    if (
+        appState.fieldAreaAcres
+    ) {
 
         fieldMeta.textContent =
             `${appState.fieldAreaAcres.toFixed(2)} ACRES · SELECTED FIELD`;
@@ -650,7 +1219,8 @@ function selectUploadedField(
 
     layer.setStyle({
 
-        weight: 5,
+        weight:
+            5,
 
         color:
             "#e5f7dc",
@@ -664,22 +1234,152 @@ function selectUploadedField(
     });
 
 
+    layer.bindPopup(
+        createFieldPopup(
+            properties
+        )
+    );
+
+
     layer.openPopup();
 
 }
 
 
 /* ============================================================
-   GEOJSON AREA CALCULATION
+   FIELD POPUP
    ============================================================ */
 
-/*
-    Calculates approximate polygon area using a
-    spherical Earth approximation.
+function createFieldPopup(
+    properties
+) {
 
-    Result:
-        acres
-*/
+    const entries =
+        Object.entries(
+            properties || {}
+        );
+
+
+    if (
+        entries.length === 0
+    ) {
+
+        return `
+            <div class="field-popup-title">
+                FIELD BOUNDARY
+            </div>
+
+            <div class="field-popup-data">
+                No additional attributes found.
+            </div>
+        `;
+
+    }
+
+
+    const rows =
+        entries
+            .slice(0, 8)
+            .map(
+                function([
+                    key,
+                    value
+                ]) {
+
+                    return `
+                        <div>
+                            <strong>
+                                ${escapeHTML(key)}
+                            </strong>
+                            :
+                            ${escapeHTML(value)}
+                        </div>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    return `
+        <div class="field-popup-title">
+            FIELD INFORMATION
+        </div>
+
+        <div class="field-popup-data">
+            ${rows}
+        </div>
+    `;
+
+}
+
+
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ============================================================
+   FIELD STYLE
+   ============================================================ */
+
+function getFieldStyle() {
+
+    return {
+
+        color:
+            "#c2e3b5",
+
+        weight:
+            3,
+
+        opacity:
+            1,
+
+        fillColor:
+            "#8fbf83",
+
+        fillOpacity:
+            0.18
+
+    };
+
+}
+
+
+/* ============================================================
+   AREA CALCULATION
+   ============================================================ */
 
 function calculateGeoJSONArea(
     geojson
@@ -690,18 +1390,21 @@ function calculateGeoJSONArea(
 
 
     const features =
-        geojson.type === "FeatureCollection"
+        geojson.type ===
+            "FeatureCollection"
             ? geojson.features
             : [geojson];
 
 
     features.forEach(
-        feature => {
+        function(feature) {
 
             if (
                 !feature.geometry
             ) {
+
                 return;
+
             }
 
 
@@ -724,7 +1427,7 @@ function calculateGeoJSONArea(
             ) {
 
                 feature.geometry.coordinates.forEach(
-                    polygon => {
+                    function(polygon) {
 
                         totalArea +=
                             polygonArea(
@@ -742,9 +1445,10 @@ function calculateGeoJSONArea(
 
     /* Square meters → acres */
 
-    return totalArea *
-        0.000247105;
-
+    return (
+        totalArea *
+        0.000247105
+    );
 
 }
 
@@ -759,7 +1463,7 @@ function polygonArea(
 
     if (
         !coordinates ||
-        !coordinates.length
+        coordinates.length === 0
     ) {
 
         return 0;
@@ -767,49 +1471,56 @@ function polygonArea(
     }
 
 
+    const outerRing =
+        coordinates[0];
+
+
     let area =
         0;
 
 
-    /* Outer ring */
-
-    const outer =
-        coordinates[0];
-
-
     for (
         let i = 0;
-        i < outer.length;
+        i < outerRing.length;
         i++
     ) {
 
         const j =
-            (i + 1) %
-            outer.length;
+            (
+                i + 1
+            ) %
+            outerRing.length;
 
 
         const lon1 =
-            outer[i][0] *
-            Math.PI / 180;
+            outerRing[i][0] *
+            Math.PI /
+            180;
 
 
         const lat1 =
-            outer[i][1] *
-            Math.PI / 180;
+            outerRing[i][1] *
+            Math.PI /
+            180;
 
 
         const lon2 =
-            outer[j][0] *
-            Math.PI / 180;
+            outerRing[j][0] *
+            Math.PI /
+            180;
 
 
         const lat2 =
-            outer[j][1] *
-            Math.PI / 180;
+            outerRing[j][1] *
+            Math.PI /
+            180;
 
 
         area +=
-            (lon2 - lon1) *
+            (
+                lon2 -
+                lon1
+            ) *
             (
                 2 +
                 Math.sin(lat1) +
@@ -820,27 +1531,29 @@ function polygonArea(
 
 
     area =
-        Math.abs(area) *
+        Math.abs(
+            area
+        ) *
         6378137 *
         6378137 /
         2;
 
 
-    /* Holes */
+    /* Account for holes */
 
     if (
         coordinates.length > 1
     ) {
 
         for (
-            let h = 1;
-            h < coordinates.length;
-            h++
+            let i = 1;
+            i < coordinates.length;
+            i++
         ) {
 
             area -=
                 polygonArea([
-                    coordinates[h]
+                    coordinates[i]
                 ]);
 
         }
@@ -860,9 +1573,43 @@ function polygonArea(
    FIELD SCAN
    ============================================================ */
 
+function initializeScanButton() {
+
+    if (!scanButton) {
+        return;
+    }
+
+
+    scanButton.addEventListener(
+        "click",
+        function() {
+
+            runFieldScan(
+                true
+            );
+
+        }
+    );
+
+}
+
+
 function runFieldScan(
-    showAnimation = true
+    animated = true
 ) {
+
+    if (
+        !appState.fieldLayer
+    ) {
+
+        showMessage(
+            "Upload a field boundary before scanning."
+        );
+
+        return;
+
+    }
+
 
     if (
         appState.scanRunning
@@ -873,44 +1620,39 @@ function runFieldScan(
     }
 
 
-    if (
-        !appState.fieldLayer
-    ) {
-
-        showMessage(
-            "Load a field boundary before running a scan."
-        );
-
-        return;
-
-    }
-
-
     appState.scanRunning =
         true;
 
 
-    if (showAnimation) {
-
-        scanButton.textContent =
-            "SCANNING FIELD...";
+    if (scanButton) {
 
         scanButton.disabled =
             true;
 
+        if (animated) {
+
+            scanButton.textContent =
+                "SCANNING FIELD...";
+
+        }
+
     }
 
 
-    /* Animate boundary */
-
     animateFieldBoundary();
+
+
+    const delay =
+        animated
+            ? 1500
+            : 100;
 
 
     setTimeout(
         function() {
 
             const metrics =
-                generateFieldMetrics();
+                calculateDemonstrationMetrics();
 
 
             updateMetrics(
@@ -918,7 +1660,10 @@ function runFieldScan(
             );
 
 
-            if (showAnimation) {
+            if (
+                scanButton &&
+                animated
+            ) {
 
                 scanButton.textContent =
                     "SCAN COMPLETE";
@@ -926,29 +1671,31 @@ function runFieldScan(
             }
 
         },
-        showAnimation ? 1500 : 0
+        delay
     );
 
 
     setTimeout(
         function() {
 
-            if (showAnimation) {
+            appState.scanRunning =
+                false;
 
-                scanButton.textContent =
-                    "RUN FIELD SCAN";
+
+            if (scanButton) {
 
                 scanButton.disabled =
                     false;
 
+                scanButton.textContent =
+                    "RUN FIELD SCAN";
+
             }
 
-
-            appState.scanRunning =
-                false;
-
         },
-        showAnimation ? 3000 : 100
+        animated
+            ? 3000
+            : 200
     );
 
 }
@@ -969,7 +1716,7 @@ function animateFieldBoundary() {
     }
 
 
-    let step =
+    let pulse =
         0;
 
 
@@ -977,33 +1724,35 @@ function animateFieldBoundary() {
         setInterval(
             function() {
 
-                step++;
+                pulse++;
 
 
-                const opacity =
-                    step % 2 === 0
-                        ? 0.15
-                        : 0.40;
+                const even =
+                    pulse % 2 === 0;
 
 
                 appState.fieldLayer.setStyle({
 
                     color:
-                        "#c2e3b5",
+                        even
+                            ? "#c2e3b5"
+                            : "#ffffff",
 
                     weight:
-                        step % 2 === 0
+                        even
                             ? 3
                             : 5,
 
                     fillOpacity:
-                        opacity
+                        even
+                            ? 0.18
+                            : 0.32
 
                 });
 
 
                 if (
-                    step >= 8
+                    pulse >= 8
                 ) {
 
                     clearInterval(
@@ -1011,68 +1760,75 @@ function animateFieldBoundary() {
                     );
 
 
-                    appState.fieldLayer.setStyle({
-
-                        color:
-                            "#c2e3b5",
-
-                        weight:
-                            3,
-
-                        fillOpacity:
-                            0.20
-
-                    });
+                    appState.fieldLayer.setStyle(
+                        getFieldStyle()
+                    );
 
                 }
 
             },
-            140
+            130
         );
 
 }
 
 
 /* ============================================================
-   FIELD METRICS
+   DEMONSTRATION METRICS
    ============================================================ */
 
-function generateFieldMetrics() {
+/*
+    IMPORTANT:
 
-    /*
-        These are demonstration metrics derived from the
-        uploaded field and current observation state.
+    These values are NOT actual satellite-derived
+    NDVI or crop-health measurements.
 
-        They are NOT satellite-derived NDVI.
+    They are temporary interface values used until
+    a multispectral satellite data source is connected.
 
-        Real NDVI will be added once we connect a
-        multispectral imagery source.
-    */
+    This keeps the interface functional without
+    falsely claiming that the application has already
+    performed real remote sensing analysis.
+*/
 
+function calculateDemonstrationMetrics() {
 
     const seed =
-        getFieldSeed();
+        createFieldSeed();
+
+
+    const seasonalFactors = [
+
+        0.86,
+
+        0.94,
+
+        1.00,
+
+        1.05,
+
+        1.08
+
+    ];
 
 
     const seasonal =
-        [
-            0.91,
-            0.96,
-            1.02,
-            1.05,
-            1.08
-        ][
+        seasonalFactors[
             appState.observationIndex
         ];
 
 
     const ndvi =
         Math.min(
-            0.92,
+            0.90,
+
             Math.max(
                 0.20,
-                0.62 +
-                seed * 0.14 *
+
+                (
+                    0.52 +
+                    seed * 0.18
+                ) *
                 seasonal
             )
         );
@@ -1086,8 +1842,8 @@ function generateFieldMetrics() {
 
     const uniformity =
         Math.round(
-            78 +
-            seed * 15
+            72 +
+            seed * 23
         );
 
 
@@ -1130,13 +1886,14 @@ function generateFieldMetrics() {
 
 
 /* ============================================================
-   DETERMINISTIC FIELD SEED
+   FIELD SEED
    ============================================================ */
 
-function getFieldSeed() {
+function createFieldSeed() {
 
     const text =
-        fieldName.textContent;
+        appState.selectedFieldName ||
+        "FIELD";
 
 
     let hash =
@@ -1171,30 +1928,46 @@ function updateMetrics(
     metrics
 ) {
 
-    animateNumber(
-        healthValue,
-        metrics.health,
-        0
-    );
+    if (healthValue) {
+
+        animateNumber(
+            healthValue,
+            metrics.health,
+            0
+        );
+
+    }
 
 
-    animateNumber(
-        ndviValue,
-        metrics.ndvi,
-        2
-    );
+    if (ndviValue) {
+
+        animateNumber(
+            ndviValue,
+            metrics.ndvi,
+            2
+        );
+
+    }
 
 
-    animateNumber(
-        uniformityValue,
-        metrics.uniformity,
-        0,
-        "%"
-    );
+    if (uniformityValue) {
+
+        animateNumber(
+            uniformityValue,
+            metrics.uniformity,
+            0,
+            "%"
+        );
+
+    }
 
 
-    stressValue.textContent =
-        metrics.stress;
+    if (stressValue) {
+
+        stressValue.textContent =
+            metrics.stress;
+
+    }
 
 }
 
@@ -1210,10 +1983,23 @@ function animateNumber(
     suffix = ""
 ) {
 
-    const startValue =
+    if (!element) {
+        return;
+    }
+
+
+    const current =
         parseFloat(
             element.textContent
-        ) || 0;
+        );
+
+
+    const startValue =
+        Number.isFinite(
+            current
+        )
+            ? current
+            : 0;
 
 
     const duration =
@@ -1234,7 +2020,8 @@ function animateNumber(
                 (
                     time -
                     startTime
-                ) / duration
+                ) /
+                duration
             );
 
 
@@ -1283,7 +2070,159 @@ function animateNumber(
 
 
 /* ============================================================
-   SATELLITE / STREET LAYER SWITCHING
+   MAP LAYER SYSTEM
+   ============================================================ */
+
+function initializeLayers() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".layer-button"
+        );
+
+
+    buttons.forEach(
+        function(button) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    const layerName =
+                        button.dataset.layer;
+
+
+                    activateLayerButton(
+                        layerName
+                    );
+
+
+                    handleLayerSelection(
+                        layerName
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   ACTIVATE LAYER BUTTON
+   ============================================================ */
+
+function activateLayerButton(
+    layerName
+) {
+
+    const buttons =
+        document.querySelectorAll(
+            ".layer-button"
+        );
+
+
+    buttons.forEach(
+        function(button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.layer ===
+                    layerName
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   HANDLE LAYER SELECTION
+   ============================================================ */
+
+function handleLayerSelection(
+    layerName
+) {
+
+    if (
+        layerName ===
+        "satellite"
+    ) {
+
+        setMapLayer(
+            "satellite"
+        );
+
+        return;
+
+    }
+
+
+    /*
+        These analysis layers will eventually
+        use real multispectral satellite data.
+    */
+
+    if (
+        !appState.uploadedGeoJSON
+    ) {
+
+        showMessage(
+            "Upload a field before activating analysis layers."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        layerName ===
+        "ndvi"
+    ) {
+
+        showMessage(
+            "NDVI layer is ready for multispectral imagery integration."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        layerName ===
+        "vegetation"
+    ) {
+
+        showMessage(
+            "Vegetation layer is ready for remote-sensing integration."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        layerName ===
+        "water"
+    ) {
+
+        showMessage(
+            "Water-stress layer is ready for remote-sensing integration."
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   SET MAP BASE LAYER
    ============================================================ */
 
 function setMapLayer(
@@ -1348,262 +2287,30 @@ function setMapLayer(
 
 
 /* ============================================================
-   LAYER BUTTONS
-   ============================================================ */
-
-const layerButtons =
-    document.querySelectorAll(
-        ".layer-button"
-    );
-
-
-layerButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            function() {
-
-                layerButtons.forEach(
-                    item => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                const requestedLayer =
-                    button.dataset.layer;
-
-
-                /*
-                    Satellite is currently a true
-                    imagery layer.
-
-                    NDVI / vegetation / water are
-                    interface placeholders until
-                    multispectral imagery is connected.
-                */
-
-                if (
-                    requestedLayer ===
-                    "satellite"
-                ) {
-
-                    setMapLayer(
-                        "satellite"
-                    );
-
-                }
-
-                else {
-
-                    setMapLayer(
-                        "street"
-                    );
-
-
-                    showMessage(
-                        `${requestedLayer.toUpperCase()} analysis layer will be connected to multispectral imagery in the next phase.`
-                    );
-
-                }
-
-            }
-        );
-
-    }
-);
-
-
-/* ============================================================
-   FIELD SELECTOR
-   ============================================================ */
-
-if (fieldSelect) {
-
-    fieldSelect.addEventListener(
-        "change",
-        function() {
-
-            const selected =
-                this.value;
-
-
-            const field =
-                sampleFields[selected];
-
-
-            if (!field) {
-                return;
-            }
-
-
-            fieldName.textContent =
-                selected.toUpperCase();
-
-
-            fieldMeta.textContent =
-                `LARAMIE COUNTY · WYOMING · ${field.health ? "SAMPLE FIELD" : ""}`;
-
-
-            updateMetrics(
-                field
-            );
-
-
-            if (
-                appState.map
-            ) {
-
-                appState.map.setView(
-                    [
-                        41.1402,
-                        -104.8202
-                    ],
-                    13,
-                    {
-                        animate:
-                            true,
-
-                        duration:
-                            1
-                    }
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   GEOJSON INPUT
-   ============================================================ */
-
-if (geojsonInput) {
-
-    geojsonInput.addEventListener(
-        "change",
-        function() {
-
-            readGeoJSONFile(
-                this.files[0]
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   DRAG & DROP
-   ============================================================ */
-
-if (mapUpload) {
-
-    mapUpload.addEventListener(
-        "dragover",
-        function(event) {
-
-            event.preventDefault();
-
-            mapUpload.classList.add(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    mapUpload.addEventListener(
-        "dragleave",
-        function() {
-
-            mapUpload.classList.remove(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    mapUpload.addEventListener(
-        "drop",
-        function(event) {
-
-            event.preventDefault();
-
-            mapUpload.classList.remove(
-                "dragging"
-            );
-
-
-            const file =
-                event.dataTransfer.files[0];
-
-
-            readGeoJSONFile(
-                file
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   SCAN BUTTON
-   ============================================================ */
-
-if (scanButton) {
-
-    scanButton.addEventListener(
-        "click",
-        function() {
-
-            runFieldScan(
-                true
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
    TIMELINE
    ============================================================ */
 
-const observationDates = [
+function initializeTimeline() {
 
-    "APR 18 2026",
-
-    "MAY 16 2026",
-
-    "JUN 20 2026",
-
-    "JUL 18 2026",
-
-    "AUG 25 2026"
-
-];
+    if (!timelineSlider) {
+        return;
+    }
 
 
-if (timelineSlider) {
+    const dates = [
+
+        "APR 18 2026",
+
+        "MAY 16 2026",
+
+        "JUN 20 2026",
+
+        "JUL 18 2026",
+
+        "AUG 25 2026"
+
+    ];
+
 
     timelineSlider.addEventListener(
         "input",
@@ -1611,20 +2318,19 @@ if (timelineSlider) {
 
             appState.observationIndex =
                 Number(
-                    this.value
+                    timelineSlider.value
                 );
 
 
-            timelineDate.textContent =
-                observationDates[
-                    appState.observationIndex
-                ];
+            if (timelineDate) {
 
+                timelineDate.textContent =
+                    dates[
+                        appState.observationIndex
+                    ];
 
-            /*
-                Re-run demonstration analysis
-                for the selected observation.
-            */
+            }
+
 
             if (
                 appState.fieldLayer
@@ -1643,85 +2349,326 @@ if (timelineSlider) {
 
 
 /* ============================================================
-   MESSAGE SYSTEM
+   RESET MAP
    ============================================================ */
 
-function showMessage(
-    message
-) {
+function initializeResetButton() {
 
-    const existing =
-        document.querySelector(
-            ".app-message"
+    if (!resetMapButton) {
+        return;
+    }
+
+
+    resetMapButton.addEventListener(
+        "click",
+        resetApplication
+    );
+
+}
+
+
+function resetApplication() {
+
+    /* Remove field */
+
+    if (
+        appState.fieldLayer
+    ) {
+
+        appState.map.removeLayer(
+            appState.fieldLayer
         );
-
-
-    if (existing) {
-
-        existing.remove();
 
     }
 
 
-    const element =
-        document.createElement(
-            "div"
+    /* Reset state */
+
+    appState.fieldLayer =
+        null;
+
+    appState.uploadedGeoJSON =
+        null;
+
+    appState.fieldAreaAcres =
+        null;
+
+    appState.selectedFieldName =
+        null;
+
+    appState.observationIndex =
+        4;
+
+
+    /* Reset interface */
+
+    if (emptyState) {
+
+        emptyState.classList.remove(
+            "hidden"
         );
 
-
-    element.className =
-        "app-message";
+    }
 
 
-    element.textContent =
-        message;
+    if (fieldState) {
+
+        fieldState.classList.add(
+            "hidden"
+        );
+
+    }
 
 
-    document.body.appendChild(
-        element
+    if (analysisPanel) {
+
+        analysisPanel.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (layerPanel) {
+
+        layerPanel.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (timeline) {
+
+        timeline.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (mapLegend) {
+
+        mapLegend.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (mapControls) {
+
+        mapControls.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    if (mapUpload) {
+
+        mapUpload.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    /* Reset metrics */
+
+    if (healthValue) {
+
+        healthValue.textContent =
+            "—";
+
+    }
+
+
+    if (ndviValue) {
+
+        ndviValue.textContent =
+            "—";
+
+    }
+
+
+    if (uniformityValue) {
+
+        uniformityValue.textContent =
+            "—";
+
+    }
+
+
+    if (stressValue) {
+
+        stressValue.textContent =
+            "—";
+
+    }
+
+
+    if (timelineDate) {
+
+        timelineDate.textContent =
+            "—";
+
+    }
+
+
+    if (timelineSlider) {
+
+        timelineSlider.value =
+            "4";
+
+    }
+
+
+    /* Reset map */
+
+    if (
+        appState.map
+    ) {
+
+        appState.map.setView(
+            [
+                39.8283,
+                -98.5795
+            ],
+            4,
+            {
+                animate:
+                    true
+            }
+        );
+
+    }
+
+
+    activateLayerButton(
+        "satellite"
     );
 
 
-    setTimeout(
-        function() {
-
-            element.classList.add(
-                "visible"
-            );
-
-        },
-        20
+    setMapLayer(
+        "satellite"
     );
 
 
-    setTimeout(
-        function() {
+    if (geojsonInput) {
 
-            element.classList.remove(
-                "visible"
-            );
+        geojsonInput.value =
+            "";
+
+    }
 
 
-            setTimeout(
-                function() {
-
-                    element.remove();
-
-                },
-                400
-            );
-
-        },
-        3500
+    showMessage(
+        "Field cleared. Ready for a new analysis."
     );
 
 }
 
 
 /* ============================================================
-   START
+   FOCUS FIELD
    ============================================================ */
 
-initializeMap();
+function focusField() {
 
-startIntro();
+    if (
+        !appState.fieldLayer
+    ) {
+
+        showMessage(
+            "No field is currently loaded."
+        );
+
+        return;
+
+    }
+
+
+    const bounds =
+        appState.fieldLayer.getBounds();
+
+
+    if (
+        bounds.isValid()
+    ) {
+
+        appState.map.fitBounds(
+            bounds,
+            {
+
+                padding:
+                    [120, 120],
+
+                maxZoom:
+                    17,
+
+                animate:
+                    true,
+
+                duration:
+                    1.2
+
+            }
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   APPLICATION MESSAGE
+   ============================================================ */
+
+function showMessage(
+    message
+) {
+
+    if (!appMessage) {
+
+        console.log(
+            message
+        );
+
+        return;
+
+    }
+
+
+    appMessage.textContent =
+        message;
+
+
+    appMessage.classList.add(
+        "visible"
+    );
+
+
+    clearTimeout(
+        appMessage.messageTimer
+    );
+
+
+    appMessage.messageTimer =
+        setTimeout(
+            function() {
+
+                appMessage.classList.remove(
+                    "visible"
+                );
+
+            },
+            3500
+        );
+
+}
+
+
+/* ============================================================
+   END APPLICATION
+   ============================================================ */
