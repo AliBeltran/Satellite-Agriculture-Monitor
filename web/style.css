@@ -58,3 +58,225 @@
         translate(-50%, 0);
 
 }
+/* ============================================================
+   EMPTY APPLICATION STATE
+   ============================================================ */
+
+.empty-state {
+
+    position: absolute;
+
+    left: 35px;
+
+    bottom: 150px;
+
+    z-index: 100;
+
+    max-width: 700px;
+
+}
+
+
+.empty-state .field-title {
+
+    margin-top: 10px;
+
+}
+
+
+.empty-state .field-title span {
+
+    display: block;
+
+    color:
+        var(--green-bright);
+
+}
+
+
+.empty-state .coordinate-label {
+
+    color:
+        var(--green);
+
+    font-size: 8px;
+
+    letter-spacing: 0.22em;
+
+}
+
+
+.empty-state .field-location {
+
+    margin-top: 14px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+}
+
+
+/* ============================================================
+   ACTIVE FIELD STATE
+   ============================================================ */
+
+.field-state {
+
+    position: absolute;
+
+    left: 35px;
+
+    bottom: 150px;
+
+    z-index: 100;
+
+}
+
+
+.field-state.hidden {
+
+    display: none;
+
+}
+
+
+/* ============================================================
+   UNIVERSAL HIDDEN STATE
+   ============================================================ */
+
+.hidden {
+
+    opacity: 0 !important;
+
+    visibility: hidden !important;
+
+    pointer-events: none !important;
+
+}
+
+
+/* ============================================================
+   DESIGNER CREDIT
+   ============================================================ */
+
+.designer-credit {
+
+    position: absolute;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    color:
+        rgba(255,255,255,0.45);
+
+    font-size: 7px;
+
+    letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+}
+
+
+.designer-credit strong {
+
+    margin-left: 4px;
+
+    color:
+        rgba(194,227,181,0.85);
+
+    font-weight: 600;
+
+}
+
+
+/* ============================================================
+   UPLOAD FORMAT
+   ============================================================ */
+
+.upload-format {
+
+    margin-top: 13px;
+
+    color:
+        rgba(255,255,255,0.25);
+
+    font-size: 6px;
+
+    letter-spacing: 0.18em;
+
+}
+
+
+/* ============================================================
+   EMPTY STATE ANIMATION
+   ============================================================ */
+
+.empty-state {
+
+    animation:
+        heroFadeIn 1.4s ease both;
+
+}
+
+
+@keyframes heroFadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* ============================================================
+   FIELD ACTIVATION
+   ============================================================ */
+
+.field-state {
+
+    animation:
+        fieldActivate 0.8s ease both;
+
+}
+
+
+@keyframes fieldActivate {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(15px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
