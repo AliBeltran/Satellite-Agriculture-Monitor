@@ -20,13 +20,11 @@
         content="Ali Beltran"
     >
 
-    <title>
-        Satellite Agriculture Monitor
-    </title>
+    <title>Satellite Agriculture Monitor</title>
 
 
     <!-- ======================================================
-         LEAFLET
+         LEAFLET MAP
          ====================================================== -->
 
     <link
@@ -36,7 +34,7 @@
 
 
     <!-- ======================================================
-         APPLICATION STYLES
+         APPLICATION CSS
          ====================================================== -->
 
     <link
@@ -54,7 +52,7 @@
 
 
     <!-- ======================================================
-         INTRO / LOADING SCREEN
+         INTRO SCREEN
          ====================================================== -->
 
     <section
@@ -63,15 +61,25 @@
         aria-label="Application initialization"
     >
 
-        <div class="intro-grid"></div>
+        <div
+            class="intro-grid"
+            aria-hidden="true"
+        ></div>
 
-        <div class="intro-scan"></div>
+
+        <div
+            class="intro-scan"
+            aria-hidden="true"
+        ></div>
 
 
         <div class="intro-content">
 
 
-            <div class="satellite-symbol">
+            <div
+                class="satellite-symbol"
+                aria-hidden="true"
+            >
                 ◈
             </div>
 
@@ -170,6 +178,10 @@
         ></div>
 
 
+        <!-- ==================================================
+             ANIMATED SCAN LINE
+             ================================================== -->
+
         <div
             class="scan-line"
             aria-hidden="true"
@@ -178,7 +190,7 @@
 
 
         <!-- ==================================================
-             TOP NAVIGATION
+             TOP BAR
              ================================================== -->
 
         <header class="topbar">
@@ -187,6 +199,7 @@
             <!-- BRAND -->
 
             <div class="brand">
+
 
                 <div
                     class="brand-symbol"
@@ -208,6 +221,7 @@
                     </div>
 
                 </div>
+
 
             </div>
 
@@ -233,6 +247,7 @@
                 class="navigation"
                 aria-label="Main navigation"
             >
+
 
                 <a
                     href="#"
@@ -269,6 +284,7 @@
                     ANALYSIS
                 </a>
 
+
             </nav>
 
 
@@ -292,7 +308,7 @@
 
         <!-- ==================================================
              EMPTY STATE
-             SHOWN BEFORE A FIELD IS UPLOADED
+             NOTHING FIELD-SPECIFIC APPEARS HERE YET
              ================================================== -->
 
         <section
@@ -330,7 +346,7 @@
 
         <!-- ==================================================
              ACTIVE FIELD
-             HIDDEN UNTIL A FIELD IS LOADED
+             HIDDEN UNTIL USER UPLOADS A FIELD
              ================================================== -->
 
         <section
@@ -424,7 +440,7 @@
 
         <!-- ==================================================
              FIELD ANALYSIS PANEL
-             HIDDEN UNTIL FIELD IS LOADED
+             HIDDEN UNTIL FIELD UPLOAD
              ================================================== -->
 
         <aside
@@ -432,8 +448,6 @@
             class="analysis-panel hidden"
         >
 
-
-            <!-- PANEL HEADER -->
 
             <div class="panel-header">
 
@@ -581,7 +595,7 @@
 
 
 
-            <!-- SCAN BUTTON -->
+            <!-- FIELD SCAN -->
 
             <button
                 id="scanButton"
@@ -604,7 +618,7 @@
 
         <!-- ==================================================
              MAP LAYERS
-             HIDDEN UNTIL FIELD IS LOADED
+             HIDDEN UNTIL FIELD UPLOAD
              ================================================== -->
 
         <div
@@ -659,8 +673,8 @@
 
 
         <!-- ==================================================
-             SATELLITE OBSERVATION TIMELINE
-             HIDDEN UNTIL FIELD IS LOADED
+             SATELLITE TIMELINE
+             HIDDEN UNTIL FIELD UPLOAD
              ================================================== -->
 
         <section
@@ -677,7 +691,9 @@
                 </span>
 
 
-                <span id="timelineDate">
+                <span
+                    id="timelineDate"
+                >
                     —
                 </span>
 
@@ -726,7 +742,7 @@
 
         <!-- ==================================================
              MAP LEGEND
-             HIDDEN UNTIL FIELD IS LOADED
+             HIDDEN UNTIL FIELD UPLOAD
              ================================================== -->
 
         <div
@@ -774,6 +790,7 @@
 
         <!-- ==================================================
              MAP CONTROLS
+             HIDDEN UNTIL FIELD UPLOAD
              ================================================== -->
 
         <div
