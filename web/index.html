@@ -15,6 +15,16 @@
         rel="stylesheet"
         href="style.css"
     >
+
+    <!-- Leaflet Map -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
 </head>
 
 
@@ -408,48 +418,92 @@
                 </div>
 
 
-                <div class="field-map">
+<div class="field-map" id="fieldMap">
 
-                    <div class="field-boundary"></div>
+    <div
+        class="map-upload"
+        id="mapUpload"
+    >
+
+        <div class="upload-icon">
+            🛰
+        </div>
+
+        <div class="upload-title">
+            Upload Field Boundary
+        </div>
+
+        <div class="upload-description">
+            Drag & drop a GeoJSON file here
+            or choose a file
+        </div>
+
+        <label
+            for="geojsonInput"
+            class="upload-button"
+        >
+            Choose GeoJSON
+        </label>
+
+        <input
+            type="file"
+            id="geojsonInput"
+            accept=".geojson,.json"
+            hidden
+        >
+
+    </div>
 
 
-                    <div class="map-legend">
+    <div class="map-controls">
 
-                        <div class="legend-item">
+        <button
+            type="button"
+            id="resetMap"
+        >
+            ⟳ Reset
+        </button>
 
-                            <div
-                                class="legend-dot legend-healthy"
-                            ></div>
-
-                            Healthy
-
-                        </div>
-
-
-                        <div class="legend-item">
-
-                            <div
-                                class="legend-dot legend-watch"
-                            ></div>
-
-                            Watch
-
-                        </div>
+    </div>
 
 
-                        <div class="legend-item">
+    <div class="map-legend">
 
-                            <div
-                                class="legend-dot legend-alert"
-                            ></div>
+        <div class="legend-item">
 
-                            Alert
+            <div
+                class="legend-dot legend-healthy"
+            ></div>
 
-                        </div>
+            Healthy
 
-                    </div>
+        </div>
 
-                </div>
+
+        <div class="legend-item">
+
+            <div
+                class="legend-dot legend-watch"
+            ></div>
+
+            Watch
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <div
+                class="legend-dot legend-alert"
+            ></div>
+
+            Alert
+
+        </div>
+
+    </div>
+
+</div>
 
             </article>
 
