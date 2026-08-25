@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -16,15 +17,12 @@
         href="style.css"
     >
 
-    <!-- Leaflet Map -->
+    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    >
 
-    <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
 </head>
 
 
@@ -33,172 +31,170 @@
 <div class="app">
 
 
-    <!-- =====================================================
-         SIDEBAR
-         ===================================================== -->
+    <!-- ======================================================
+         INTRO SCREEN
+         ====================================================== -->
 
-    <aside class="sidebar">
+    <section
+        id="introScreen"
+        class="intro-screen"
+    >
 
-        <div class="logo">
+        <div class="intro-grid"></div>
 
-            <div class="logo-icon">
-                🛰
+        <div class="intro-scan"></div>
+
+        <div class="intro-content">
+
+            <div class="satellite-symbol">
+                ◈
             </div>
 
-            <div class="logo-text">
-
-                <div class="logo-title">
-                    SATELLITE
-                </div>
-
-                <div class="logo-subtitle">
-                    Agriculture Monitor
-                </div>
-
+            <div class="intro-kicker">
+                EARTH OBSERVATION SYSTEM
             </div>
 
-        </div>
+            <h1>
+                SATELLITE
+                <span>AGRICULTURE</span>
+                MONITOR
+            </h1>
 
-
-        <nav class="nav">
-
-            <div class="nav-section">
-                Monitor
-            </div>
-
-            <a
-                href="#"
-                class="nav-item active"
-            >
-                <span class="nav-icon">⌂</span>
-                <span>Overview</span>
-            </a>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">◇</span>
-                <span>My Fields</span>
-            </a>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">🛰</span>
-                <span>Satellite</span>
-            </a>
-
-
-            <div class="nav-section">
-                Analysis
-            </div>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">◈</span>
-                <span>Field Analysis</span>
-            </a>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">↗</span>
-                <span>History</span>
-            </a>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">⚠</span>
-                <span>Alerts</span>
-            </a>
-
-
-            <div class="nav-section">
-                System
-            </div>
-
-
-            <a
-                href="#"
-                class="nav-item"
-            >
-                <span class="nav-icon">⚙</span>
-                <span>Settings</span>
-            </a>
-
-        </nav>
-
-
-        <div class="sidebar-footer">
+            <p>
+                Precision agricultural intelligence
+                through satellite observation.
+            </p>
 
             <div class="system-status">
 
-                <div class="status-dot"></div>
+                <span class="status-dot"></span>
 
-                <span>
-                    Monitoring system online
-                </span>
+                SYSTEM INITIALIZING
+
+            </div>
+
+            <div class="loading-container">
+
+                <div class="loading-bar">
+
+                    <div
+                        id="loadingBar"
+                        class="loading-progress"
+                    ></div>
+
+                </div>
+
+                <div
+                    id="loadingText"
+                    class="loading-text"
+                >
+                    ESTABLISHING GEOSPATIAL LINK
+                </div>
 
             </div>
 
         </div>
 
-    </aside>
+    </section>
 
 
 
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
+    <!-- ======================================================
+         MAIN APPLICATION
+         ====================================================== -->
 
-    <main class="main">
+    <main
+        id="mainInterface"
+        class="main-interface"
+    >
 
 
-        <!-- TOP BAR -->
+        <!-- ==================================================
+             MAP
+             ================================================== -->
+
+        <div
+            id="fieldMap"
+            class="field-map"
+        ></div>
+
+
+        <!-- ==================================================
+             ATMOSPHERIC OVERLAY
+             ================================================== -->
+
+        <div class="map-atmosphere"></div>
+
+        <div class="scan-line"></div>
+
+
+        <!-- ==================================================
+             TOP NAVIGATION
+             ================================================== -->
 
         <header class="topbar">
 
-            <div class="page-title">
+            <div class="brand">
 
-                <h1>
-                    Field Overview
-                </h1>
+                <div class="brand-symbol">
+                    ◈
+                </div>
 
-                <p>
-                    Satellite-based agricultural intelligence
-                </p>
+                <div>
+
+                    <div class="brand-title">
+                        SATELLITE AGRICULTURE MONITOR
+                    </div>
+
+                    <div class="brand-subtitle">
+                        GEOSPATIAL AGRICULTURAL INTELLIGENCE
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <div class="topbar-actions">
+            <nav class="navigation">
 
-                <button
-                    class="btn btn-secondary"
-                    type="button"
+                <a
+                    href="#"
+                    class="nav-item active"
                 >
-                    ⟳ Refresh Data
-                </button>
+                    OVERVIEW
+                </a>
 
-
-                <button
-                    class="btn btn-primary"
-                    type="button"
+                <a
+                    href="#"
+                    class="nav-item"
                 >
-                    + Add Field
-                </button>
+                    FIELDS
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    SATELLITE
+                </a>
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+                    ANALYSIS
+                </a>
+
+            </nav>
+
+
+            <div class="system-indicator">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    SYSTEM ONLINE
+                </span>
 
             </div>
 
@@ -206,33 +202,15 @@
 
 
 
-        <!-- =================================================
+        <!-- ==================================================
              FIELD SELECTOR
-             ================================================= -->
+             ================================================== -->
 
         <section class="field-selector">
 
-            <div class="field-info">
-
-                <div class="field-icon">
-                    🌱
-                </div>
-
-
-                <div>
-
-                    <div class="field-name">
-                        North Pivot
-                    </div>
-
-                    <div class="field-meta">
-                        Laramie County, Wyoming · 127.4 acres
-                    </div>
-
-                </div>
-
+            <div class="field-selector-label">
+                ACTIVE FIELD
             </div>
-
 
             <select id="fieldSelect">
 
@@ -254,698 +232,323 @@
 
 
 
-        <!-- =================================================
-             STATISTICS
-             ================================================= -->
+        <!-- ==================================================
+             FIELD INFORMATION
+             ================================================== -->
 
-        <section class="stats-grid">
+        <section class="field-hero">
+
+            <div class="coordinate-label">
+                41.1402° N
+                <span>/</span>
+                104.8202° W
+            </div>
+
+            <h2
+                id="fieldName"
+                class="field-title"
+            >
+                NORTH PIVOT
+            </h2>
+
+            <div
+                id="fieldMeta"
+                class="field-location"
+            >
+                LARAMIE COUNTY · WYOMING · 127.4 ACRES
+            </div>
+
+        </section>
 
 
-            <!-- FIELD HEALTH -->
 
-            <article class="stat-card">
+        <!-- ==================================================
+             FIELD ANALYSIS PANEL
+             ================================================== -->
 
-                <div class="stat-header">
+        <aside class="analysis-panel">
 
-                    <span class="stat-label">
-                        Field Health
-                    </span>
+            <div class="panel-header">
 
-                    <div class="stat-icon">
-                        ♥
+                <div>
+
+                    <div class="panel-kicker">
+                        FIELD ANALYSIS
+                    </div>
+
+                    <div class="panel-title">
+                        CURRENT CONDITION
                     </div>
 
                 </div>
 
+                <div class="panel-status">
+                    LIVE
+                </div>
 
-                <div class="stat-value">
+            </div>
+
+
+            <div class="analysis-row">
+
+                <div>
+
+                    <span class="analysis-label">
+                        FIELD HEALTH
+                    </span>
+
+                    <span class="analysis-description">
+                        Overall field condition
+                    </span>
+
+                </div>
+
+                <strong id="healthValue">
                     87
-                </div>
+                </strong>
+
+            </div>
 
 
-                <div class="stat-change">
-                    ↑ 6.2% this month
-                </div>
+            <div class="analysis-row">
 
-            </article>
+                <div>
 
-
-
-            <!-- NDVI -->
-
-            <article class="stat-card">
-
-                <div class="stat-header">
-
-                    <span class="stat-label">
+                    <span class="analysis-label">
                         NDVI
                     </span>
 
-                    <div class="stat-icon">
-                        🌿
-                    </div>
+                    <span class="analysis-description">
+                        Vegetation index
+                    </span>
 
                 </div>
 
-
-                <div class="stat-value">
+                <strong id="ndviValue">
                     0.72
-                </div>
-
-
-                <div class="stat-change">
-                    ↑ 8.4% from last scan
-                </div>
-
-            </article>
-
-
-
-            <!-- UNIFORMITY -->
-
-            <article class="stat-card">
-
-                <div class="stat-header">
-
-                    <span class="stat-label">
-                        Crop Uniformity
-                    </span>
-
-                    <div class="stat-icon">
-                        ◉
-                    </div>
-
-                </div>
-
-
-                <div class="stat-value">
-                    92%
-                </div>
-
-
-                <div class="stat-change">
-                    Stable
-                </div>
-
-            </article>
-
-
-
-            <!-- STRESS -->
-
-            <article class="stat-card">
-
-                <div class="stat-header">
-
-                    <span class="stat-label">
-                        Stress Risk
-                    </span>
-
-                    <div class="stat-icon">
-                        ⚠
-                    </div>
-
-                </div>
-
-
-                <div class="stat-value">
-                    LOW
-                </div>
-
-
-                <div class="stat-change">
-                    No critical issues
-                </div>
-
-            </article>
-
-        </section>
-
-
-
-        <!-- =================================================
-             MAIN DASHBOARD
-             ================================================= -->
-
-        <section class="dashboard-grid">
-
-
-            <!-- =============================================
-                 FIELD MAP
-                 ============================================= -->
-
-            <article class="card map-card">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <div class="card-title">
-                            Field Health Map
-                        </div>
-
-                        <div class="card-subtitle">
-                            Current vegetation condition
-                        </div>
-
-                    </div>
-
-
-                    <div class="card-action">
-                        View Full Map →
-                    </div>
-
-                </div>
-
-
-<div class="field-map" id="fieldMap">
-
-    <div
-        class="map-upload"
-        id="mapUpload"
-    >
-
-        <div class="upload-icon">
-            🛰
-        </div>
-
-        <div class="upload-title">
-            Upload Field Boundary
-        </div>
-
-        <div class="upload-description">
-            Drag & drop a GeoJSON file here
-            or choose a file
-        </div>
-
-        <label
-            for="geojsonInput"
-            class="upload-button"
-        >
-            Choose GeoJSON
-        </label>
-
-        <input
-            type="file"
-            id="geojsonInput"
-            accept=".geojson,.json"
-            hidden
-        >
-
-    </div>
-
-
-    <div class="map-controls">
-
-        <button
-            type="button"
-            id="resetMap"
-        >
-            ⟳ Reset
-        </button>
-
-    </div>
-
-
-    <div class="map-legend">
-
-        <div class="legend-item">
-
-            <div
-                class="legend-dot legend-healthy"
-            ></div>
-
-            Healthy
-
-        </div>
-
-
-        <div class="legend-item">
-
-            <div
-                class="legend-dot legend-watch"
-            ></div>
-
-            Watch
-
-        </div>
-
-
-        <div class="legend-item">
-
-            <div
-                class="legend-dot legend-alert"
-            ></div>
-
-            Alert
-
-        </div>
-
-    </div>
-
-</div>
-
-            </article>
-
-
-
-            <!-- =============================================
-                 FIELD ANALYSIS
-                 ============================================= -->
-
-            <article class="card">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <div class="card-title">
-                            Field Analysis
-                        </div>
-
-                        <div class="card-subtitle">
-                            Current conditions
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="analysis-list">
-
-
-                    <div class="analysis-item">
-
-                        <div class="analysis-left">
-
-                            <div
-                                class="analysis-icon green"
-                            >
-                                🌱
-                            </div>
-
-
-                            <div>
-
-                                <div class="analysis-name">
-                                    Vegetation
-                                </div>
-
-                                <div class="analysis-description">
-                                    Strong vegetation activity
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="analysis-value">
-                            HIGH
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="analysis-item">
-
-                        <div class="analysis-left">
-
-                            <div
-                                class="analysis-icon green"
-                            >
-                                💧
-                            </div>
-
-
-                            <div>
-
-                                <div class="analysis-name">
-                                    Water Stress
-                                </div>
-
-                                <div class="analysis-description">
-                                    No significant stress
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="analysis-value">
-                            LOW
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="analysis-item">
-
-                        <div class="analysis-left">
-
-                            <div
-                                class="analysis-icon yellow"
-                            >
-                                ◌
-                            </div>
-
-
-                            <div>
-
-                                <div class="analysis-name">
-                                    Field Variability
-                                </div>
-
-                                <div class="analysis-description">
-                                    Moderate variation detected
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="analysis-value">
-                            8%
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="analysis-item">
-
-                        <div class="analysis-left">
-
-                            <div
-                                class="analysis-icon green"
-                            >
-                                ↗
-                            </div>
-
-
-                            <div>
-
-                                <div class="analysis-name">
-                                    Growth Trend
-                                </div>
-
-                                <div class="analysis-description">
-                                    Increasing
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="analysis-value">
-                            +8.4%
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-        </section>
-
-
-
-        <!-- =================================================
-             NDVI HISTORY
-             ================================================= -->
-
-        <article class="card chart-card">
-
-            <div class="card-header">
-
-                <div>
-
-                    <div class="card-title">
-                        Vegetation Trend
-                    </div>
-
-                    <div class="card-subtitle">
-                        NDVI history for North Pivot
-                    </div>
-
-                </div>
-
-
-                <div class="card-action">
-                    Last 6 months
-                </div>
+                </strong>
 
             </div>
 
 
-            <div class="chart-container">
+            <div class="analysis-row">
 
-                <svg
-                    class="chart"
-                    viewBox="0 0 800 210"
-                    preserveAspectRatio="none"
+                <div>
+
+                    <span class="analysis-label">
+                        UNIFORMITY
+                    </span>
+
+                    <span class="analysis-description">
+                        Spatial consistency
+                    </span>
+
+                </div>
+
+                <strong id="uniformityValue">
+                    92%
+                </strong>
+
+            </div>
+
+
+            <div class="analysis-row">
+
+                <div>
+
+                    <span class="analysis-label">
+                        STRESS RISK
+                    </span>
+
+                    <span class="analysis-description">
+                        Current assessment
+                    </span>
+
+                </div>
+
+                <strong id="stressValue">
+                    LOW
+                </strong>
+
+            </div>
+
+
+            <button
+                id="scanButton"
+                class="scan-button"
+            >
+
+                <span>
+                    ◈
+                </span>
+
+                RUN FIELD SCAN
+
+            </button>
+
+        </aside>
+
+
+
+        <!-- ==================================================
+             MAP LAYERS
+             ================================================== -->
+
+        <div class="layer-panel">
+
+            <div class="layer-title">
+                MAP LAYERS
+            </div>
+
+            <button
+                class="layer-button active"
+                data-layer="satellite"
+            >
+                SATELLITE
+            </button>
+
+            <button
+                class="layer-button"
+                data-layer="ndvi"
+            >
+                NDVI
+            </button>
+
+            <button
+                class="layer-button"
+                data-layer="vegetation"
+            >
+                VEGETATION
+            </button>
+
+            <button
+                class="layer-button"
+                data-layer="water"
+            >
+                WATER STRESS
+            </button>
+
+        </div>
+
+
+
+        <!-- ==================================================
+             MAP UPLOAD
+             ================================================== -->
+
+        <section
+            id="mapUpload"
+            class="map-upload"
+        >
+
+            <div class="upload-symbol">
+                ◈
+            </div>
+
+            <div class="upload-title">
+                LOAD FIELD BOUNDARY
+            </div>
+
+            <div class="upload-description">
+                Drag and drop a GeoJSON file
+                or select one from your computer.
+            </div>
+
+            <label
+                class="upload-button"
+            >
+
+                SELECT GEOJSON
+
+                <input
+                    id="geojsonInput"
+                    type="file"
+                    accept=".geojson,.json"
+                    hidden
                 >
 
-                    <defs>
+            </label>
 
-                        <linearGradient
-                            id="chartGradient"
-                            x1="0"
-                            x2="0"
-                            y1="0"
-                            y2="1"
-                        >
-
-                            <stop
-                                offset="0%"
-                                stop-color="#78a878"
-                                stop-opacity="0.45"
-                            />
-
-                            <stop
-                                offset="100%"
-                                stop-color="#78a878"
-                                stop-opacity="0"
-                            />
-
-                        </linearGradient>
-
-                    </defs>
+        </section>
 
 
-                    <!-- GRID -->
 
-                    <line
-                        class="chart-grid-line"
-                        x1="0"
-                        y1="30"
-                        x2="800"
-                        y2="30"
-                    />
+        <!-- ==================================================
+             TIMELINE
+             ================================================== -->
 
-                    <line
-                        class="chart-grid-line"
-                        x1="0"
-                        y1="80"
-                        x2="800"
-                        y2="80"
-                    />
+        <section class="timeline">
 
-                    <line
-                        class="chart-grid-line"
-                        x1="0"
-                        y1="130"
-                        x2="800"
-                        y2="130"
-                    />
+            <div class="timeline-header">
 
-                    <line
-                        class="chart-grid-line"
-                        x1="0"
-                        y1="180"
-                        x2="800"
-                        y2="180"
-                    />
+                <span>
+                    SATELLITE OBSERVATIONS
+                </span>
 
-
-                    <!-- AREA -->
-
-                    <path
-                        class="chart-area"
-                        d="
-                            M0,165
-                            C70,155 90,145 130,150
-                            C180,155 190,120 240,125
-                            C290,130 300,100 350,105
-                            C410,110 420,75 470,80
-                            C530,85 540,55 590,65
-                            C650,75 680,42 730,50
-                            C760,55 780,38 800,40
-                            L800,210
-                            L0,210
-                            Z
-                        "
-                    />
-
-
-                    <!-- LINE -->
-
-                    <path
-                        class="chart-line"
-                        d="
-                            M0,165
-                            C70,155 90,145 130,150
-                            C180,155 190,120 240,125
-                            C290,130 300,100 350,105
-                            C410,110 420,75 470,80
-                            C530,85 540,55 590,65
-                            C650,75 680,42 730,50
-                            C760,55 780,38 800,40
-                        "
-                    />
-
-
-                    <!-- POINTS -->
-
-                    <circle
-                        class="chart-point"
-                        cx="130"
-                        cy="150"
-                        r="4"
-                    />
-
-                    <circle
-                        class="chart-point"
-                        cx="240"
-                        cy="125"
-                        r="4"
-                    />
-
-                    <circle
-                        class="chart-point"
-                        cx="350"
-                        cy="105"
-                        r="4"
-                    />
-
-                    <circle
-                        class="chart-point"
-                        cx="470"
-                        cy="80"
-                        r="4"
-                    />
-
-                    <circle
-                        class="chart-point"
-                        cx="590"
-                        cy="65"
-                        r="4"
-                    />
-
-                    <circle
-                        class="chart-point"
-                        cx="730"
-                        cy="50"
-                        r="4"
-                    />
-
-                </svg>
+                <span id="timelineDate">
+                    AUG 25 2026
+                </span>
 
             </div>
 
-        </article>
+            <input
+                id="timelineSlider"
+                type="range"
+                min="0"
+                max="4"
+                value="4"
+            >
 
+            <div class="timeline-dates">
 
+                <span>
+                    APR
+                </span>
 
-        <!-- =================================================
-             ALERTS
-             ================================================= -->
+                <span>
+                    MAY
+                </span>
 
-        <article class="card alert-card">
+                <span>
+                    JUN
+                </span>
 
-            <div class="card-header">
+                <span>
+                    JUL
+                </span>
 
-                <div>
-
-                    <div class="card-title">
-                        Field Alerts
-                    </div>
-
-                    <div class="card-subtitle">
-                        Potential issues requiring attention
-                    </div>
-
-                </div>
-
-
-                <div class="card-action">
-                    View All →
-                </div>
-
-            </div>
-
-
-
-            <!-- WARNING -->
-
-            <div class="alert alert-warning">
-
-                <div class="alert-icon">
-                    ⚠
-                </div>
-
-
-                <div>
-
-                    <div class="alert-title">
-                        Southwest zone showing variability
-                    </div>
-
-                    <div class="alert-text">
-                        Vegetation activity is approximately
-                        11% below the field average.
-                        Consider field scouting.
-                    </div>
-
-                </div>
+                <span>
+                    AUG
+                </span>
 
             </div>
 
+        </section>
 
 
-            <!-- INFORMATION -->
 
-            <div class="alert alert-danger">
+        <!-- ==================================================
+             MAP LEGEND
+             ================================================== -->
 
-                <div class="alert-icon">
-                    !
-                </div>
+        <div class="map-legend">
 
-
-                <div>
-
-                    <div class="alert-title">
-                        Potential stress zone detected
-                    </div>
-
-                    <div class="alert-text">
-                        A small area of declining vegetation
-                        activity was detected between the
-                        previous and current satellite observations.
-                    </div>
-
-                </div>
-
+            <div>
+                <span class="legend-dot healthy"></span>
+                HEALTHY
             </div>
 
-        </article>
+            <div>
+                <span class="legend-dot watch"></span>
+                WATCH
+            </div>
+
+            <div>
+                <span class="legend-dot alert"></span>
+                ALERT
+            </div>
+
+        </div>
 
 
     </main>
@@ -953,7 +556,17 @@
 </div>
 
 
-<script src="script.js"></script>
+<!-- Leaflet -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script
+    src="script.js">
+</script>
+
 
 </body>
 
