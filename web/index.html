@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Satellite Agriculture Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🛰
+            </div>
+
+            <div class="logo-text">
+
+                <div class="logo-title">
+                    SATELLITE
+                </div>
+
+                <div class="logo-subtitle">
+                    Agriculture Monitor
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <div class="nav-section">
+                Monitor
+            </div>
+
+            <a
+                href="#"
+                class="nav-item active"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Overview</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">◇</span>
+                <span>My Fields</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">🛰</span>
+                <span>Satellite</span>
+            </a>
+
+
+            <div class="nav-section">
+                Analysis
+            </div>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">◈</span>
+                <span>Field Analysis</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">↗</span>
+                <span>History</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">⚠</span>
+                <span>Alerts</span>
+            </a>
+
+
+            <div class="nav-section">
+                System
+            </div>
+
+
+            <a
+                href="#"
+                class="nav-item"
+            >
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="system-status">
+
+                <div class="status-dot"></div>
+
+                <span>
+                    Monitoring system online
+                </span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+
+                <h1>
+                    Field Overview
+                </h1>
+
+                <p>
+                    Satellite-based agricultural intelligence
+                </p>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    ⟳ Refresh Data
+                </button>
+
+
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                >
+                    + Add Field
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             FIELD SELECTOR
+             ================================================= -->
+
+        <section class="field-selector">
+
+            <div class="field-info">
+
+                <div class="field-icon">
+                    🌱
+                </div>
+
+
+                <div>
+
+                    <div class="field-name">
+                        North Pivot
+                    </div>
+
+                    <div class="field-meta">
+                        Laramie County, Wyoming · 127.4 acres
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <select id="fieldSelect">
+
+                <option>
+                    North Pivot
+                </option>
+
+                <option>
+                    South Pasture
+                </option>
+
+                <option>
+                    West Hay Field
+                </option>
+
+            </select>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STATISTICS
+             ================================================= -->
+
+        <section class="stats-grid">
+
+
+            <!-- FIELD HEALTH -->
+
+            <article class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        Field Health
+                    </span>
+
+                    <div class="stat-icon">
+                        ♥
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value">
+                    87
+                </div>
+
+
+                <div class="stat-change">
+                    ↑ 6.2% this month
+                </div>
+
+            </article>
+
+
+
+            <!-- NDVI -->
+
+            <article class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        NDVI
+                    </span>
+
+                    <div class="stat-icon">
+                        🌿
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value">
+                    0.72
+                </div>
+
+
+                <div class="stat-change">
+                    ↑ 8.4% from last scan
+                </div>
+
+            </article>
+
+
+
+            <!-- UNIFORMITY -->
+
+            <article class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        Crop Uniformity
+                    </span>
+
+                    <div class="stat-icon">
+                        ◉
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value">
+                    92%
+                </div>
+
+
+                <div class="stat-change">
+                    Stable
+                </div>
+
+            </article>
+
+
+
+            <!-- STRESS -->
+
+            <article class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-label">
+                        Stress Risk
+                    </span>
+
+                    <div class="stat-icon">
+                        ⚠
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value">
+                    LOW
+                </div>
+
+
+                <div class="stat-change">
+                    No critical issues
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MAIN DASHBOARD
+             ================================================= -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- =============================================
+                 FIELD MAP
+                 ============================================= -->
+
+            <article class="card map-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <div class="card-title">
+                            Field Health Map
+                        </div>
+
+                        <div class="card-subtitle">
+                            Current vegetation condition
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-action">
+                        View Full Map →
+                    </div>
+
+                </div>
+
+
+                <div class="field-map">
+
+                    <div class="field-boundary"></div>
+
+
+                    <div class="map-legend">
+
+                        <div class="legend-item">
+
+                            <div
+                                class="legend-dot legend-healthy"
+                            ></div>
+
+                            Healthy
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <div
+                                class="legend-dot legend-watch"
+                            ></div>
+
+                            Watch
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <div
+                                class="legend-dot legend-alert"
+                            ></div>
+
+                            Alert
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+
+            <!-- =============================================
+                 FIELD ANALYSIS
+                 ============================================= -->
+
+            <article class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <div class="card-title">
+                            Field Analysis
+                        </div>
+
+                        <div class="card-subtitle">
+                            Current conditions
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analysis-list">
+
+
+                    <div class="analysis-item">
+
+                        <div class="analysis-left">
+
+                            <div
+                                class="analysis-icon green"
+                            >
+                                🌱
+                            </div>
+
+
+                            <div>
+
+                                <div class="analysis-name">
+                                    Vegetation
+                                </div>
+
+                                <div class="analysis-description">
+                                    Strong vegetation activity
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-value">
+                            HIGH
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="analysis-item">
+
+                        <div class="analysis-left">
+
+                            <div
+                                class="analysis-icon green"
+                            >
+                                💧
+                            </div>
+
+
+                            <div>
+
+                                <div class="analysis-name">
+                                    Water Stress
+                                </div>
+
+                                <div class="analysis-description">
+                                    No significant stress
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-value">
+                            LOW
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="analysis-item">
+
+                        <div class="analysis-left">
+
+                            <div
+                                class="analysis-icon yellow"
+                            >
+                                ◌
+                            </div>
+
+
+                            <div>
+
+                                <div class="analysis-name">
+                                    Field Variability
+                                </div>
+
+                                <div class="analysis-description">
+                                    Moderate variation detected
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-value">
+                            8%
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="analysis-item">
+
+                        <div class="analysis-left">
+
+                            <div
+                                class="analysis-icon green"
+                            >
+                                ↗
+                            </div>
+
+
+                            <div>
+
+                                <div class="analysis-name">
+                                    Growth Trend
+                                </div>
+
+                                <div class="analysis-description">
+                                    Increasing
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="analysis-value">
+                            +8.4%
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- =================================================
+             NDVI HISTORY
+             ================================================= -->
+
+        <article class="card chart-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Vegetation Trend
+                    </div>
+
+                    <div class="card-subtitle">
+                        NDVI history for North Pivot
+                    </div>
+
+                </div>
+
+
+                <div class="card-action">
+                    Last 6 months
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <svg
+                    class="chart"
+                    viewBox="0 0 800 210"
+                    preserveAspectRatio="none"
+                >
+
+                    <defs>
+
+                        <linearGradient
+                            id="chartGradient"
+                            x1="0"
+                            x2="0"
+                            y1="0"
+                            y2="1"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#78a878"
+                                stop-opacity="0.45"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#78a878"
+                                stop-opacity="0"
+                            />
+
+                        </linearGradient>
+
+                    </defs>
+
+
+                    <!-- GRID -->
+
+                    <line
+                        class="chart-grid-line"
+                        x1="0"
+                        y1="30"
+                        x2="800"
+                        y2="30"
+                    />
+
+                    <line
+                        class="chart-grid-line"
+                        x1="0"
+                        y1="80"
+                        x2="800"
+                        y2="80"
+                    />
+
+                    <line
+                        class="chart-grid-line"
+                        x1="0"
+                        y1="130"
+                        x2="800"
+                        y2="130"
+                    />
+
+                    <line
+                        class="chart-grid-line"
+                        x1="0"
+                        y1="180"
+                        x2="800"
+                        y2="180"
+                    />
+
+
+                    <!-- AREA -->
+
+                    <path
+                        class="chart-area"
+                        d="
+                            M0,165
+                            C70,155 90,145 130,150
+                            C180,155 190,120 240,125
+                            C290,130 300,100 350,105
+                            C410,110 420,75 470,80
+                            C530,85 540,55 590,65
+                            C650,75 680,42 730,50
+                            C760,55 780,38 800,40
+                            L800,210
+                            L0,210
+                            Z
+                        "
+                    />
+
+
+                    <!-- LINE -->
+
+                    <path
+                        class="chart-line"
+                        d="
+                            M0,165
+                            C70,155 90,145 130,150
+                            C180,155 190,120 240,125
+                            C290,130 300,100 350,105
+                            C410,110 420,75 470,80
+                            C530,85 540,55 590,65
+                            C650,75 680,42 730,50
+                            C760,55 780,38 800,40
+                        "
+                    />
+
+
+                    <!-- POINTS -->
+
+                    <circle
+                        class="chart-point"
+                        cx="130"
+                        cy="150"
+                        r="4"
+                    />
+
+                    <circle
+                        class="chart-point"
+                        cx="240"
+                        cy="125"
+                        r="4"
+                    />
+
+                    <circle
+                        class="chart-point"
+                        cx="350"
+                        cy="105"
+                        r="4"
+                    />
+
+                    <circle
+                        class="chart-point"
+                        cx="470"
+                        cy="80"
+                        r="4"
+                    />
+
+                    <circle
+                        class="chart-point"
+                        cx="590"
+                        cy="65"
+                        r="4"
+                    />
+
+                    <circle
+                        class="chart-point"
+                        cx="730"
+                        cy="50"
+                        r="4"
+                    />
+
+                </svg>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- =================================================
+             ALERTS
+             ================================================= -->
+
+        <article class="card alert-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="card-title">
+                        Field Alerts
+                    </div>
+
+                    <div class="card-subtitle">
+                        Potential issues requiring attention
+                    </div>
+
+                </div>
+
+
+                <div class="card-action">
+                    View All →
+                </div>
+
+            </div>
+
+
+
+            <!-- WARNING -->
+
+            <div class="alert alert-warning">
+
+                <div class="alert-icon">
+                    ⚠
+                </div>
+
+
+                <div>
+
+                    <div class="alert-title">
+                        Southwest zone showing variability
+                    </div>
+
+                    <div class="alert-text">
+                        Vegetation activity is approximately
+                        11% below the field average.
+                        Consider field scouting.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- INFORMATION -->
+
+            <div class="alert alert-danger">
+
+                <div class="alert-icon">
+                    !
+                </div>
+
+
+                <div>
+
+                    <div class="alert-title">
+                        Potential stress zone detected
+                    </div>
+
+                    <div class="alert-text">
+                        A small area of declining vegetation
+                        activity was detected between the
+                        previous and current satellite observations.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
