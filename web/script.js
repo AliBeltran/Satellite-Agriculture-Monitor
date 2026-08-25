@@ -1,685 +1,425 @@
-```javascript
-// ============================================================
-// SATELLITE AGRICULTURE MONITOR
-// Dashboard Controller + Interactive Field Map
-// ============================================================
+/* ============================================================
+   SATELLITE AGRICULTURE MONITOR
+   Interactive Application
+   ============================================================ */
 
 
-// ============================================================
-// SAMPLE FIELD DATA
-// ============================================================
+/* ============================================================
+   FIELD DATA
+   ============================================================ */
 
 const fields = {
 
     "North Pivot": {
-        location: "Laramie County, Wyoming",
-        acres: 127.4,
 
-        health: 87,
-        ndvi: 0.72,
-        uniformity: 92,
+        location:
+            "LARAMIE COUNTY · WYOMING",
 
-        stress: "LOW",
-        growth: "+8.4%",
+        acres:
+            127.4,
 
-        vegetation: "HIGH",
-        waterStress: "LOW",
-        variability: "8%",
+        health:
+            87,
 
-        vegetationDescription:
-            "Strong vegetation activity",
+        ndvi:
+            0.72,
 
-        waterDescription:
-            "No significant stress",
+        uniformity:
+            92,
 
-        variabilityDescription:
-            "Moderate variation detected"
+        stress:
+            "LOW"
+
     },
-
 
     "South Pasture": {
-        location: "Laramie County, Wyoming",
-        acres: 83.1,
 
-        health: 64,
-        ndvi: 0.51,
-        uniformity: 74,
+        location:
+            "LARAMIE COUNTY · WYOMING",
 
-        stress: "MODERATE",
-        growth: "+2.1%",
+        acres:
+            83.1,
 
-        vegetation: "MODERATE",
-        waterStress: "MODERATE",
-        variability: "17%",
+        health:
+            64,
 
-        vegetationDescription:
-            "Moderate vegetation activity",
+        ndvi:
+            0.51,
 
-        waterDescription:
-            "Possible water stress",
+        uniformity:
+            74,
 
-        variabilityDescription:
-            "Higher field variability"
+        stress:
+            "MODERATE"
+
     },
 
-
     "West Hay Field": {
-        location: "Laramie County, Wyoming",
-        acres: 241.8,
 
-        health: 91,
-        ndvi: 0.81,
-        uniformity: 95,
+        location:
+            "LARAMIE COUNTY · WYOMING",
 
-        stress: "LOW",
-        growth: "+11.7%",
+        acres:
+            241.8,
 
-        vegetation: "VERY HIGH",
-        waterStress: "LOW",
-        variability: "5%",
+        health:
+            91,
 
-        vegetationDescription:
-            "Excellent vegetation activity",
+        ndvi:
+            0.81,
 
-        waterDescription:
-            "No significant water stress",
+        uniformity:
+            95,
 
-        variabilityDescription:
-            "Very uniform field"
+        stress:
+            "LOW"
+
     }
 
 };
 
 
-// ============================================================
-// DOM ELEMENTS
-// ============================================================
+/* ============================================================
+   DOM ELEMENTS
+   ============================================================ */
+
+const introScreen =
+    document.getElementById(
+        "introScreen"
+    );
+
+
+const mainInterface =
+    document.getElementById(
+        "mainInterface"
+    );
+
+
+const loadingBar =
+    document.getElementById(
+        "loadingBar"
+    );
+
+
+const loadingText =
+    document.getElementById(
+        "loadingText"
+    );
+
 
 const fieldSelect =
-    document.getElementById("fieldSelect");
+    document.getElementById(
+        "fieldSelect"
+    );
 
 
-// ============================================================
-// STAT CARDS
-// ============================================================
+const fieldName =
+    document.getElementById(
+        "fieldName"
+    );
 
-const statCards =
-    document.querySelectorAll(".stat-card");
+
+const fieldMeta =
+    document.getElementById(
+        "fieldMeta"
+    );
 
 
 const healthValue =
-    statCards[0]?.querySelector(".stat-value");
-
-const healthChange =
-    statCards[0]?.querySelector(".stat-change");
+    document.getElementById(
+        "healthValue"
+    );
 
 
 const ndviValue =
-    statCards[1]?.querySelector(".stat-value");
-
-const ndviChange =
-    statCards[1]?.querySelector(".stat-change");
+    document.getElementById(
+        "ndviValue"
+    );
 
 
 const uniformityValue =
-    statCards[2]?.querySelector(".stat-value");
-
-const uniformityChange =
-    statCards[2]?.querySelector(".stat-change");
+    document.getElementById(
+        "uniformityValue"
+    );
 
 
 const stressValue =
-    statCards[3]?.querySelector(".stat-value");
-
-const stressChange =
-    statCards[3]?.querySelector(".stat-change");
-
-
-// ============================================================
-// FIELD INFORMATION
-// ============================================================
-
-const fieldName =
-    document.querySelector(".field-name");
-
-const fieldMeta =
-    document.querySelector(".field-meta");
-
-
-// ============================================================
-// ANALYSIS ELEMENTS
-// ============================================================
-
-const analysisItems =
-    document.querySelectorAll(".analysis-item");
-
-
-const vegetationValue =
-    analysisItems[0]?.querySelector(".analysis-value");
-
-const vegetationDescription =
-    analysisItems[0]?.querySelector(
-        ".analysis-description"
+    document.getElementById(
+        "stressValue"
     );
 
 
-const waterValue =
-    analysisItems[1]?.querySelector(".analysis-value");
+/* ============================================================
+   INTRO SEQUENCE
+   ============================================================ */
 
-const waterDescription =
-    analysisItems[1]?.querySelector(
-        ".analysis-description"
+const loadingMessages = [
+
+    "ESTABLISHING GEOSPATIAL LINK",
+
+    "CONNECTING TO SATELLITE NETWORK",
+
+    "LOADING FIELD DATABASE",
+
+    "INITIALIZING REMOTE SENSING ENGINE",
+
+    "SYSTEM READY"
+
+];
+
+
+let loadingProgress = 0;
+
+let loadingStep = 0;
+
+
+const loadingInterval =
+    setInterval(
+        () => {
+
+            loadingProgress +=
+                Math.random() * 10 + 5;
+
+
+            if (
+                loadingProgress >= 100
+            ) {
+
+                loadingProgress =
+                    100;
+
+                clearInterval(
+                    loadingInterval
+                );
+
+                loadingText.textContent =
+                    "SYSTEM READY";
+
+
+                setTimeout(
+                    launchInterface,
+                    700
+                );
+
+            }
+
+
+            loadingBar.style.width =
+                `${loadingProgress}%`;
+
+
+            const messageIndex =
+                Math.min(
+                    Math.floor(
+                        loadingProgress /
+                        20
+                    ),
+                    loadingMessages.length - 1
+                );
+
+
+            if (
+                messageIndex !==
+                loadingStep
+            ) {
+
+                loadingStep =
+                    messageIndex;
+
+                loadingText.textContent =
+                    loadingMessages[
+                        messageIndex
+                    ];
+
+            }
+
+        },
+
+        280
     );
 
 
-const variabilityValue =
-    analysisItems[2]?.querySelector(".analysis-value");
+/* ============================================================
+   LAUNCH INTERFACE
+   ============================================================ */
 
-const variabilityDescription =
-    analysisItems[2]?.querySelector(
-        ".analysis-description"
+function launchInterface() {
+
+    introScreen.classList.add(
+        "hidden"
     );
 
 
-const growthValue =
-    analysisItems[3]?.querySelector(".analysis-value");
+    mainInterface.classList.add(
+        "visible"
+    );
+
+}
 
 
-// ============================================================
-// UPDATE DASHBOARD
-// ============================================================
+/* ============================================================
+   FIELD UPDATE
+   ============================================================ */
 
-function updateDashboard(fieldNameSelected) {
+function updateField(
+    selectedField
+) {
 
     const field =
-        fields[fieldNameSelected];
+        fields[selectedField];
+
 
     if (!field) {
-
-        console.error(
-            "Field not found:",
-            fieldNameSelected
-        );
-
         return;
     }
 
 
-    // Field information
+    fieldName.textContent =
+        selectedField.toUpperCase();
 
-    if (fieldName) {
 
-        fieldName.textContent =
-            fieldNameSelected;
+    fieldMeta.textContent =
+        `${field.location} · ${field.acres} ACRES`;
 
-    }
 
-
-    if (fieldMeta) {
-
-        fieldMeta.textContent =
-            `${field.location} · ${field.acres} acres`;
-
-    }
-
-
-    // Health
-
-    if (healthValue) {
-
-        healthValue.textContent =
-            field.health;
-
-    }
-
-
-    if (healthChange) {
-
-        healthChange.textContent =
-            `${field.growth} this month`;
-
-    }
-
-
-    // NDVI
-
-    if (ndviValue) {
-
-        ndviValue.textContent =
-            field.ndvi.toFixed(2);
-
-    }
-
-
-    if (ndviChange) {
-
-        ndviChange.textContent =
-            `${field.growth} from last scan`;
-
-    }
-
-
-    // Uniformity
-
-    if (uniformityValue) {
-
-        uniformityValue.textContent =
-            `${field.uniformity}%`;
-
-    }
-
-
-    if (uniformityChange) {
-
-        uniformityChange.textContent =
-            "Current field assessment";
-
-    }
-
-
-    // Stress
-
-    if (stressValue) {
-
-        stressValue.textContent =
-            field.stress;
-
-    }
-
-
-    if (stressChange) {
-
-        if (field.stress === "LOW") {
-
-            stressChange.textContent =
-                "No critical issues";
-
-            stressChange.className =
-                "stat-change";
-
-        }
-
-        else if (field.stress === "MODERATE") {
-
-            stressChange.textContent =
-                "Field scouting recommended";
-
-            stressChange.className =
-                "stat-change warning";
-
-        }
-
-        else {
-
-            stressChange.textContent =
-                "Immediate investigation recommended";
-
-            stressChange.className =
-                "stat-change danger";
-        }
-
-    }
-
-
-    // Vegetation
-
-    if (vegetationValue) {
-
-        vegetationValue.textContent =
-            field.vegetation;
-
-    }
-
-
-    if (vegetationDescription) {
-
-        vegetationDescription.textContent =
-            field.vegetationDescription;
-
-    }
-
-
-    // Water stress
-
-    if (waterValue) {
-
-        waterValue.textContent =
-            field.waterStress;
-
-    }
-
-
-    if (waterDescription) {
-
-        waterDescription.textContent =
-            field.waterDescription;
-
-    }
-
-
-    // Variability
-
-    if (variabilityValue) {
-
-        variabilityValue.textContent =
-            field.variability;
-
-    }
-
-
-    if (variabilityDescription) {
-
-        variabilityDescription.textContent =
-            field.variabilityDescription;
-
-    }
-
-
-    // Growth
-
-    if (growthValue) {
-
-        growthValue.textContent =
-            field.growth;
-
-    }
-
-
-    console.log(
-        `Dashboard updated: ${fieldNameSelected}`
+    animateNumber(
+        healthValue,
+        field.health
     );
+
+
+    animateNumber(
+        ndviValue,
+        field.ndvi,
+        2
+    );
+
+
+    animateNumber(
+        uniformityValue,
+        field.uniformity,
+        0,
+        "%"
+    );
+
+
+    stressValue.textContent =
+        field.stress;
+
+
+    updateMapForField(
+        selectedField
+    );
+
 }
 
 
-// ============================================================
-// FIELD SELECTOR
-// ============================================================
+/* ============================================================
+   NUMBER ANIMATION
+   ============================================================ */
 
-if (fieldSelect) {
+function animateNumber(
+    element,
+    target,
+    decimals = 0,
+    suffix = ""
+) {
 
-    fieldSelect.addEventListener(
-        "change",
-        function () {
+    const duration =
+        700;
 
-            updateDashboard(
-                this.value
+    const start =
+        performance.now();
+
+
+    function animate(
+        currentTime
+    ) {
+
+        const progress =
+            Math.min(
+                (currentTime - start) /
+                duration,
+                1
+            );
+
+
+        const eased =
+            1 -
+            Math.pow(
+                1 - progress,
+                3
+            );
+
+
+        const value =
+            target * eased;
+
+
+        element.textContent =
+            value.toFixed(
+                decimals
+            ) + suffix;
+
+
+        if (
+            progress < 1
+        ) {
+
+            requestAnimationFrame(
+                animate
             );
 
         }
+
+    }
+
+
+    requestAnimationFrame(
+        animate
     );
 
 }
 
 
-// ============================================================
-// SIDEBAR NAVIGATION
-// ============================================================
+/* ============================================================
+   FIELD SELECTOR
+   ============================================================ */
 
-const navItems =
-    document.querySelectorAll(".nav-item");
+fieldSelect.addEventListener(
+    "change",
+    () => {
 
-
-navItems.forEach(
-    function (item) {
-
-        item.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-
-                navItems.forEach(
-                    function (nav) {
-
-                        nav.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                item.classList.add(
-                    "active"
-                );
-
-
-                console.log(
-                    "Navigation:",
-                    item.innerText.trim()
-                );
-
-            }
+        updateField(
+            fieldSelect.value
         );
 
     }
 );
 
 
-// ============================================================
-// REFRESH BUTTON
-// ============================================================
-
-const buttons =
-    document.querySelectorAll(".btn");
-
-
-const refreshButton =
-    buttons[0];
-
-
-if (refreshButton) {
-
-    refreshButton.addEventListener(
-        "click",
-        function () {
-
-            const originalText =
-                refreshButton.textContent;
-
-            refreshButton.textContent =
-                "⟳ Updating...";
-
-            refreshButton.disabled =
-                true;
-
-
-            setTimeout(
-                function () {
-
-                    refreshButton.textContent =
-                        "✓ Updated";
-
-                    refreshButton.disabled =
-                        false;
-
-
-                    setTimeout(
-                        function () {
-
-                            refreshButton.textContent =
-                                originalText;
-
-                        },
-                        1500
-                    );
-
-                },
-                1000
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// ADD FIELD
-// ============================================================
-
-const addFieldButton =
-    buttons[1];
-
-
-if (addFieldButton) {
-
-    addFieldButton.addEventListener(
-        "click",
-        function () {
-
-            const newFieldName =
-                prompt(
-                    "Enter the name of the new field:"
-                );
-
-
-            if (!newFieldName) {
-                return;
-            }
-
-
-            const acreageInput =
-                prompt(
-                    "Enter the field acreage:"
-                );
-
-
-            if (!acreageInput) {
-                return;
-            }
-
-
-            const acreage =
-                Number(acreageInput);
-
-
-            if (
-                Number.isNaN(acreage) ||
-                acreage <= 0
-            ) {
-
-                alert(
-                    "Please enter a valid acreage."
-                );
-
-                return;
-            }
-
-
-            fields[newFieldName] = {
-
-                location:
-                    "Custom Field",
-
-                acres:
-                    acreage,
-
-                health:
-                    0,
-
-                ndvi:
-                    0,
-
-                uniformity:
-                    0,
-
-                stress:
-                    "UNKNOWN",
-
-                growth:
-                    "N/A",
-
-                vegetation:
-                    "PENDING",
-
-                waterStress:
-                    "PENDING",
-
-                variability:
-                    "PENDING",
-
-                vegetationDescription:
-                    "Satellite analysis pending",
-
-                waterDescription:
-                    "Satellite analysis pending",
-
-                variabilityDescription:
-                    "Satellite analysis pending"
-
-            };
-
-
-            const option =
-                document.createElement("option");
-
-
-            option.textContent =
-                newFieldName;
-
-            option.value =
-                newFieldName;
-
-
-            fieldSelect.appendChild(
-                option
-            );
-
-
-            fieldSelect.value =
-                newFieldName;
-
-
-            updateDashboard(
-                newFieldName
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// INTERACTIVE FIELD MAP
-// ============================================================
+/* ============================================================
+   LEAFLET MAP
+   ============================================================ */
 
 let map = null;
 
 let fieldLayer = null;
 
 
-// ============================================================
-// INITIALIZE LEAFLET MAP
-// ============================================================
-
 function initializeMap() {
 
-    const mapElement =
-        document.getElementById(
-            "fieldMap"
-        );
-
-
-    if (!mapElement) {
+    if (
+        typeof L ===
+        "undefined"
+    ) {
 
         console.error(
-            "Field map element was not found."
+            "Leaflet did not load."
         );
 
         return;
-    }
 
-
-    if (typeof L === "undefined") {
-
-        console.error(
-            "Leaflet was not loaded."
-        );
-
-        return;
     }
 
 
@@ -687,52 +427,48 @@ function initializeMap() {
         L.map(
             "fieldMap",
             {
-                zoomControl: true
+                zoomControl:
+                    true
             }
         ).setView(
-            [41.14, -104.82],
+            [
+                41.1402,
+                -104.8202
+            ],
             11
         );
 
 
-    // OpenStreetMap base layer
-
     L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
-            maxZoom: 19,
+
+            maxZoom:
+                19,
 
             attribution:
                 "&copy; OpenStreetMap contributors"
+
         }
     ).addTo(
         map
     );
 
-
-    console.log(
-        "Interactive field map initialized."
-    );
 }
 
 
-// ============================================================
-// LOAD GEOJSON
-// ============================================================
+/* ============================================================
+   GEOJSON
+   ============================================================ */
 
-function loadGeoJSON(geojson) {
+function loadGeoJSON(
+    geojson
+) {
 
     if (!map) {
-
-        console.error(
-            "Map has not been initialized."
-        );
-
         return;
     }
 
-
-    // Remove existing field
 
     if (fieldLayer) {
 
@@ -740,27 +476,8 @@ function loadGeoJSON(geojson) {
             fieldLayer
         );
 
-        fieldLayer =
-            null;
     }
 
-
-    // Validate basic GeoJSON structure
-
-    if (
-        !geojson ||
-        typeof geojson !== "object"
-    ) {
-
-        alert(
-            "Invalid GeoJSON file."
-        );
-
-        return;
-    }
-
-
-    // Create field layer
 
     fieldLayer =
         L.geoJSON(
@@ -770,54 +487,36 @@ function loadGeoJSON(geojson) {
                 style: {
 
                     color:
-                        "#4f7955",
+                        "#b7d7a9",
 
                     weight:
-                        3,
+                        2,
 
                     opacity:
-                        0.95,
+                        1,
 
                     fillColor:
-                        "#78a878",
+                        "#8dbb83",
 
                     fillOpacity:
-                        0.30
+                        0.22
+
                 },
 
 
                 onEachFeature:
-                    function (
+                    (
                         feature,
                         layer
-                    ) {
+                    ) => {
 
-                        const properties =
-                            feature.properties || {};
-
-
-                        const name =
-                            properties.name ||
-                            properties.Name ||
-                            properties.field_name ||
-                            "Uploaded Field";
-
-
-                        layer.bindPopup(`
-
-                            <div
-                                class="field-popup-title"
-                            >
-                                ${escapeHTML(name)}
-                            </div>
-
-                            <div
-                                class="field-popup-data"
-                            >
-                                Field boundary loaded successfully.
-                            </div>
-
-                        `);
+                        layer.bindPopup(
+                            `
+                            <strong>
+                                FIELD BOUNDARY
+                            </strong>
+                            `
+                        );
 
                     }
 
@@ -831,154 +530,40 @@ function loadGeoJSON(geojson) {
         fieldLayer.getBounds();
 
 
-    if (!bounds.isValid()) {
+    if (
+        bounds.isValid()
+    ) {
 
-        alert(
-            "The GeoJSON did not contain a valid geographic boundary."
+        map.fitBounds(
+            bounds,
+            {
+                padding:
+                    [100, 100]
+            }
         );
 
-        map.removeLayer(
-            fieldLayer
-        );
-
-        fieldLayer =
-            null;
-
-        return;
     }
 
 
-    // Zoom to field
-
-    map.fitBounds(
-        bounds,
-        {
-            padding: [30, 30]
-        }
-    );
-
-
-    // Hide upload panel
-
-    const uploadPanel =
+    const upload =
         document.getElementById(
             "mapUpload"
         );
 
 
-    if (uploadPanel) {
-
-        uploadPanel.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    console.log(
-        "GeoJSON field loaded successfully."
+    upload.classList.add(
+        "hidden"
     );
+
+
+    runFieldScan();
+
 }
 
 
-// ============================================================
-// HTML SAFETY
-// ============================================================
-
-function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-// ============================================================
-// PROCESS GEOJSON FILE
-// ============================================================
-
-function processGeoJSONFile(file) {
-
-    if (!file) {
-        return;
-    }
-
-
-    const fileName =
-        file.name.toLowerCase();
-
-
-    if (
-        !fileName.endsWith(".geojson") &&
-        !fileName.endsWith(".json")
-    ) {
-
-        alert(
-            "Please upload a GeoJSON file."
-        );
-
-        return;
-    }
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function (event) {
-
-            try {
-
-                const geojson =
-                    JSON.parse(
-                        event.target.result
-                    );
-
-
-                loadGeoJSON(
-                    geojson
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    error
-                );
-
-                alert(
-                    "The file could not be read as valid GeoJSON."
-                );
-
-            }
-
-        };
-
-
-    reader.onerror =
-        function () {
-
-            alert(
-                "There was a problem reading the file."
-            );
-
-        };
-
-
-    reader.readAsText(
-        file
-    );
-}
-
-
-// ============================================================
-// GEOJSON FILE INPUT
-// ============================================================
+/* ============================================================
+   FILE INPUT
+   ============================================================ */
 
 const geojsonInput =
     document.getElementById(
@@ -986,29 +571,62 @@ const geojsonInput =
     );
 
 
-if (geojsonInput) {
+geojsonInput.addEventListener(
+    "change",
+    event => {
 
-    geojsonInput.addEventListener(
-        "change",
-        function () {
-
-            const file =
-                this.files[0];
+        const file =
+            event.target.files[0];
 
 
-            processGeoJSONFile(
-                file
-            );
-
+        if (!file) {
+            return;
         }
-    );
-
-}
 
 
-// ============================================================
-// DRAG & DROP
-// ============================================================
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            event => {
+
+                try {
+
+                    const geojson =
+                        JSON.parse(
+                            event.target.result
+                        );
+
+
+                    loadGeoJSON(
+                        geojson
+                    );
+
+                }
+
+                catch {
+
+                    alert(
+                        "Invalid GeoJSON file."
+                    );
+
+                }
+
+            };
+
+
+        reader.readAsText(
+            file
+        );
+
+    }
+);
+
+
+/* ============================================================
+   DRAG AND DROP
+   ============================================================ */
 
 const mapUpload =
     document.getElementById(
@@ -1016,137 +634,277 @@ const mapUpload =
     );
 
 
-if (mapUpload) {
+mapUpload.addEventListener(
+    "dragover",
+    event => {
 
-    mapUpload.addEventListener(
-        "dragover",
-        function (event) {
+        event.preventDefault();
 
-            event.preventDefault();
+        mapUpload.classList.add(
+            "dragging"
+        );
 
-            mapUpload.classList.add(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    mapUpload.addEventListener(
-        "dragleave",
-        function () {
-
-            mapUpload.classList.remove(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    mapUpload.addEventListener(
-        "drop",
-        function (event) {
-
-            event.preventDefault();
-
-            mapUpload.classList.remove(
-                "dragging"
-            );
-
-
-            const files =
-                event.dataTransfer.files;
-
-
-            if (
-                files &&
-                files.length > 0
-            ) {
-
-                processGeoJSONFile(
-                    files[0]
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// RESET MAP
-// ============================================================
-
-const resetMapButton =
-    document.getElementById(
-        "resetMap"
-    );
-
-
-if (resetMapButton) {
-
-    resetMapButton.addEventListener(
-        "click",
-        function () {
-
-            if (!map) {
-                return;
-            }
-
-
-            if (fieldLayer) {
-
-                map.removeLayer(
-                    fieldLayer
-                );
-
-                fieldLayer =
-                    null;
-
-            }
-
-
-            map.setView(
-                [41.14, -104.82],
-                11
-            );
-
-
-            const uploadPanel =
-                document.getElementById(
-                    "mapUpload"
-                );
-
-
-            if (uploadPanel) {
-
-                uploadPanel.classList.remove(
-                    "hidden"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// INITIALIZE
-// ============================================================
-
-updateDashboard(
-    fieldSelect?.value || "North Pivot"
+    }
 );
+
+
+mapUpload.addEventListener(
+    "dragleave",
+    () => {
+
+        mapUpload.classList.remove(
+            "dragging"
+        );
+
+    }
+);
+
+
+mapUpload.addEventListener(
+    "drop",
+    event => {
+
+        event.preventDefault();
+
+        mapUpload.classList.remove(
+            "dragging"
+        );
+
+
+        const file =
+            event.dataTransfer.files[0];
+
+
+        if (!file) {
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            event => {
+
+                try {
+
+                    loadGeoJSON(
+                        JSON.parse(
+                            event.target.result
+                        )
+                    );
+
+                }
+
+                catch {
+
+                    alert(
+                        "Invalid GeoJSON file."
+                    );
+
+                }
+
+            };
+
+
+        reader.readAsText(
+            file
+        );
+
+    }
+);
+
+
+/* ============================================================
+   FIELD SCAN
+   ============================================================ */
+
+const scanButton =
+    document.getElementById(
+        "scanButton"
+    );
+
+
+scanButton.addEventListener(
+    "click",
+    runFieldScan
+);
+
+
+function runFieldScan() {
+
+    if (!fieldLayer) {
+
+        alert(
+            "Load a field boundary first."
+        );
+
+        return;
+
+    }
+
+
+    scanButton.textContent =
+        "SCANNING FIELD...";
+
+
+    const mapElement =
+        document.getElementById(
+            "fieldMap"
+        );
+
+
+    mapElement.classList.add(
+        "scanning"
+    );
+
+
+    setTimeout(
+        () => {
+
+            mapElement.classList.remove(
+                "scanning"
+            );
+
+
+            scanButton.textContent =
+                "SCAN COMPLETE";
+
+        },
+
+        1800
+    );
+
+
+    setTimeout(
+        () => {
+
+            scanButton.textContent =
+                "RUN FIELD SCAN";
+
+        },
+
+        3500
+    );
+
+}
+
+
+/* ============================================================
+   MAP LAYERS
+   ============================================================ */
+
+const layerButtons =
+    document.querySelectorAll(
+        ".layer-button"
+    );
+
+
+layerButtons.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                layerButtons.forEach(
+                    item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const layer =
+                    button.dataset.layer;
+
+
+                console.log(
+                    `Selected layer: ${layer}`
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+
+const timelineSlider =
+    document.getElementById(
+        "timelineSlider"
+    );
+
+
+const timelineDate =
+    document.getElementById(
+        "timelineDate"
+    );
+
+
+const dates = [
+
+    "APR 18 2026",
+
+    "MAY 16 2026",
+
+    "JUN 20 2026",
+
+    "JUL 18 2026",
+
+    "AUG 25 2026"
+
+];
+
+
+timelineSlider.addEventListener(
+    "input",
+    () => {
+
+        const index =
+            Number(
+                timelineSlider.value
+            );
+
+
+        timelineDate.textContent =
+            dates[index];
+
+    }
+);
+
+
+/* ============================================================
+   FIELD MAP UPDATE
+   ============================================================ */
+
+function updateMapForField(
+    selectedField
+) {
+
+    console.log(
+        `Loading imagery for ${selectedField}`
+    );
+
+}
+
+
+/* ============================================================
+   START APPLICATION
+   ============================================================ */
 
 initializeMap();
 
-
-console.log(
-    "Satellite Agriculture Monitor initialized."
+updateField(
+    fieldSelect.value
 );
-```
