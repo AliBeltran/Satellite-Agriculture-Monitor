@@ -1,64 +1,169 @@
 /* =========================================================
    SATELLITE AGRICULTURE MONITOR
-   GENERATIVE MISSION SCREEN
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #020403;
+    color: #e8f1e2;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+button,
+input {
+    font: inherit;
+}
+
+
+/* =========================================================
+   MISSION SCREEN
 ========================================================= */
 
 .mission-screen {
     position: fixed;
     inset: 0;
     z-index: 9999;
+
     overflow: hidden;
-    background: #020403;
-    color: #eaffdc;
+
+    background:
+        radial-gradient(
+            circle at 70% 55%,
+            #0a1b0c 0%,
+            #020703 45%,
+            #000000 100%
+        );
+
+    color: #ecf5e8;
+
     font-family:
         "Courier New",
         Courier,
         monospace;
 }
 
+
 #agriCanvas {
     position: absolute;
+
     inset: 0;
+
     width: 100%;
     height: 100%;
+
+    display: block;
 }
 
 
-/* =========================================================
-   ATMOSPHERE
-========================================================= */
-
 .mission-noise {
     position: absolute;
+
     inset: 0;
+
     pointer-events: none;
 
-    background-image:
+    opacity: .45;
+
+    background:
         repeating-linear-gradient(
             0deg,
-            rgba(255,255,255,.025) 0px,
+            rgba(255,255,255,.025) 0,
             rgba(255,255,255,.025) 1px,
             transparent 1px,
             transparent 4px
         );
-
-    mix-blend-mode: screen;
-    opacity: .4;
 }
 
 
 .mission-vignette {
     position: absolute;
+
     inset: 0;
+
     pointer-events: none;
 
     background:
         radial-gradient(
             circle at center,
             transparent 25%,
-            rgba(0,0,0,.25) 65%,
+            rgba(0,0,0,.2) 55%,
             rgba(0,0,0,.9) 100%
         );
+}
+
+
+/* =========================================================
+   TOP STATUS
+========================================================= */
+
+.remote-status {
+    position: absolute;
+
+    top: 35px;
+    left: 4vw;
+
+    z-index: 20;
+
+    color: #a8ff28;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+
+    letter-spacing: .12em;
+}
+
+
+.status-cross {
+    font-size: 20px;
+
+    margin-right: 8px;
+}
+
+
+.online-dot {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 5px;
+
+    border-radius: 50%;
+
+    background: #a8ff28;
+
+    box-shadow:
+        0 0 12px #a8ff28;
+
+    animation:
+        pulse 1.5s infinite;
+}
+
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .3;
+    }
+
 }
 
 
@@ -69,15 +174,12 @@
 .mission-title {
     position: absolute;
 
-    left: 4.5vw;
+    left: 4vw;
     top: 17vh;
 
-    z-index: 10;
+    z-index: 20;
 
     pointer-events: none;
-
-    text-shadow:
-        0 0 15px rgba(150,255,40,.2);
 }
 
 
@@ -88,15 +190,13 @@
         sans-serif;
 
     font-size:
-        clamp(3rem, 6vw, 7rem);
+        clamp(3rem, 6.5vw, 7rem);
+
+    font-weight: 900;
 
     line-height: .82;
 
-    letter-spacing:
-        .035em;
-
-    font-weight:
-        900;
+    letter-spacing: .035em;
 
     transform:
         skew(-4deg);
@@ -104,7 +204,10 @@
 
 
 .title-white {
-    color: #f2f5ee;
+    color: #f4f6f1;
+
+    text-shadow:
+        0 0 20px rgba(255,255,255,.08);
 }
 
 
@@ -112,8 +215,8 @@
     color: #a8ff28;
 
     text-shadow:
-        0 0 20px rgba(150,255,20,.5),
-        0 0 60px rgba(100,255,0,.2);
+        0 0 20px rgba(168,255,40,.5),
+        0 0 70px rgba(168,255,40,.15);
 }
 
 
@@ -121,136 +224,77 @@
     width: 240px;
     height: 2px;
 
-    background:
-        #a8ff28;
+    margin-top: 25px;
 
-    margin-top: 24px;
+    background: #a8ff28;
 
     box-shadow:
-        0 0 12px #a8ff28;
+        0 0 14px #a8ff28;
 }
 
 
 .mission-title p {
     margin-top: 18px;
 
-    font-size: 11px;
+    color: #91a187;
+
+    font-size: 10px;
 
     line-height: 1.8;
 
-    color: #9cab8b;
-
-    letter-spacing:
-        .15em;
+    letter-spacing: .13em;
 }
 
 
 /* =========================================================
-   REMOTE STATUS
-========================================================= */
-
-.remote-status {
-    position: absolute;
-
-    left: 4.5vw;
-    top: 4vh;
-
-    color: #a8ff28;
-
-    font-size: 11px;
-
-    line-height: 1.5;
-
-    letter-spacing:
-        .08em;
-
-    z-index: 20;
-}
-
-
-.status-cross {
-    font-size: 20px;
-    margin-right: 10px;
-}
-
-
-.online-dot {
-    display: inline-block;
-
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: #a8ff28;
-
-    box-shadow:
-        0 0 12px #a8ff28;
-
-    animation:
-        statusPulse 1.4s infinite;
-}
-
-
-@keyframes statusPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .25;
-    }
-
-}
-
-
-/* =========================================================
-   HUD PANELS
+   HUD
 ========================================================= */
 
 .hud-panel {
     position: absolute;
 
-    z-index: 15;
+    z-index: 20;
 
     border:
-        1px solid rgba(180,255,100,.3);
+        1px solid rgba(168,255,40,.28);
 
     background:
-        rgba(3,8,5,.48);
+        rgba(3,9,5,.55);
 
     backdrop-filter:
-        blur(7px);
+        blur(8px);
 
     box-shadow:
-        inset 0 0 30px rgba(120,255,40,.025),
-        0 0 30px rgba(0,0,0,.35);
-
-    color: #aebda1;
+        inset 0 0 25px rgba(168,255,40,.025),
+        0 15px 50px rgba(0,0,0,.35);
 }
 
 
+.hud-heading,
+.hud-label {
+    display: block;
+
+    margin-bottom: 13px;
+
+    color: #7d8c75;
+
+    font-size: 9px;
+
+    letter-spacing: .16em;
+}
+
+
+/* =========================================================
+   SYSTEM STATUS
+========================================================= */
+
 .system-status {
-    left: 4.5vw;
-    bottom: 30vh;
+    left: 4vw;
+    bottom: 28vh;
 
     width: 255px;
 
-    padding: 18px;
-}
-
-
-.system-status span {
-    display: block;
-
-    font-size: 10px;
-
-    letter-spacing:
-        .15em;
-
-    margin-bottom: 12px;
+    padding: 17px;
 }
 
 
@@ -259,21 +303,20 @@
 
     font-size: 18px;
 
-    letter-spacing:
-        .08em;
+    letter-spacing: .08em;
 }
 
 
 .signal-bars {
     float: right;
 
+    height: 20px;
+
     display: flex;
 
     align-items: end;
 
     gap: 3px;
-
-    height: 20px;
 }
 
 
@@ -312,24 +355,12 @@
 ========================================================= */
 
 .telemetry {
-    left: 4.5vw;
-    bottom: 7vh;
+    left: 4vw;
+    bottom: 5vh;
 
     width: 255px;
 
     padding: 16px;
-}
-
-
-.hud-heading {
-    font-size: 10px;
-
-    letter-spacing:
-        .12em;
-
-    margin-bottom: 14px;
-
-    color: #829077;
 }
 
 
@@ -338,15 +369,16 @@
 
     justify-content: space-between;
 
-    padding:
-        5px 0;
+    padding: 5px 0;
+
+    color: #7f8e79;
 
     font-size: 10px;
 }
 
 
 .telemetry-row strong {
-    color: #c5d3bd;
+    color: #d1ddca;
 }
 
 
@@ -355,10 +387,10 @@
 ========================================================= */
 
 .ndvi-panel {
+    top: 18vh;
     right: 3vw;
-    top: 19vh;
 
-    width: 115px;
+    width: 120px;
 
     padding: 15px;
 }
@@ -368,20 +400,21 @@
     display: flex;
 
     gap: 10px;
+
+    height: 180px;
 }
 
 
 .ndvi-gradient {
     width: 20px;
-    height: 180px;
 
     background:
         linear-gradient(
             to bottom,
-            #0b5b18,
-            #74d51b,
-            #eaff23,
-            #ffb000,
+            #075819,
+            #72d51a,
+            #e9f522,
+            #ffae00,
             #ef421d,
             #7426b8
         );
@@ -395,16 +428,20 @@
 
     justify-content: space-between;
 
-    font-size: 10px;
+    color: #bbc8b5;
+
+    font-size: 9px;
 }
 
 
 /* =========================================================
-   TARGET LOCK
+   TARGET
 ========================================================= */
 
 .target-lock {
     position: absolute;
+
+    z-index: 25;
 
     left: 50%;
     bottom: 25%;
@@ -412,22 +449,21 @@
     transform:
         translateX(-50%);
 
-    z-index: 20;
-
     color: #a8ff28;
 
     text-align: center;
 
-    font-size: 13px;
+    font-size: 12px;
 
-    letter-spacing:
-        .1em;
+    letter-spacing: .12em;
 }
 
 
 .target-reticle {
-    width: 40px;
-    height: 40px;
+    position: relative;
+
+    width: 42px;
+    height: 42px;
 
     margin: 0 auto 12px;
 
@@ -435,8 +471,6 @@
         1px solid #a8ff28;
 
     border-radius: 50%;
-
-    position: relative;
 
     animation:
         reticlePulse 2s infinite;
@@ -454,20 +488,20 @@
 
 
 .target-reticle::before {
-    width: 60px;
+    width: 64px;
     height: 1px;
 
-    left: -11px;
-    top: 19px;
+    top: 20px;
+    left: -12px;
 }
 
 
 .target-reticle::after {
     width: 1px;
-    height: 60px;
+    height: 64px;
 
-    top: -11px;
-    left: 19px;
+    left: 20px;
+    top: -12px;
 }
 
 
@@ -477,12 +511,12 @@
     width: 7px;
     height: 7px;
 
-    background: #a8ff28;
+    left: 17px;
+    top: 17px;
 
     border-radius: 50%;
 
-    top: 16px;
-    left: 16px;
+    background: #a8ff28;
 
     box-shadow:
         0 0 15px #a8ff28;
@@ -494,31 +528,29 @@
     0%,
     100% {
         transform: scale(1);
-        opacity: .8;
     }
 
     50% {
         transform: scale(1.2);
-        opacity: 1;
     }
 
 }
 
 
 /* =========================================================
-   ENTER FIELD
+   ENTER BUTTON
 ========================================================= */
 
 .enter-container {
     position: absolute;
 
     left: 50%;
-    bottom: 10%;
+    bottom: 9%;
+
+    z-index: 30;
 
     transform:
         translateX(-50%);
-
-    z-index: 30;
 
     text-align: center;
 }
@@ -529,44 +561,42 @@
 
     width: 360px;
 
-    padding:
-        22px 35px;
+    padding: 21px 35px;
 
     border:
         1px solid #a8ff28;
 
     background:
-        rgba(5,12,4,.6);
+        rgba(2,9,3,.65);
 
-    color: #dfffc5;
+    color: #dfffc8;
+
+    cursor: pointer;
 
     font-family:
         "Courier New",
         monospace;
 
-    font-size: 20px;
+    font-size: 18px;
 
-    letter-spacing:
-        .28em;
-
-    cursor: pointer;
+    letter-spacing: .27em;
 
     transition:
         .25s ease;
 
     box-shadow:
-        0 0 25px rgba(160,255,40,.08);
+        0 0 25px rgba(168,255,40,.08);
 }
 
 
 .enter-field:hover {
-    background:
-        rgba(150,255,40,.12);
-
     color: #a8ff28;
 
+    background:
+        rgba(168,255,40,.12);
+
     box-shadow:
-        0 0 35px rgba(160,255,40,.25);
+        0 0 40px rgba(168,255,40,.3);
 
     transform:
         translateY(-3px);
@@ -576,32 +606,32 @@
 .enter-field b {
     position: absolute;
 
-    right: 25px;
+    right: 24px;
+    top: 12px;
 
     font-size: 28px;
 
-    top: 14px;
+    font-weight: normal;
 }
 
 
 .mouse-instruction {
-    margin-top: 16px;
+    margin-top: 15px;
 
-    color: #7e8e75;
+    color: #768472;
 
     font-size: 9px;
 
-    letter-spacing:
-        .16em;
+    letter-spacing: .15em;
 }
 
 
 .mouse-icon {
-    margin-top: 6px;
+    margin-top: 5px;
 
     color: #a8ff28;
 
-    font-size: 22px;
+    font-size: 20px;
 }
 
 
@@ -611,7 +641,7 @@
 
 .orbital-panel {
     right: 3vw;
-    bottom: 7vh;
+    bottom: 5vh;
 
     width: 145px;
 
@@ -622,47 +652,47 @@
 
 
 .mini-orbit {
+    position: relative;
+
     width: 90px;
     height: 90px;
 
-    margin: 10px auto 20px;
-
-    position: relative;
+    margin: 10px auto 18px;
 }
 
 
 .mini-earth {
     position: absolute;
 
-    width: 42px;
-    height: 42px;
-
     left: 24px;
     top: 24px;
+
+    width: 42px;
+    height: 42px;
 
     border-radius: 50%;
 
     background:
         radial-gradient(
             circle at 35% 30%,
-            #a8ff28,
-            #214d1f 55%,
-            #020503
+            #b7ff51,
+            #245c26 50%,
+            #020402 100%
         );
 
     box-shadow:
-        0 0 20px rgba(130,255,40,.25);
+        0 0 22px rgba(168,255,40,.3);
 }
 
 
 .mini-orbit-ring {
     position: absolute;
 
-    width: 90px;
-    height: 35px;
-
     left: 0;
     top: 28px;
+
+    width: 90px;
+    height: 35px;
 
     border:
         1px solid #a8ff28;
@@ -673,11 +703,11 @@
         rotate(-20deg);
 
     animation:
-        orbitSpin 5s linear infinite;
+        orbit 5s linear infinite;
 }
 
 
-@keyframes orbitSpin {
+@keyframes orbit {
 
     to {
         transform:
@@ -687,40 +717,33 @@
 }
 
 
-.next-pass {
-    margin-bottom: 5px;
-}
-
-
 .countdown {
     color: #a8ff28;
 
-    font-size: 18px;
+    font-size: 17px;
 }
 
 
 /* =========================================================
-   DESIGNER
+   CREDIT
 ========================================================= */
 
 .designer-credit {
     position: absolute;
 
-    bottom: 2.5vh;
+    z-index: 20;
 
     left: 50%;
+    bottom: 2.5vh;
 
     transform:
         translateX(-50%);
 
-    z-index: 20;
-
-    color: #7b8873;
+    color: #748170;
 
     font-size: 10px;
 
-    letter-spacing:
-        .25em;
+    letter-spacing: .25em;
 
     white-space: nowrap;
 }
@@ -737,29 +760,29 @@
 
 .mission-screen.launching {
     animation:
-        missionLaunch .9s ease forwards;
+        launch .9s ease forwards;
 }
 
 
-@keyframes missionLaunch {
+@keyframes launch {
 
     0% {
-        filter:
-            brightness(1);
-        transform:
-            scale(1);
+        filter: brightness(1);
+        transform: scale(1);
     }
 
     60% {
         filter:
             brightness(2.5)
-            contrast(1.5);
+            contrast(1.4);
+
         transform:
-            scale(1.03);
+            scale(1.04);
     }
 
     100% {
         opacity: 0;
+
         transform:
             scale(1.15);
     }
@@ -768,34 +791,809 @@
 
 
 /* =========================================================
-   MOBILE
+   MAIN APPLICATION
 ========================================================= */
 
-@media (max-width: 800px) {
+.main-interface {
+    display: none;
 
-    .mission-title {
-        left: 6vw;
-        top: 15vh;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            #142318,
+            #050806 55%,
+            #020302
+        );
+
+    color: #e8f2e2;
+}
+
+
+.main-interface.interface-ready {
+    display: block;
+
+    animation:
+        interfaceIn .8s ease;
+}
+
+
+@keyframes interfaceIn {
+
+    from {
+        opacity: 0;
+        transform: scale(1.03);
     }
 
-    .title-line {
-        font-size:
-            clamp(2.4rem, 12vw, 5rem);
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.app-header {
+    position: sticky;
+
+    top: 20px;
+
+    z-index: 100;
+
+    width: calc(100% - 50px);
+
+    margin: 20px auto;
+
+    padding: 17px 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border:
+        1px solid rgba(168,255,40,.2);
+
+    border-radius: 14px;
+
+    background:
+        rgba(7,12,8,.86);
+
+    backdrop-filter:
+        blur(20px);
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.4);
+}
+
+
+.brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.brand-symbol {
+    color: #a8ff28;
+
+    font-size: 25px;
+}
+
+
+.brand strong {
+    display: block;
+
+    font-size: 12px;
+
+    letter-spacing: .12em;
+}
+
+
+.brand small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #687665;
+
+    font-size: 8px;
+
+    letter-spacing: .13em;
+}
+
+
+nav {
+    display: flex;
+
+    gap: 5px;
+}
+
+
+.nav-item {
+    padding: 9px 13px;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #758170;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    letter-spacing: .12em;
+}
+
+
+.nav-item:hover,
+.nav-item.active {
+    background: rgba(168,255,40,.1);
+
+    color: #a8ff28;
+}
+
+
+.system-online {
+    color: #a8ff28;
+
+    font-size: 9px;
+
+    letter-spacing: .1em;
+}
+
+
+.system-online span {
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    margin-right: 5px;
+
+    border-radius: 50%;
+
+    background: #a8ff28;
+
+    box-shadow:
+        0 0 10px #a8ff28;
+}
+
+
+/* =========================================================
+   APPLICATION CONTENT
+========================================================= */
+
+.application {
+    width: min(1400px, 92%);
+
+    margin: 60px auto 100px;
+}
+
+
+.application-heading {
+    margin-bottom: 35px;
+}
+
+
+.eyebrow {
+    color: #8b9c85;
+
+    font-size: 9px;
+
+    letter-spacing: .18em;
+}
+
+
+.application-heading h1 {
+    margin:
+        8px 0;
+
+    font-size:
+        clamp(2rem, 5vw, 4.5rem);
+
+    letter-spacing:
+        -.04em;
+}
+
+
+.application-heading p {
+    color: #7c8a76;
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.upload-panel {
+    min-height: 500px;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid rgba(168,255,40,.14);
+
+    border-radius: 22px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(100,180,50,.08),
+            rgba(2,5,3,.6)
+        );
+}
+
+
+.upload-box {
+    width: min(600px, 90%);
+
+    padding: 70px 40px;
+
+    text-align: center;
+
+    border:
+        1px dashed rgba(168,255,40,.35);
+
+    border-radius: 18px;
+
+    transition:
+        .3s ease;
+}
+
+
+.upload-box.drag-active {
+    background:
+        rgba(168,255,40,.08);
+
+    border-color:
+        #a8ff28;
+
+    transform:
+        scale(1.02);
+}
+
+
+.upload-icon {
+    color: #a8ff28;
+
+    font-size: 45px;
+
+    margin-bottom: 20px;
+}
+
+
+.upload-box h2 {
+    font-size: 25px;
+
+    letter-spacing: .04em;
+}
+
+
+.upload-box p {
+    color: #82917d;
+
+    line-height: 1.7;
+}
+
+
+.upload-button {
+    display: inline-block;
+
+    margin-top: 20px;
+
+    padding: 13px 22px;
+
+    border:
+        1px solid #a8ff28;
+
+    border-radius: 7px;
+
+    color: #a8ff28;
+
+    cursor: pointer;
+
+    font-size: 10px;
+
+    letter-spacing: .14em;
+}
+
+
+.upload-button:hover {
+    background:
+        rgba(168,255,40,.1);
+}
+
+
+.upload-format {
+    margin-top: 25px;
+
+    color: #596656;
+
+    font-size: 8px;
+
+    letter-spacing: .14em;
+}
+
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.field-state.hidden {
+    display: none;
+}
+
+
+.field-heading {
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+
+.field-heading h2 {
+    margin:
+        8px 0;
+
+    font-size:
+        clamp(2rem, 5vw, 4rem);
+}
+
+
+.field-heading p {
+    color: #7c8c77;
+}
+
+
+.scan-button,
+.map-header button {
+    border:
+        1px solid rgba(168,255,40,.45);
+
+    background:
+        rgba(168,255,40,.05);
+
+    color: #a8ff28;
+
+    padding: 12px 18px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    letter-spacing: .12em;
+}
+
+
+.scan-button:hover,
+.map-header button:hover {
+    background:
+        rgba(168,255,40,.14);
+}
+
+
+.field-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        320px;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.map-section,
+.analysis-panel {
+    border:
+        1px solid rgba(168,255,40,.14);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    background:
+        rgba(7,12,8,.7);
+}
+
+
+.map-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 18px;
+
+    color: #869482;
+
+    font-size: 9px;
+
+    letter-spacing: .14em;
+}
+
+
+.field-map {
+    height: 620px;
+
+    width: 100%;
+}
+
+
+.analysis-panel {
+    padding: 22px;
+}
+
+
+.panel-title {
+    color: #879580;
+
+    font-size: 9px;
+
+    letter-spacing: .15em;
+
+    margin-bottom: 20px;
+}
+
+
+.analysis-card {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 20px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+}
+
+
+.analysis-card span {
+    color: #7c8a76;
+
+    font-size: 10px;
+
+    letter-spacing: .08em;
+}
+
+
+.analysis-card strong {
+    color: #cceeb9;
+
+    font-size: 24px;
+}
+
+
+.analysis-note {
+    margin-top: 25px;
+
+    color: #687665;
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   LAYERS
+========================================================= */
+
+.layer-panel {
+    display: flex;
+
+    gap: 7px;
+
+    align-items: center;
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    border:
+        1px solid rgba(168,255,40,.12);
+
+    border-radius: 12px;
+
+    background:
+        rgba(7,12,8,.6);
+}
+
+
+.layer-panel > span {
+    margin-right: auto;
+
+    color: #6e7d68;
+
+    font-size: 9px;
+
+    letter-spacing: .12em;
+}
+
+
+.layer-button {
+    padding: 9px 12px;
+
+    border: 0;
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: #6d7c67;
+
+    cursor: pointer;
+
+    font-size: 8px;
+
+    letter-spacing: .1em;
+}
+
+
+.layer-button:hover,
+.layer-button.active {
+    background:
+        rgba(168,255,40,.1);
+
+    color: #a8ff28;
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.timeline-panel {
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border:
+        1px solid rgba(168,255,40,.12);
+
+    border-radius: 12px;
+
+    background:
+        rgba(7,12,8,.6);
+}
+
+
+.timeline-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #82917c;
+
+    font-size: 9px;
+
+    letter-spacing: .12em;
+}
+
+
+.timeline-heading strong {
+    color: #a8ff28;
+}
+
+
+#timelineSlider {
+    width: 100%;
+
+    margin-top: 20px;
+
+    accent-color: #a8ff28;
+}
+
+
+.timeline-labels {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 8px;
+
+    color: #526050;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.app-message {
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    z-index: 10000;
+
+    max-width: 350px;
+
+    padding: 14px 18px;
+
+    border:
+        1px solid rgba(168,255,40,.3);
+
+    border-radius: 8px;
+
+    background:
+        rgba(4,9,5,.9);
+
+    color: #a8ff28;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size: 10px;
+
+    opacity: 0;
+
+    transform:
+        translateY(15px);
+
+    pointer-events: none;
+
+    transition:
+        .3s ease;
+}
+
+
+.app-message.visible {
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   LEAFLET
+========================================================= */
+
+.leaflet-container {
+    background: #050805;
+}
+
+
+.leaflet-control-zoom a {
+    background: #091008 !important;
+
+    color: #a8ff28 !important;
+
+    border-color:
+        rgba(168,255,40,.2) !important;
+}
+
+
+.leaflet-control-attribution {
+    background:
+        rgba(0,0,0,.65) !important;
+
+    color: #84927e !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .ndvi-panel,
+    .orbital-panel,
     .system-status,
     .telemetry {
         display: none;
     }
 
-    .ndvi-panel,
-    .orbital-panel {
-        display: none;
+
+    .mission-title {
+        top: 20vh;
     }
+
+
+    .title-line {
+        font-size:
+            clamp(2.8rem, 12vw, 5rem);
+    }
+
+
+    .field-layout {
+        grid-template-columns: 1fr;
+    }
+
+
+    .field-map {
+        height: 500px;
+    }
+
+
+    .app-header {
+        flex-wrap: wrap;
+
+        gap: 15px;
+    }
+
+
+    nav {
+        order: 3;
+
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .remote-status {
+        top: 20px;
+        left: 20px;
+    }
+
+
+    .mission-title {
+        left: 20px;
+    }
+
 
     .enter-field {
         width: 290px;
-        font-size: 15px;
+
+        font-size: 14px;
+    }
+
+
+    .designer-credit {
+        font-size: 8px;
+    }
+
+
+    .application {
+        width: 94%;
+    }
+
+
+    .field-heading {
+        display: block;
+    }
+
+
+    .scan-button {
+        margin-top: 20px;
     }
 
 }
