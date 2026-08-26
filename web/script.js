@@ -9,9 +9,9 @@
 */
 
 
-/* =========================================================
-   DOM ELEMENTS
-========================================================= */
+/* =====================================================
+   DOM
+===================================================== */
 
 const missionScreen =
     document.getElementById("missionScreen");
@@ -26,79 +26,104 @@ const canvas =
     document.getElementById("spaceCanvas");
 
 const ctx =
-    canvas ? canvas.getContext("2d") : null;
-
-const spectralBurst =
-    document.getElementById("spectralBurst");
+    canvas
+        ? canvas.getContext("2d")
+        : null;
 
 const targetCoordinates =
-    document.getElementById("targetCoordinates");
+    document.getElementById(
+        "targetCoordinates"
+    );
 
 const uploadBox =
-    document.getElementById("uploadBox");
+    document.getElementById(
+        "uploadBox"
+    );
 
 const uploadPanel =
-    document.getElementById("uploadPanel");
+    document.getElementById(
+        "uploadPanel"
+    );
 
 const fieldWorkspace =
-    document.getElementById("fieldWorkspace");
+    document.getElementById(
+        "fieldWorkspace"
+    );
 
 const geojsonInput =
-    document.getElementById("geojsonInput");
+    document.getElementById(
+        "geojsonInput"
+    );
 
 const fieldName =
-    document.getElementById("fieldName");
+    document.getElementById(
+        "fieldName"
+    );
 
 const fieldMeta =
-    document.getElementById("fieldMeta");
-
-const fieldMap =
-    document.getElementById("fieldMap");
+    document.getElementById(
+        "fieldMeta"
+    );
 
 const areaValue =
-    document.getElementById("areaValue");
+    document.getElementById(
+        "areaValue"
+    );
 
 const perimeterValue =
-    document.getElementById("perimeterValue");
+    document.getElementById(
+        "perimeterValue"
+    );
 
 const centerValue =
-    document.getElementById("centerValue");
+    document.getElementById(
+        "centerValue"
+    );
 
 const ndviValue =
-    document.getElementById("ndviValue");
+    document.getElementById(
+        "ndviValue"
+    );
 
 const stressValue =
-    document.getElementById("stressValue");
+    document.getElementById(
+        "stressValue"
+    );
 
 const scanButton =
-    document.getElementById("scanButton");
+    document.getElementById(
+        "scanButton"
+    );
 
 const infoBubble =
-    document.getElementById("infoBubble");
+    document.getElementById(
+        "infoBubble"
+    );
 
 const closeBubble =
-    document.getElementById("closeBubble");
+    document.getElementById(
+        "closeBubble"
+    );
 
 const resetMap =
-    document.getElementById("resetMap");
+    document.getElementById(
+        "resetMap"
+    );
 
-const mapCoordinates =
-    document.getElementById("mapCoordinates");
 
-
-/* =========================================================
-   APPLICATION STATE
-========================================================= */
+/* =====================================================
+   STATE
+===================================================== */
 
 const state = {
 
-    mouseX: 0.68,
+    mouseX: .68,
 
-    mouseY: 0.48,
+    mouseY: .48,
 
-    targetX: 0.68,
+    targetX: .68,
 
-    targetY: 0.48,
+    targetY: .48,
 
     transitioning: false,
 
@@ -112,16 +137,10 @@ const state = {
 
     fieldLoaded: false,
 
-    stars: [],
-
-    initialMapReady: false
+    stars: []
 
 };
 
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
 
 const reducedMotion =
     window.matchMedia(
@@ -129,9 +148,9 @@ const reducedMotion =
     ).matches;
 
 
-/* =========================================================
-   CANVAS RESIZE
-========================================================= */
+/* =====================================================
+   SPACE CANVAS
+===================================================== */
 
 function resizeCanvas() {
 
@@ -165,7 +184,9 @@ function resizeCanvas() {
 
 }
 
+
 resizeCanvas();
+
 
 window.addEventListener(
     "resize",
@@ -173,16 +194,18 @@ window.addEventListener(
 );
 
 
-/* =========================================================
-   STAR FIELD
-========================================================= */
+/* =====================================================
+   STARS
+===================================================== */
 
 function createStars() {
 
     state.stars = [];
 
     const amount =
-        reducedMotion ? 180 : 450;
+        reducedMotion
+            ? 180
+            : 450;
 
     for (
         let i = 0;
@@ -200,8 +223,8 @@ function createStars() {
                 Math.random() * 1.4,
 
             opacity:
-                0.2 +
-                Math.random() * 0.7,
+                .2 +
+                Math.random() * .7,
 
             depth:
                 Math.random()
@@ -212,12 +235,13 @@ function createStars() {
 
 }
 
+
 createStars();
 
 
-/* =========================================================
+/* =====================================================
    SPACE BACKGROUND
-========================================================= */
+===================================================== */
 
 function drawSpace() {
 
@@ -240,19 +264,16 @@ function drawSpace() {
     );
 
 
-    /*
-    Deep-space background
-    */
-
     const background =
         ctx.createRadialGradient(
-            width * 0.68,
-            height * 0.48,
+            width * .68,
+            height * .48,
             0,
-            width * 0.68,
-            height * 0.48,
+            width * .68,
+            height * .48,
             width
         );
+
 
     background.addColorStop(
         0,
@@ -260,7 +281,7 @@ function drawSpace() {
     );
 
     background.addColorStop(
-        0.4,
+        .4,
         "#0a1113"
     );
 
@@ -297,7 +318,7 @@ function drawSpace() {
             star.x * width +
             (
                 state.mouseX -
-                0.5
+                .5
             ) * parallax;
 
 
@@ -305,7 +326,7 @@ function drawSpace() {
             star.y * height +
             (
                 state.mouseY -
-                0.5
+                .5
             ) * parallax;
 
 
@@ -333,7 +354,7 @@ function drawSpace() {
     */
 
     const earthX =
-        width * 0.73;
+        width * .73;
 
     const earthY =
         height * 1.12;
@@ -342,16 +363,16 @@ function drawSpace() {
         Math.min(
             width,
             height
-        ) * 0.58;
+        ) * .58;
 
 
     const earth =
         ctx.createRadialGradient(
             earthX -
-                earthRadius * 0.2,
+                earthRadius * .2,
             earthY -
-                earthRadius * 0.3,
-            earthRadius * 0.1,
+                earthRadius * .3,
+            earthRadius * .1,
             earthX,
             earthY,
             earthRadius
@@ -364,12 +385,12 @@ function drawSpace() {
     );
 
     earth.addColorStop(
-        0.55,
+        .55,
         "#182628"
     );
 
     earth.addColorStop(
-        0.9,
+        .9,
         "#071012"
     );
 
@@ -396,7 +417,7 @@ function drawSpace() {
 
 
     /*
-    Atmospheric edge
+    Atmosphere
     */
 
     ctx.beginPath();
@@ -404,7 +425,7 @@ function drawSpace() {
     ctx.arc(
         earthX,
         earthY,
-        earthRadius * 0.99,
+        earthRadius * .99,
         Math.PI * 1.02,
         Math.PI * 1.95
     );
@@ -418,17 +439,17 @@ function drawSpace() {
 
 
     /*
-    Orbital guide
+    Orbit
     */
 
     ctx.beginPath();
 
     ctx.ellipse(
-        width * 0.65,
-        height * 0.48,
-        width * 0.4,
-        height * 0.12,
-        -0.12,
+        width * .65,
+        height * .48,
+        width * .4,
+        height * .12,
+        -.12,
         0,
         Math.PI * 2
     );
@@ -443,28 +464,26 @@ function drawSpace() {
 }
 
 
-/* =========================================================
+/* =====================================================
    SATELLITE ANIMATION
-========================================================= */
+===================================================== */
 
 function animate() {
 
-    if (
-        !state.transitioning
-    ) {
+    if (!state.transitioning) {
 
         state.mouseX +=
             (
                 state.targetX -
                 state.mouseX
-            ) * 0.07;
+            ) * .07;
 
 
         state.mouseY +=
             (
                 state.targetY -
                 state.mouseY
-            ) * 0.07;
+            ) * .07;
 
 
         if (satellite) {
@@ -490,16 +509,12 @@ function animate() {
                 translate(-50%, -50%)
                 rotate(${(
                     state.mouseX -
-                    0.5
+                    .5
                 ) * 8}deg)
                 `;
 
         }
 
-
-        /*
-        Mission telemetry
-        */
 
         if (targetCoordinates) {
 
@@ -507,7 +522,7 @@ function animate() {
                 39.8283 +
                 (
                     state.mouseY -
-                    0.5
+                    .5
                 ) * 12;
 
 
@@ -528,12 +543,13 @@ function animate() {
 
 }
 
+
 animate();
 
 
-/* =========================================================
-   MOUSE / POINTER CONTROL
-========================================================= */
+/* =====================================================
+   MOUSE CONTROL
+===================================================== */
 
 window.addEventListener(
     "pointermove",
@@ -551,18 +567,14 @@ window.addEventListener(
 );
 
 
-/* =========================================================
+/* =====================================================
    MISSION TRANSITION
-========================================================= */
-
-let scrollLocked = false;
-
+===================================================== */
 
 function launchToAgriculture() {
 
     if (
-        state.transitioning ||
-        scrollLocked
+        state.transitioning
     ) {
 
         return;
@@ -572,13 +584,6 @@ function launchToAgriculture() {
     state.transitioning =
         true;
 
-    scrollLocked =
-        true;
-
-
-    /*
-    Cosmic burst
-    */
 
     if (missionScreen) {
 
@@ -588,10 +593,6 @@ function launchToAgriculture() {
 
     }
 
-
-    /*
-    Move satellite toward Earth
-    */
 
     if (satellite) {
 
@@ -621,10 +622,6 @@ function launchToAgriculture() {
     );
 
 
-    /*
-    Enter agriculture application
-    */
-
     setTimeout(
         () => {
 
@@ -646,25 +643,15 @@ function launchToAgriculture() {
 
 
             /*
-            IMPORTANT:
-            Initialize the map only AFTER
-            the agriculture screen exists.
+            Immediately create
+            the world map.
             */
 
-            setTimeout(
-                () => {
-
-                    initializeMap();
-
-                },
-                100
-            );
+            initializeMap();
 
 
             /*
-            Open information bubble
-            after the user has explored
-            the map for several seconds.
+            Information bubble.
             */
 
             setTimeout(
@@ -689,9 +676,9 @@ function launchToAgriculture() {
 }
 
 
-/* =========================================================
-   SCROLL TO ENTER
-========================================================= */
+/* =====================================================
+   SCROLL
+===================================================== */
 
 window.addEventListener(
     "wheel",
@@ -706,7 +693,9 @@ window.addEventListener(
 
 
         if (
-            Math.abs(event.deltaY) > 3
+            Math.abs(
+                event.deltaY
+            ) > 3
         ) {
 
             launchToAgriculture();
@@ -720,9 +709,9 @@ window.addEventListener(
 );
 
 
-/* =========================================================
-   KEYBOARD ACCESS
-========================================================= */
+/* =====================================================
+   KEYBOARD
+===================================================== */
 
 window.addEventListener(
     "keydown",
@@ -734,13 +723,7 @@ window.addEventListener(
             event.key === " "
         ) {
 
-            if (
-                !state.transitioning
-            ) {
-
-                launchToAgriculture();
-
-            }
+            launchToAgriculture();
 
         }
 
@@ -748,9 +731,9 @@ window.addEventListener(
 );
 
 
-/* =========================================================
+/* =====================================================
    INFORMATION BUBBLE
-========================================================= */
+===================================================== */
 
 if (closeBubble) {
 
@@ -758,9 +741,13 @@ if (closeBubble) {
         "click",
         () => {
 
-            infoBubble.classList.remove(
-                "visible"
-            );
+            if (infoBubble) {
+
+                infoBubble.classList.remove(
+                    "visible"
+                );
+
+            }
 
         }
     );
@@ -768,25 +755,21 @@ if (closeBubble) {
 }
 
 
-/* =========================================================
-   GLOBAL WORLD MAP
-========================================================= */
+/* =====================================================
+   WORLD MAP
+===================================================== */
 
 function initializeMap() {
 
-    if (
-        state.map
-    ) {
+    if (state.map) {
 
         setTimeout(
             () => {
 
                 state.map.invalidateSize();
 
-                updateMapTelemetry();
-
             },
-            150
+            200
         );
 
         return;
@@ -805,12 +788,16 @@ function initializeMap() {
     }
 
 
-    if (
-        !fieldMap
-    ) {
+    const worldMap =
+        document.getElementById(
+            "worldMap"
+        );
+
+
+    if (!worldMap) {
 
         console.error(
-            "Map container was not found."
+            "World map container not found."
         );
 
         return;
@@ -818,12 +805,12 @@ function initializeMap() {
 
 
     /*
-    Create global map
+    GLOBAL MAP
     */
 
     state.map =
         L.map(
-            fieldMap,
+            worldMap,
             {
 
                 zoomControl:
@@ -864,11 +851,7 @@ function initializeMap() {
 
 
     /*
-    GLOBAL VIEW
-
-    This is deliberately NOT Wyoming,
-    North Pivot, or any fake field.
-
+    Start globally.
     */
 
     state.map.setView(
@@ -881,7 +864,7 @@ function initializeMap() {
 
 
     /*
-    REAL SATELLITE IMAGERY
+    SATELLITE IMAGERY
     */
 
     state.imageryLayer =
@@ -893,10 +876,7 @@ function initializeMap() {
                     19,
 
                 attribution:
-                    "Satellite imagery © Esri",
-
-                crossOrigin:
-                    true
+                    "Satellite imagery © Esri"
 
             }
         );
@@ -908,85 +888,40 @@ function initializeMap() {
 
 
     /*
-    REFERENCE MAP
-    */
-
-    state.referenceLayer =
-        L.tileLayer(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            {
-
-                maxZoom:
-                    19,
-
-                attribution:
-                    "© OpenStreetMap contributors"
-
-            }
-        );
-
-
-    /*
-    MAP EVENTS
+    Map movement.
     */
 
     state.map.on(
-        "zoomend",
-        updateMapTelemetry
+        "move",
+        updateMapPosition
     );
 
 
     state.map.on(
-        "moveend",
-        updateMapTelemetry
+        "zoom",
+        updateMapPosition
     );
 
-
-    state.map.on(
-        "mousemove",
-        event => {
-
-            updateMapCursor(
-                event.latlng
-            );
-
-        }
-    );
-
-
-    /*
-    Give Leaflet time to calculate
-    its dimensions.
-    */
 
     setTimeout(
         () => {
 
             state.map.invalidateSize();
 
-            updateMapTelemetry();
-
         },
-        300
+        400
     );
-
-
-    state.initialMapReady =
-        true;
 
 }
 
 
-/* =========================================================
-   MAP TELEMETRY
-========================================================= */
+/* =====================================================
+   MAP POSITION
+===================================================== */
 
-function updateMapTelemetry() {
+function updateMapPosition() {
 
-    if (
-        !state.map
-    ) {
-
+    if (!state.map) {
         return;
     }
 
@@ -994,52 +929,30 @@ function updateMapTelemetry() {
     const center =
         state.map.getCenter();
 
-
     const zoom =
         state.map.getZoom();
 
 
-    if (
-        mapCoordinates
-    ) {
-
-        mapCoordinates.textContent =
-            `${center.lat.toFixed(4)}° / ` +
-            `${center.lng.toFixed(4)}° · ` +
-            `ZOOM ${zoom.toFixed(1)}`;
-
-    }
-
-}
-
-
-/* =========================================================
-   MAP CURSOR
-========================================================= */
-
-function updateMapCursor(
-    coordinates
-) {
-
     /*
-    The map itself remains fully interactive.
-    This function simply keeps the
-    coordinate display current.
+    This is intentionally
+    kept available for future
+    telemetry UI.
     */
 
-    if (
-        !coordinates
-    ) {
-
-        return;
-    }
+    console.debug(
+        "Map:",
+        center.lat.toFixed(4),
+        center.lng.toFixed(4),
+        "Zoom:",
+        zoom.toFixed(1)
+    );
 
 }
 
 
-/* =========================================================
-   GEOJSON FILE INPUT
-========================================================= */
+/* =====================================================
+   FILE INPUT
+===================================================== */
 
 if (geojsonInput) {
 
@@ -1065,9 +978,9 @@ if (geojsonInput) {
 }
 
 
-/* =========================================================
+/* =====================================================
    DRAG AND DROP
-========================================================= */
+===================================================== */
 
 if (uploadBox) {
 
@@ -1126,9 +1039,9 @@ if (uploadBox) {
 }
 
 
-/* =========================================================
+/* =====================================================
    READ GEOJSON
-========================================================= */
+===================================================== */
 
 function readGeoJSON(file) {
 
@@ -1174,9 +1087,7 @@ function readGeoJSON(file) {
 
             }
 
-            catch (
-                error
-            ) {
+            catch (error) {
 
                 console.error(
                     error
@@ -1198,9 +1109,9 @@ function readGeoJSON(file) {
 }
 
 
-/* =========================================================
+/* =====================================================
    LOAD FIELD
-========================================================= */
+===================================================== */
 
 function loadField(
     data,
@@ -1210,21 +1121,16 @@ function loadField(
     initializeMap();
 
 
-    if (
-        !state.map
-    ) {
-
+    if (!state.map) {
         return;
     }
 
 
     /*
-    Remove previous boundary
+    Remove previous field.
     */
 
-    if (
-        state.fieldLayer
-    ) {
+    if (state.fieldLayer) {
 
         state.map.removeLayer(
             state.fieldLayer
@@ -1243,68 +1149,21 @@ function loadField(
                     style: {
 
                         color:
-                            "#e4e9e9",
+                            "#e7efeb",
 
                         weight:
                             3,
 
                         opacity:
-                            0.95,
+                            .95,
 
                         fillColor:
-                            "#8fa39b",
+                            "#88a796",
 
                         fillOpacity:
-                            0.13
+                            .18
 
-                    },
-
-                    onEachFeature:
-                        function(
-                            feature,
-                            layer
-                        ) {
-
-                            layer.on(
-                                "mouseover",
-                                () => {
-
-                                    layer.setStyle(
-                                        {
-
-                                            weight:
-                                                4,
-
-                                            fillOpacity:
-                                                0.22
-
-                                        }
-                                    );
-
-                                }
-                            );
-
-
-                            layer.on(
-                                "mouseout",
-                                () => {
-
-                                    layer.setStyle(
-                                        {
-
-                                            weight:
-                                                3,
-
-                                            fillOpacity:
-                                                0.13
-
-                                        }
-                                    );
-
-                                }
-                            );
-
-                        }
+                    }
 
                 }
             );
@@ -1324,14 +1183,15 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid field geometry."
+                "Invalid field boundary."
             );
 
         }
 
 
         /*
-        FLY TO THE USER'S FIELD
+        Fly from the world
+        to the actual field.
         */
 
         state.map.flyToBounds(
@@ -1347,7 +1207,7 @@ function loadField(
                 duration:
                     reducedMotion
                         ? 0
-                        : 1.8
+                        : 2
 
             }
         );
@@ -1358,7 +1218,7 @@ function loadField(
 
 
         /*
-        Calculate field information
+        Geometry information.
         */
 
         const area =
@@ -1366,20 +1226,17 @@ function loadField(
                 data
             );
 
-
         const perimeter =
             calculatePerimeter(
                 data
             );
-
 
         const center =
             bounds.getCenter();
 
 
         /*
-        Generate field name
-        from filename.
+        Name based on uploaded file.
         */
 
         const cleanFilename =
@@ -1401,17 +1258,16 @@ function loadField(
 
         const formattedName =
             cleanFilename
-                ? cleanFilename
-                    .replace(
-                        /\b\w/g,
-                        letter =>
-                            letter.toUpperCase()
-                    )
+                ? cleanFilename.replace(
+                    /\b\w/g,
+                    letter =>
+                        letter.toUpperCase()
+                )
                 : "ACTIVE FIELD";
 
 
         /*
-        Update interface
+        Update information.
         */
 
         if (fieldName) {
@@ -1457,7 +1313,7 @@ function loadField(
 
 
         /*
-        No fabricated satellite metrics.
+        No fake satellite data.
         */
 
         if (ndviValue) {
@@ -1477,8 +1333,7 @@ function loadField(
 
 
         /*
-        Move from world upload state
-        to field workspace.
+        Hide upload interface.
         */
 
         if (uploadPanel) {
@@ -1489,6 +1344,10 @@ function loadField(
         }
 
 
+        /*
+        Show field analysis.
+        */
+
         if (fieldWorkspace) {
 
             fieldWorkspace.classList.remove(
@@ -1498,22 +1357,9 @@ function loadField(
         }
 
 
-        setTimeout(
-            () => {
-
-                state.map.invalidateSize();
-
-                updateMapTelemetry();
-
-            },
-            250
-        );
-
     }
 
-    catch (
-        error
-    ) {
+    catch (error) {
 
         console.error(
             error
@@ -1528,21 +1374,18 @@ function loadField(
 }
 
 
-/* =========================================================
-   AREA CALCULATION
-========================================================= */
+/* =====================================================
+   AREA
+===================================================== */
 
 function calculateArea(
     geojson
 ) {
 
-    let area =
-        0;
+    let area = 0;
 
 
-    function ringArea(
-        ring
-    ) {
+    function ringArea(ring) {
 
         if (
             !ring ||
@@ -1557,9 +1400,7 @@ function calculateArea(
         const radius =
             6378137;
 
-
-        let total =
-            0;
+        let total = 0;
 
 
         for (
@@ -1624,10 +1465,7 @@ function calculateArea(
         geometry
     ) {
 
-        if (
-            !geometry
-        ) {
-
+        if (!geometry) {
             return;
         }
 
@@ -1718,16 +1556,15 @@ function calculateArea(
 }
 
 
-/* =========================================================
-   PERIMETER CALCULATION
-========================================================= */
+/* =====================================================
+   PERIMETER
+===================================================== */
 
 function calculatePerimeter(
     geojson
 ) {
 
-    let total =
-        0;
+    let total = 0;
 
 
     function distance(
@@ -1823,10 +1660,7 @@ function calculatePerimeter(
         geometry
     ) {
 
-        if (
-            !geometry
-        ) {
-
+        if (!geometry) {
             return;
         }
 
@@ -1908,9 +1742,9 @@ function calculatePerimeter(
 }
 
 
-/* =========================================================
-   FIELD ANALYSIS BUTTON
-========================================================= */
+/* =====================================================
+   FIELD ANALYSIS
+===================================================== */
 
 if (scanButton) {
 
@@ -1960,6 +1794,11 @@ if (scanButton) {
                         "RUN FIELD ANALYSIS";
 
 
+                    /*
+                    Do NOT invent
+                    satellite measurements.
+                    */
+
                     if (ndviValue) {
 
                         ndviValue.textContent =
@@ -1977,7 +1816,7 @@ if (scanButton) {
 
 
                     alert(
-                        "Field geometry has been processed successfully. Connect a satellite remote-sensing data source to calculate actual NDVI and crop-stress measurements."
+                        "Field geometry has been processed. Connect a satellite remote-sensing data source to calculate actual NDVI and crop-stress measurements."
                     );
 
                 },
@@ -1990,9 +1829,9 @@ if (scanButton) {
 }
 
 
-/* =========================================================
+/* =====================================================
    RESET MAP
-========================================================= */
+===================================================== */
 
 if (resetMap) {
 
@@ -2000,25 +1839,12 @@ if (resetMap) {
         "click",
         () => {
 
-            if (
-                !state.map
-            ) {
-
+            if (!state.map) {
                 return;
             }
 
 
-            /*
-            If a field exists,
-            return to the field.
-
-            Otherwise return to
-            the global world view.
-            */
-
-            if (
-                state.fieldLayer
-            ) {
+            if (state.fieldLayer) {
 
                 state.map.flyToBounds(
                     state.fieldLayer.getBounds(),
@@ -2066,131 +1892,8 @@ if (resetMap) {
 }
 
 
-/* =========================================================
-   MAP LAYER SWITCHING
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".layer-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".layer-button"
-                        )
-                        .forEach(
-                            item => {
-
-                                item.classList.remove(
-                                    "active"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    const layer =
-                        button.dataset.layer;
-
-
-                    if (
-                        !state.map
-                    ) {
-
-                        return;
-                    }
-
-
-                    if (
-                        layer ===
-                        "satellite"
-                    ) {
-
-                        if (
-                            state.referenceLayer &&
-                            state.map.hasLayer(
-                                state.referenceLayer
-                            )
-                        ) {
-
-                            state.map.removeLayer(
-                                state.referenceLayer
-                            );
-
-                        }
-
-
-                        if (
-                            state.imageryLayer &&
-                            !state.map.hasLayer(
-                                state.imageryLayer
-                            )
-                        ) {
-
-                            state.imageryLayer.addTo(
-                                state.map
-                            );
-
-                        }
-
-                    }
-
-
-                    if (
-                        layer ===
-                        "street"
-                    ) {
-
-                        if (
-                            state.imageryLayer &&
-                            state.map.hasLayer(
-                                state.imageryLayer
-                            )
-                        ) {
-
-                            state.map.removeLayer(
-                                state.imageryLayer
-                            );
-
-                        }
-
-
-                        if (
-                            state.referenceLayer &&
-                            !state.map.hasLayer(
-                                state.referenceLayer
-                            )
-                        ) {
-
-                            state.referenceLayer.addTo(
-                                state.map
-                            );
-
-                        }
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-/* =========================================================
-   INITIAL DRAW
-========================================================= */
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
 drawSpace();
