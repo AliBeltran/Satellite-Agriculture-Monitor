@@ -14,7 +14,7 @@ body {
 
     background: #050708;
 
-    color: #e4e9e8;
+    color: #e5e9e8;
 
     font-family:
         Inter,
@@ -57,15 +57,15 @@ input {
 
     background:
         radial-gradient(
-            circle at 68% 44%,
-            #202c30 0%,
-            #0b1113 42%,
-            #020304 100%
+            ellipse at 70% 45%,
+            #192629 0%,
+            #080d0f 45%,
+            #010203 100%
         );
 
     transition:
-        opacity .8s ease,
-        transform 1s cubic-bezier(.2,.8,.2,1);
+        opacity .9s ease,
+        transform 1.2s cubic-bezier(.2,.8,.2,1);
 
 }
 
@@ -75,22 +75,89 @@ input {
     opacity: 0;
 
     transform:
-        scale(1.15);
+        scale(1.12);
 
     pointer-events: none;
 
 }
 
 
-#spaceCanvas {
+/* =====================================================
+   THREE.JS
+===================================================== */
+
+.three-container {
 
     position: absolute;
 
     inset: 0;
 
+    z-index: 2;
+
+}
+
+
+.three-container canvas {
+
+    display: block;
+
     width: 100%;
 
     height: 100%;
+
+}
+
+
+/* =====================================================
+   CURSOR GALAXY
+===================================================== */
+
+.cursor-galaxy {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 50;
+
+    width: 100%;
+
+    height: 100%;
+
+    pointer-events: none;
+
+}
+
+
+.cursor-galaxy.hidden {
+
+    display: none;
+
+}
+
+
+/* =====================================================
+   ATMOSPHERE
+===================================================== */
+
+.mission-atmosphere {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    pointer-events: none;
+
+    background:
+
+        radial-gradient(
+            ellipse at 75% 50%,
+            transparent 20%,
+            rgba(5,10,11,.12) 55%,
+            rgba(0,0,0,.75) 100%
+        );
 
 }
 
@@ -101,22 +168,27 @@ input {
 
     inset: 0;
 
-    opacity: .09;
+    z-index: 4;
+
+    pointer-events: none;
+
+    opacity: .07;
 
     background-image:
 
         linear-gradient(
-            rgba(180,200,205,.1) 1px,
+            rgba(190,210,215,.15) 1px,
             transparent 1px
         ),
 
         linear-gradient(
             90deg,
-            rgba(180,200,205,.1) 1px,
+            rgba(190,210,215,.15) 1px,
             transparent 1px
         );
 
-    background-size: 80px 80px;
+    background-size:
+        90px 90px;
 
     mask-image:
         radial-gradient(
@@ -134,6 +206,8 @@ input {
 
     inset: 0;
 
+    z-index: 5;
+
     pointer-events: none;
 
     background:
@@ -142,14 +216,14 @@ input {
             ellipse at center,
             transparent 25%,
             rgba(0,0,0,.25) 60%,
-            rgba(0,0,0,.9) 100%
+            rgba(0,0,0,.92) 100%
         );
 
 }
 
 
 /* =====================================================
-   TOP LEFT
+   IDENTIFICATION
 ===================================================== */
 
 .mission-identification {
@@ -160,7 +234,7 @@ input {
 
     left: 40px;
 
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
 
@@ -182,9 +256,9 @@ input {
     place-items: center;
 
     border:
-        1px solid #889598;
+        1px solid #879396;
 
-    color: #d7dddd;
+    color: #dce2e2;
 
 }
 
@@ -193,7 +267,7 @@ input {
 
     display: block;
 
-    color: #dce2e3;
+    color: #e0e6e6;
 
     font-size: 10px;
 
@@ -210,7 +284,7 @@ input {
 
     margin-top: 5px;
 
-    color: #707d80;
+    color: #6e7a7d;
 
     font-size: 8px;
 
@@ -231,7 +305,7 @@ input {
 
     right: 40px;
 
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
 
@@ -264,7 +338,7 @@ input {
 
 .mission-status strong {
 
-    color: #d5dcdd;
+    color: #d8dede;
 
     font-weight: 500;
 
@@ -283,7 +357,7 @@ input {
 
     top: 22vh;
 
-    z-index: 10;
+    z-index: 20;
 
     pointer-events: none;
 
@@ -292,7 +366,7 @@ input {
 
 .mission-title > div {
 
-    color: #e5e9e9;
+    color: #edf0ef;
 
     font-family:
         "Arial Narrow",
@@ -314,7 +388,7 @@ input {
 
 .mission-title > div:nth-child(2) {
 
-    color: #aab6b2;
+    color: #aeb9b7;
 
 }
 
@@ -340,773 +414,6 @@ input {
 
 
 /* =====================================================
-   3D SATELLITE
-===================================================== */
-
-.satellite {
-
-    position: absolute;
-
-    left: 68%;
-
-    top: 45%;
-
-    width: 620px;
-
-    height: 380px;
-
-    z-index: 20;
-
-    pointer-events: none;
-
-    perspective: 1400px;
-
-    transform:
-        translate(-50%, -50%);
-
-}
-
-
-.satellite-rotation {
-
-    position: absolute;
-
-    inset: 0;
-
-    transform-style: preserve-3d;
-
-    animation:
-        satelliteOrbit
-        24s
-        cubic-bezier(.45,0,.55,1)
-        infinite;
-
-}
-
-
-@keyframes satelliteOrbit {
-
-    0% {
-
-        transform:
-            translate3d(-180px, 40px, 0)
-            rotateX(-8deg)
-            rotateY(-25deg)
-            rotateZ(-5deg);
-
-    }
-
-    15% {
-
-        transform:
-            translate3d(-80px, -20px, 80px)
-            rotateX(-4deg)
-            rotateY(-10deg)
-            rotateZ(-2deg);
-
-    }
-
-    30% {
-
-        transform:
-            translate3d(20px, -60px, 120px)
-            rotateX(4deg)
-            rotateY(8deg)
-            rotateZ(3deg);
-
-    }
-
-    45% {
-
-        transform:
-            translate3d(150px, -25px, 60px)
-            rotateX(8deg)
-            rotateY(22deg)
-            rotateZ(6deg);
-
-    }
-
-    60% {
-
-        transform:
-            translate3d(210px, 50px, -20px)
-            rotateX(2deg)
-            rotateY(30deg)
-            rotateZ(2deg);
-
-    }
-
-    75% {
-
-        transform:
-            translate3d(80px, 90px, -60px)
-            rotateX(-6deg)
-            rotateY(12deg)
-            rotateZ(-4deg);
-
-    }
-
-    90% {
-
-        transform:
-            translate3d(-80px, 65px, 20px)
-            rotateX(-10deg)
-            rotateY(-12deg)
-            rotateZ(-6deg);
-
-    }
-
-    100% {
-
-        transform:
-            translate3d(-180px, 40px, 0)
-            rotateX(-8deg)
-            rotateY(-25deg)
-            rotateZ(-5deg);
-
-    }
-
-}
-
-
-/* =====================================================
-   ORBIT RING
-===================================================== */
-
-.orbital-ring {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 700px;
-
-    height: 300px;
-
-    transform:
-        translate(-50%, -50%)
-        rotate(-12deg);
-
-    border:
-        1px solid
-        rgba(190,215,225,.08);
-
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 80px
-        rgba(150,190,220,.035);
-
-}
-
-
-.satellite-glow {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 520px;
-
-    height: 520px;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(180,210,230,.09),
-            transparent 68%
-        );
-
-    filter:
-        blur(8px);
-
-}
-
-
-/* =====================================================
-   SOLAR PANELS
-===================================================== */
-
-.solar-array {
-
-    position: absolute;
-
-    top: 115px;
-
-    width: 190px;
-
-    height: 105px;
-
-    transform-style: preserve-3d;
-
-    filter:
-        drop-shadow(
-            0 18px 20px
-            rgba(0,0,0,.45)
-        );
-
-}
-
-
-.solar-left {
-
-    left: 0;
-
-    transform:
-        rotateY(8deg);
-
-}
-
-
-.solar-right {
-
-    right: 0;
-
-    transform:
-        rotateY(-8deg);
-
-}
-
-
-.solar-frame {
-
-    width: 100%;
-
-    height: 100%;
-
-    padding: 4px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
-    grid-template-rows:
-        repeat(3,1fr);
-
-    gap: 2px;
-
-    border:
-        2px solid
-        rgba(180,195,205,.75);
-
-    background:
-        linear-gradient(
-            135deg,
-            #17366f,
-            #0d2450
-        );
-
-    box-shadow:
-
-        inset 0 0 25px
-        rgba(90,160,255,.25),
-
-        0 0 18px
-        rgba(50,90,150,.18);
-
-}
-
-
-.solar-cell {
-
-    position: relative;
-
-    overflow: hidden;
-
-    border:
-        1px solid
-        rgba(180,210,235,.4);
-
-    background:
-        linear-gradient(
-            135deg,
-            #244b94,
-            #101f46 55%,
-            #315eac
-        );
-
-}
-
-
-.solar-cell::before {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        linear-gradient(
-            105deg,
-            transparent 30%,
-            rgba(255,255,255,.22) 48%,
-            transparent 62%
-        );
-
-}
-
-
-/* =====================================================
-   SPACECRAFT BODY
-===================================================== */
-
-.spacecraft {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 170px;
-
-    height: 125px;
-
-    transform:
-        translate(-50%,-50%)
-        translateZ(40px);
-
-    transform-style: preserve-3d;
-
-}
-
-
-.spacecraft-body {
-
-    position: absolute;
-
-    left: 20px;
-
-    top: 22px;
-
-    width: 130px;
-
-    height: 90px;
-
-    transform:
-        skewY(-5deg)
-        rotateY(-8deg);
-
-    border:
-        1px solid
-        rgba(210,215,210,.7);
-
-    background:
-        linear-gradient(
-            145deg,
-            #e5e7e2 0%,
-            #b9beb9 25%,
-            #747c79 55%,
-            #3c4342 100%
-        );
-
-    box-shadow:
-
-        inset 8px 5px 12px
-        rgba(255,255,255,.35),
-
-        inset -15px -10px 25px
-        rgba(0,0,0,.35),
-
-        0 25px 40px
-        rgba(0,0,0,.55);
-
-    transform-style: preserve-3d;
-
-}
-
-
-.body-panel {
-
-    position: absolute;
-
-    border:
-        1px solid
-        rgba(70,80,80,.5);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.3),
-            rgba(40,50,50,.15)
-        );
-
-}
-
-
-.panel-one {
-
-    left: 12px;
-    top: 12px;
-
-    width: 48px;
-    height: 25px;
-
-}
-
-
-.panel-two {
-
-    left: 70px;
-    top: 12px;
-
-    width: 42px;
-    height: 25px;
-
-}
-
-
-.panel-three {
-
-    left: 12px;
-    top: 48px;
-
-    width: 65px;
-    height: 28px;
-
-}
-
-
-.panel-four {
-
-    right: 10px;
-    top: 48px;
-
-    width: 35px;
-    height: 28px;
-
-}
-
-
-.body-highlight {
-
-    position: absolute;
-
-    left: 5px;
-    right: 5px;
-    top: 4px;
-
-    height: 2px;
-
-    background:
-        rgba(255,255,255,.55);
-
-}
-
-
-/* =====================================================
-   DISH
-===================================================== */
-
-.dish-arm {
-
-    position: absolute;
-
-    left: 64px;
-
-    top: -4px;
-
-    width: 45px;
-
-    height: 45px;
-
-    transform:
-        translateZ(35px);
-
-}
-
-
-.dish {
-
-    position: absolute;
-
-    width: 55px;
-
-    height: 55px;
-
-    border-radius: 50%;
-
-    border:
-        2px solid
-        rgba(220,225,220,.7);
-
-    background:
-        radial-gradient(
-            circle at 35% 30%,
-            #f4f4ed,
-            #a9afaa 42%,
-            #4c5553 75%,
-            #252b2b
-        );
-
-    transform:
-        rotateX(62deg)
-        rotateZ(-12deg);
-
-    box-shadow:
-        0 15px 20px
-        rgba(0,0,0,.4);
-
-}
-
-
-.dish-center {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 8px;
-
-    height: 8px;
-
-    transform:
-        translate(-50%,-50%);
-
-    border-radius: 50%;
-
-    background:
-        #202728;
-
-}
-
-
-.dish-spoke {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 1px;
-
-    height: 24px;
-
-    transform-origin:
-        center top;
-
-    background:
-        rgba(80,90,88,.65);
-
-}
-
-
-.spoke-one {
-
-    transform:
-        translate(-50%,0)
-        rotate(0deg);
-
-}
-
-
-.spoke-two {
-
-    transform:
-        translate(-50%,0)
-        rotate(45deg);
-
-}
-
-
-.spoke-three {
-
-    transform:
-        translate(-50%,0)
-        rotate(90deg);
-
-}
-
-
-.spoke-four {
-
-    transform:
-        translate(-50%,0)
-        rotate(135deg);
-
-}
-
-
-/* =====================================================
-   SENSOR
-===================================================== */
-
-.satellite-sensor {
-
-    position: absolute;
-
-    left: 77px;
-
-    bottom: -17px;
-
-    width: 38px;
-
-    height: 32px;
-
-    transform:
-        translateZ(50px);
-
-    border:
-        2px solid #707977;
-
-    background:
-        linear-gradient(
-            145deg,
-            #535d5c,
-            #161c1d
-        );
-
-}
-
-
-.sensor-glass {
-
-    position: absolute;
-
-    left: 7px;
-
-    top: 5px;
-
-    width: 20px;
-
-    height: 20px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 35% 30%,
-            #cceaff,
-            #496c88 35%,
-            #111b22 72%
-        );
-
-}
-
-
-.sensor-ring {
-
-    position: absolute;
-
-    left: 4px;
-
-    top: 2px;
-
-    width: 26px;
-
-    height: 26px;
-
-    border:
-        1px solid
-        rgba(220,230,230,.5);
-
-    border-radius: 50%;
-
-}
-
-
-/* =====================================================
-   ANTENNA
-===================================================== */
-
-.antenna-mast {
-
-    position: absolute;
-
-    left: 84px;
-
-    top: -45px;
-
-    width: 2px;
-
-    height: 48px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #e1e4df,
-            #5e6664
-        );
-
-}
-
-
-.antenna-tip {
-
-    position: absolute;
-
-    left: 80px;
-
-    top: -52px;
-
-    width: 10px;
-
-    height: 10px;
-
-    border:
-        1px solid #ccd4d0;
-
-    border-radius: 50%;
-
-    background:
-        #313a3a;
-
-}
-
-
-.small-antenna {
-
-    position: absolute;
-
-    width: 2px;
-
-    height: 30px;
-
-    background:
-        #8d9795;
-
-}
-
-
-.antenna-one {
-
-    left: 25px;
-
-    bottom: 2px;
-
-    transform:
-        rotate(20deg);
-
-}
-
-
-.antenna-two {
-
-    right: 22px;
-
-    bottom: 3px;
-
-    transform:
-        rotate(-18deg);
-
-}
-
-
-/* =====================================================
    TELEMETRY
 ===================================================== */
 
@@ -1122,17 +429,17 @@ input {
 
     padding: 17px;
 
-    z-index: 10;
+    z-index: 20;
 
     border:
         1px solid
         rgba(150,165,167,.2);
 
     background:
-        rgba(5,9,11,.62);
+        rgba(5,9,11,.65);
 
     backdrop-filter:
-        blur(12px);
+        blur(14px);
 
     font-family:
         "SFMono-Regular",
@@ -1204,7 +511,7 @@ input {
     transform:
         translateX(-50%);
 
-    z-index: 10;
+    z-index: 20;
 
     display: flex;
 
@@ -1217,7 +524,7 @@ input {
 
 .mission-instructions strong {
 
-    color: #c5cccd;
+    color: #c8d0d0;
 
     font-size: 10px;
 
@@ -1277,7 +584,9 @@ input {
     background: #bdc6c7;
 
     animation:
-        scrollPulse 1.6s infinite;
+        scrollPulse
+        1.6s
+        infinite;
 
 }
 
@@ -1285,17 +594,27 @@ input {
 @keyframes scrollPulse {
 
     0% {
-        transform: translateY(0);
+
+        transform:
+            translateY(0);
+
         opacity: 1;
+
     }
 
     70% {
-        transform: translateY(8px);
+
+        transform:
+            translateY(8px);
+
         opacity: .2;
+
     }
 
     100% {
+
         opacity: 0;
+
     }
 
 }
@@ -1313,7 +632,7 @@ input {
 
     bottom: 32px;
 
-    z-index: 10;
+    z-index: 20;
 
     color: #626d70;
 
@@ -1339,10 +658,35 @@ input {
 
 
 /* =====================================================
-   COSMIC BURST
+   SPECTRAL TRANSITION
 ===================================================== */
 
-.spectral-burst {
+.spectral-transition {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+}
+
+
+.mission-screen.transitioning
+.spectral-transition {
+
+    opacity: 1;
+
+}
+
+
+.spectral-core {
 
     position: absolute;
 
@@ -1350,75 +694,241 @@ input {
 
     top: 50%;
 
-    width: 0;
+    width: 8px;
 
-    height: 0;
+    height: 8px;
+
+    transform:
+        translate(-50%,-50%);
 
     border-radius: 50%;
 
-    pointer-events: none;
+    background: white;
 
-    z-index: 100;
+    box-shadow:
+
+        0 0 30px white,
+
+        0 0 80px #b5ecff,
+
+        0 0 150px #7b7cff,
+
+        0 0 250px #ff62b5;
 
     opacity: 0;
 
 }
 
 
-.mission-screen.bursting
-.spectral-burst {
+.mission-screen.transitioning
+.spectral-core {
 
     animation:
-        cosmicBurst
-        1.25s
-        cubic-bezier(.2,.7,.1,1)
+        spectralCore
+        1.8s
+        ease-out
         forwards;
 
 }
 
 
-@keyframes cosmicBurst {
+@keyframes spectralCore {
 
     0% {
 
-        width: 0;
+        opacity: 0;
 
-        height: 0;
+        transform:
+            translate(-50%,-50%)
+            scale(.1);
+
+    }
+
+    20% {
 
         opacity: 1;
 
-        background:
-            radial-gradient(
-                circle,
-                #ffffff 0%,
-                #d5fff1 4%,
-                #6dc7ff 12%,
-                #8b6cff 20%,
-                #ff5ca8 29%,
-                #ffb45c 38%,
-                #c9ff55 47%,
-                transparent 65%
-            );
-
     }
 
+    55% {
 
-    45% {
-
-        width: 100vmax;
-
-        height: 100vmax;
+        transform:
+            translate(-50%,-50%)
+            scale(30);
 
     }
-
 
     100% {
 
-        width: 180vmax;
+        opacity: 0;
 
-        height: 180vmax;
+        transform:
+            translate(-50%,-50%)
+            scale(120);
+
+    }
+
+}
+
+
+/* =====================================================
+   SPECTRAL RAYS
+===================================================== */
+
+.spectral-rays {
+
+    position: absolute;
+
+    inset: -100%;
+
+    background:
+
+        conic-gradient(
+            from 0deg,
+            transparent 0deg,
+            rgba(0,105,255,.65) 8deg,
+            transparent 18deg,
+            rgba(0,230,255,.6) 26deg,
+            transparent 37deg,
+            rgba(125,80,255,.7) 47deg,
+            transparent 59deg,
+            rgba(255,55,170,.65) 70deg,
+            transparent 82deg,
+            rgba(255,190,70,.7) 94deg,
+            transparent 108deg,
+            rgba(100,255,160,.55) 122deg,
+            transparent 140deg,
+            rgba(70,140,255,.6) 160deg,
+            transparent 180deg,
+            rgba(255,70,150,.55) 205deg,
+            transparent 220deg,
+            rgba(255,210,70,.6) 245deg,
+            transparent 270deg,
+            rgba(60,220,255,.55) 300deg,
+            transparent 325deg,
+            rgba(120,80,255,.65) 342deg,
+            transparent 360deg
+        );
+
+    opacity: 0;
+
+}
+
+
+.mission-screen.transitioning
+.spectral-rays {
+
+    animation:
+        spectralRays
+        1.7s
+        cubic-bezier(.2,.8,.2,1)
+        forwards;
+
+}
+
+
+@keyframes spectralRays {
+
+    0% {
+
+        transform:
+            rotate(0deg)
+            scale(.2);
 
         opacity: 0;
+
+    }
+
+    20% {
+
+        opacity: .8;
+
+    }
+
+    55% {
+
+        transform:
+            rotate(70deg)
+            scale(1.2);
+
+    }
+
+    100% {
+
+        transform:
+            rotate(180deg)
+            scale(2.3);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+/* =====================================================
+   SPECTRAL NOISE
+===================================================== */
+
+.spectral-noise {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    background:
+
+        repeating-linear-gradient(
+            90deg,
+            rgba(255,255,255,.04) 0px,
+            rgba(255,255,255,.04) 1px,
+            transparent 1px,
+            transparent 5px
+        );
+
+    mix-blend-mode:
+        screen;
+
+}
+
+
+.mission-screen.transitioning
+.spectral-noise {
+
+    animation:
+        spectralNoise
+        1.5s
+        ease-out
+        forwards;
+
+}
+
+
+@keyframes spectralNoise {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateX(-20%);
+
+    }
+
+    40% {
+
+        opacity: .6;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translateX(20%);
 
     }
 
@@ -1448,7 +958,8 @@ input {
 
     animation:
         applicationEnter
-        .8s ease;
+        .8s
+        ease;
 
 }
 
@@ -1477,7 +988,7 @@ input {
 
 
 /* =====================================================
-   HEADER
+   APP HEADER
 ===================================================== */
 
 .app-header {
@@ -1501,7 +1012,7 @@ input {
         rgba(220,230,230,.15);
 
     background:
-        rgba(5,9,10,.94);
+        rgba(5,9,10,.96);
 
 }
 
@@ -1637,8 +1148,8 @@ input {
 .world-map .leaflet-tile {
 
     filter:
-        saturate(.88)
-        contrast(1.03)
+        saturate(.9)
+        contrast(1.04)
         brightness(.92);
 
 }
@@ -1658,10 +1169,10 @@ input {
 
         linear-gradient(
             180deg,
-            rgba(3,8,9,.72) 0%,
-            rgba(3,8,9,.12) 30%,
-            rgba(3,8,9,.02) 55%,
-            rgba(3,8,9,.78) 100%
+            rgba(3,8,9,.74) 0%,
+            rgba(3,8,9,.08) 32%,
+            rgba(3,8,9,.02) 60%,
+            rgba(3,8,9,.8) 100%
         );
 
 }
@@ -1736,7 +1247,7 @@ input {
 
 
 /* =====================================================
-   STATUS
+   MAP STATUS
 ===================================================== */
 
 .earth-status {
@@ -1835,7 +1346,7 @@ input {
         rgba(220,230,230,.42);
 
     background:
-        rgba(6,11,12,.78);
+        rgba(6,11,12,.8);
 
     box-shadow:
         0 30px 100px
@@ -1865,10 +1376,10 @@ input {
 .upload-box.dragging {
 
     border-color:
-        #c4d4cc !important;
+        #c4d4cc;
 
     background:
-        rgba(80,110,95,.3) !important;
+        rgba(80,110,95,.3);
 
     transform:
         scale(1.02);
@@ -2261,7 +1772,9 @@ input {
         blur(10px);
 
     animation:
-        workspaceEnter .7s ease;
+        workspaceEnter
+        .7s
+        ease;
 
 }
 
@@ -2361,6 +1874,10 @@ input {
 }
 
 
+/* =====================================================
+   WORKSPACE
+===================================================== */
+
 .workspace-grid {
 
     display: grid;
@@ -2413,29 +1930,24 @@ input {
 }
 
 
+.map-toolbar button {
+
+    border: 0;
+
+    background: transparent;
+
+    color: #aeb8b7;
+
+    cursor: pointer;
+
+}
+
+
 .analysis-map-preview {
 
     height: 500px;
 
-    display: grid;
-
-    place-items: center;
-
-    text-align: center;
-
-    color: #8e9b98;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #23312f,
-            #101817
-        );
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    background: #162021;
 
 }
 
@@ -2686,17 +2198,6 @@ input {
     }
 
 
-    .satellite {
-
-        left: 72%;
-
-        transform:
-            translate(-50%,-50%)
-            scale(.75);
-
-    }
-
-
     .earth-status {
 
         display: none;
@@ -2715,6 +2216,15 @@ input {
 
 @media (max-width: 650px) {
 
+    .mission-identification {
+
+        left: 20px;
+
+        top: 20px;
+
+    }
+
+
     .mission-title {
 
         left: 25px;
@@ -2731,22 +2241,18 @@ input {
     }
 
 
-    .satellite {
+    .telemetry-card {
 
-        left: 58%;
-
-        top: 48%;
-
-        transform:
-            translate(-50%,-50%)
-            scale(.55);
+        display: none;
 
     }
 
 
-    .telemetry-card {
+    .mission-credit {
 
-        display: none;
+        right: 20px;
+
+        bottom: 20px;
 
     }
 
@@ -2773,8 +2279,6 @@ input {
         justify-content: center;
 
         gap: 10px;
-
-        white-space: normal;
 
         text-align: center;
 
