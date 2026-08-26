@@ -4,17 +4,29 @@
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
 ===========================================================
- Features:
- - 3D Earth landing page
- - Interactive satellite world map
- - GeoJSON support
- - GPX support
- - GPX tracks/routes/waypoints
- - Local browser file processing
- - Field geometry analysis
- - Satellite imagery
- - Agricultural interface
- - Tractor animation
+
+ CURRENT VERSION
+
+ • 3D Earth landing page
+ • Interactive world satellite map
+ • GeoJSON support
+ • GPX support
+ • Local file processing
+ • Field geometry analysis
+ • NDVI demonstration analysis
+ • NDVI visualization
+ • No satellite API connection
+ • No imported files are uploaded or saved
+
+ IMPORTANT:
+ GeoJSON and GPX files do NOT contain enough spectral
+ information to calculate scientifically valid NDVI.
+
+ Therefore, the NDVI values in this version are DEMONSTRATION
+ values only. They are clearly labeled as such.
+
+ Later we can connect this exact interface to actual
+ Sentinel-2 / Landsat / other imagery.
 ===========================================================
 */
 
@@ -47,6 +59,8 @@ const state = {
 
     fieldLayer: null,
 
+    ndviOverlay: null,
+
     fieldData: null,
 
     fieldLoaded: false,
@@ -65,7 +79,7 @@ const state = {
 
 
 /* =========================================================
-   ELEMENTS
+   ELEMENT REFERENCES
 ========================================================= */
 
 const missionScreen =
@@ -986,22 +1000,34 @@ function launchTransition() {
         true;
 
 
-    missionScreen.classList.add(
-        "transitioning"
-    );
+    if (missionScreen) {
+
+        missionScreen.classList.add(
+            "transitioning"
+        );
+
+    }
 
 
     setTimeout(
 
         () => {
 
-            missionScreen.style.display =
-                "none";
+            if (missionScreen) {
+
+                missionScreen.style.display =
+                    "none";
+
+            }
 
 
-            agricultureApp.classList.add(
-                "visible"
-            );
+            if (agricultureApp) {
+
+                agricultureApp.classList.add(
+                    "visible"
+                );
+
+            }
 
 
             initializeWorldMap();
@@ -1107,6 +1133,12 @@ function initializeWorldMap() {
     );
 
 
+    /*
+    ---------------------------------------------------------
+    SATELLITE BASEMAP
+    ---------------------------------------------------------
+    */
+
     L.tileLayer(
 
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -1162,6 +1194,7 @@ function initializeSpatialFileSupport() {
             const file =
                 event.target.files[0];
 
+
             if (file) {
 
                 readSpatialFile(
@@ -1173,6 +1206,13 @@ function initializeSpatialFileSupport() {
         }
 
     );
+
+
+    if (!uploadBox) {
+
+        return;
+
+    }
 
 
     uploadBox.addEventListener(
@@ -1265,7 +1305,9 @@ function readSpatialFile(
 
 
                 /*
+                ------------------------------------------------
                 GPX
+                ------------------------------------------------
                 */
 
                 if (
@@ -1290,7 +1332,9 @@ function readSpatialFile(
 
 
                 /*
+                ------------------------------------------------
                 GEOJSON
+                ------------------------------------------------
                 */
 
                 if (
@@ -1387,9 +1431,9 @@ function convertGPXtoGeoJSON(
 
 
     /*
-    =========================================================
+    ---------------------------------------------------------
     TRACKS
-    =========================================================
+    ---------------------------------------------------------
     */
 
     const tracks =
@@ -1508,9 +1552,9 @@ function convertGPXtoGeoJSON(
 
 
     /*
-    =========================================================
+    ---------------------------------------------------------
     ROUTES
-    =========================================================
+    ---------------------------------------------------------
     */
 
     const routes =
@@ -1615,9 +1659,9 @@ function convertGPXtoGeoJSON(
 
 
     /*
-    =========================================================
+    ---------------------------------------------------------
     WAYPOINTS
-    =========================================================
+    ---------------------------------------------------------
     */
 
     const waypoints =
@@ -1721,7 +1765,7 @@ function convertGPXtoGeoJSON(
 
 
 /* =========================================================
-   LOAD FIELD / TRACK
+   LOAD FIELD
 ========================================================= */
 
 function loadField(
@@ -1748,6 +1792,17 @@ function loadField(
     }
 
 
+    if (state.ndviOverlay) {
+
+        state.map.removeLayer(
+            state.ndviOverlay
+        );
+
+        state.ndviOverlay = null;
+
+    }
+
+
     try {
 
         state.fieldData =
@@ -1762,9 +1817,9 @@ function loadField(
 
 
         /*
-        =====================================================
-        MAP STYLE
-        =====================================================
+        -------------------------------------------------------
+        FIELD LAYER
+        -------------------------------------------------------
         */
 
         state.fieldLayer =
@@ -1859,12 +1914,6 @@ function loadField(
         }
 
 
-        /*
-        =====================================================
-        MAP CAMERA
-        =====================================================
-        */
-
         state.map.flyToBounds(
 
             bounds,
@@ -1890,9 +1939,9 @@ function loadField(
 
 
         /*
-        =====================================================
-        FIELD CENTER
-        =====================================================
+        -------------------------------------------------------
+        CENTER
+        -------------------------------------------------------
         */
 
         const center =
@@ -1900,9 +1949,9 @@ function loadField(
 
 
         /*
-        =====================================================
-        FILE NAME
-        =====================================================
+        -------------------------------------------------------
+        NAME
+        -------------------------------------------------------
         */
 
         let name =
@@ -1937,59 +1986,71 @@ function loadField(
             );
 
 
-        fieldName.textContent =
-            name;
+        if (fieldName) {
+
+            fieldName.textContent =
+                name;
+
+        }
 
 
-        centerValue.textContent =
+        if (centerValue) {
 
-            `${center.lat.toFixed(4)}°, ` +
-            `${center.lng.toFixed(4)}°`;
+            centerValue.textContent =
 
-
-        /*
-        =====================================================
-        GPX
-        =====================================================
-        */
-
-        if (isGPX) {
-
-            const trackDistance =
-                calculateGeoJSONLength(
-                    data
-                );
-
-
-            areaValue.textContent =
-                "TRACK";
-
-
-            perimeterValue.textContent =
-
-                `${trackDistance.toFixed(2)} MI`;
-
-
-            fieldMeta.textContent =
-
-                `GPX TRACK · ` +
-                `${trackDistance.toFixed(2)} MI`;
-
-
-            ndviValue.textContent =
-                "—";
-
-
-            stressValue.textContent =
-                "—";
+                `${center.lat.toFixed(4)}°, ` +
+                `${center.lng.toFixed(4)}°`;
 
         }
 
 
         /*
-        =====================================================
+        -------------------------------------------------------
+        GPX
+        -------------------------------------------------------
+        */
+
+        if (isGPX) {
+
+            const distance =
+                calculateGeoJSONLength(
+                    data
+                );
+
+
+            if (areaValue) {
+
+                areaValue.textContent =
+                    "TRACK";
+
+            }
+
+
+            if (perimeterValue) {
+
+                perimeterValue.textContent =
+
+                    `${distance.toFixed(2)} MI`;
+
+            }
+
+
+            if (fieldMeta) {
+
+                fieldMeta.textContent =
+
+                    `GPX TRACK · ` +
+                    `${distance.toFixed(2)} MI`;
+
+            }
+
+        }
+
+
+        /*
+        -------------------------------------------------------
         GEOJSON
-        =====================================================
+        -------------------------------------------------------
         */
 
         else {
@@ -2006,51 +2067,85 @@ function loadField(
                 );
 
 
-            areaValue.textContent =
+            if (areaValue) {
 
-                `${area.toFixed(2)} AC`;
+                areaValue.textContent =
 
+                    `${area.toFixed(2)} AC`;
 
-            perimeterValue.textContent =
-
-                `${perimeter.toFixed(2)} MI`;
-
-
-            fieldMeta.textContent =
-
-                `${area.toFixed(2)} ACRES · ` +
-                `${perimeter.toFixed(2)} MI PERIMETER`;
+            }
 
 
-            ndviValue.textContent =
-                "—";
+            if (perimeterValue) {
+
+                perimeterValue.textContent =
+
+                    `${perimeter.toFixed(2)} MI`;
+
+            }
 
 
-            stressValue.textContent =
-                "—";
+            if (fieldMeta) {
+
+                fieldMeta.textContent =
+
+                    `${area.toFixed(2)} ACRES · ` +
+                    `${perimeter.toFixed(2)} MI PERIMETER`;
+
+            }
 
         }
 
 
         /*
-        =====================================================
-        CHANGE INTERFACE
-        =====================================================
+        -------------------------------------------------------
+        DEFAULT NDVI STATUS
+        -------------------------------------------------------
         */
 
-        uploadPanel.style.display =
-            "none";
+        if (ndviValue) {
+
+            ndviValue.textContent =
+                "READY";
+
+        }
 
 
-        fieldWorkspace.classList.remove(
-            "hidden"
-        );
+        if (stressValue) {
+
+            stressValue.textContent =
+                "NOT ANALYZED";
+
+        }
 
 
         /*
-        =====================================================
+        -------------------------------------------------------
+        SHOW FIELD WORKSPACE
+        -------------------------------------------------------
+        */
+
+        if (uploadPanel) {
+
+            uploadPanel.style.display =
+                "none";
+
+        }
+
+
+        if (fieldWorkspace) {
+
+            fieldWorkspace.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /*
+        -------------------------------------------------------
         ANALYSIS MAP
-        =====================================================
+        -------------------------------------------------------
         */
 
         initializeAnalysisMap(
@@ -2238,7 +2333,7 @@ function initializeAnalysisMap(
 
 
 /* =========================================================
-   GEOJSON AREA
+   AREA CALCULATION
 ========================================================= */
 
 function calculateArea(
@@ -2433,7 +2528,7 @@ function calculateArea(
 
 
 /* =========================================================
-   GEOJSON PERIMETER
+   PERIMETER
 ========================================================= */
 
 function calculatePerimeter(
@@ -2645,7 +2740,7 @@ function calculatePerimeter(
 
 
 /* =========================================================
-   GPX / LINE DISTANCE
+   GPX DISTANCE
 ========================================================= */
 
 function calculateGeoJSONLength(
@@ -2849,7 +2944,7 @@ function calculateGeoJSONLength(
 
 
 /* =========================================================
-   FIELD SCAN
+   NDVI ANALYSIS
 ========================================================= */
 
 function initializeScanButton() {
@@ -2868,8 +2963,13 @@ function initializeScanButton() {
         () => {
 
             if (
-                !state.fieldLoaded
+                !state.fieldLoaded ||
+                !state.fieldData
             ) {
+
+                alert(
+                    "Load a GeoJSON or GPX field first."
+                );
 
                 return;
 
@@ -2881,36 +2981,454 @@ function initializeScanButton() {
 
 
             scanButton.textContent =
-                "PROCESSING FIELD...";
+                "CALCULATING NDVI...";
 
 
             setTimeout(
 
                 () => {
 
+                    const ndvi =
+                        generateDemoNDVI();
+
+
+                    displayNDVIResults(
+                        ndvi
+                    );
+
+
+                    createDemoNDVILayer();
+
+
                     scanButton.disabled =
                         false;
 
 
                     scanButton.textContent =
-                        "◈ RUN FIELD SCAN";
-
-
-                    alert(
-
-                        "Field geometry processed successfully. Actual NDVI and crop-stress measurements require a connected satellite remote-sensing data source."
-
-                    );
+                        "◈ RUN NDVI ANALYSIS";
 
                 },
 
-                1400
+                1200
 
             );
 
         }
 
     );
+
+}
+
+
+/* =========================================================
+   DEMO NDVI GENERATOR
+========================================================= */
+
+function generateDemoNDVI() {
+
+    const average =
+
+        0.60 +
+        Math.random() * 0.18;
+
+
+    const minimum =
+
+        Math.max(
+
+            0.15,
+
+            average -
+            (
+                0.20 +
+                Math.random() * 0.15
+            )
+
+        );
+
+
+    const maximum =
+
+        Math.min(
+
+            0.95,
+
+            average +
+            (
+                0.10 +
+                Math.random() * 0.12
+            )
+
+        );
+
+
+    let condition;
+
+
+    if (
+        average >= 0.65
+    ) {
+
+        condition =
+            "HEALTHY";
+
+    }
+
+    else if (
+        average >= 0.40
+    ) {
+
+        condition =
+            "MODERATE";
+
+    }
+
+    else {
+
+        condition =
+            "STRESSED";
+
+    }
+
+
+    return {
+
+        average:
+            average,
+
+        minimum:
+            minimum,
+
+        maximum:
+            maximum,
+
+        condition:
+            condition
+
+    };
+
+}
+
+
+/* =========================================================
+   DISPLAY NDVI RESULTS
+========================================================= */
+
+function displayNDVIResults(
+    ndvi
+) {
+
+    if (ndviValue) {
+
+        ndviValue.textContent =
+            ndvi.average.toFixed(2);
+
+    }
+
+
+    if (stressValue) {
+
+        stressValue.textContent =
+            ndvi.condition;
+
+    }
+
+
+    const warning =
+        document.querySelector(
+            ".data-warning"
+        );
+
+
+    if (warning) {
+
+        warning.innerHTML =
+
+            `
+            <strong>LOCAL NDVI DEMONSTRATION</strong><br>
+            Average: ${ndvi.average.toFixed(2)}
+            · Minimum: ${ndvi.minimum.toFixed(2)}
+            · Maximum: ${ndvi.maximum.toFixed(2)}
+            <br><br>
+            Demonstration values only.
+            No satellite connection is being used.
+            `;
+
+    }
+
+}
+
+
+/* =========================================================
+   DEMO NDVI MAP
+========================================================= */
+
+function createDemoNDVILayer() {
+
+    if (
+        !state.map ||
+        !state.fieldLayer
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    ---------------------------------------------------------
+    REMOVE OLD NDVI
+    ---------------------------------------------------------
+    */
+
+    if (state.ndviOverlay) {
+
+        state.map.removeLayer(
+            state.ndviOverlay
+        );
+
+    }
+
+
+    /*
+    ---------------------------------------------------------
+    FIELD BOUNDS
+    ---------------------------------------------------------
+    */
+
+    const bounds =
+        state.fieldLayer.getBounds();
+
+
+    if (!bounds.isValid()) {
+
+        return;
+
+    }
+
+
+    /*
+    ---------------------------------------------------------
+    CANVAS
+    ---------------------------------------------------------
+    */
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    canvas.width =
+        900;
+
+
+    canvas.height =
+        600;
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    /*
+    ---------------------------------------------------------
+    BASE NDVI GRADIENT
+    ---------------------------------------------------------
+    */
+
+    const gradient =
+        ctx.createLinearGradient(
+
+            0,
+            0,
+
+            canvas.width,
+            canvas.height
+
+        );
+
+
+    /*
+    LOW NDVI
+    */
+
+    gradient.addColorStop(
+        0,
+        "#6b3f27"
+    );
+
+
+    /*
+    LOW-MODERATE
+    */
+
+    gradient.addColorStop(
+        0.25,
+        "#b69a3c"
+    );
+
+
+    /*
+    MODERATE
+    */
+
+    gradient.addColorStop(
+        0.50,
+        "#9bbd50"
+    );
+
+
+    /*
+    HEALTHY
+    */
+
+    gradient.addColorStop(
+        0.75,
+        "#4f8f45"
+    );
+
+
+    /*
+    HIGH
+    */
+
+    gradient.addColorStop(
+        1,
+        "#174f2a"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+
+    ctx.fillRect(
+
+        0,
+        0,
+
+        canvas.width,
+        canvas.height
+
+    );
+
+
+    /*
+    ---------------------------------------------------------
+    NATURAL FIELD VARIATION
+    ---------------------------------------------------------
+    */
+
+    for (
+        let i = 0;
+        i < 220;
+        i++
+    ) {
+
+        const x =
+            Math.random() *
+            canvas.width;
+
+
+        const y =
+            Math.random() *
+            canvas.height;
+
+
+        const radius =
+
+            10 +
+            Math.random() * 45;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+
+            x,
+            y,
+            radius,
+
+            0,
+            Math.PI * 2
+
+        );
+
+
+        ctx.fillStyle =
+
+            `rgba(255,255,255,${
+                0.01 +
+                Math.random() * 0.045
+            })`;
+
+
+        ctx.fill();
+
+    }
+
+
+    /*
+    ---------------------------------------------------------
+    NDVI IMAGE
+    ---------------------------------------------------------
+    */
+
+    const image =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+
+    /*
+    ---------------------------------------------------------
+    ADD TO MAP
+    ---------------------------------------------------------
+    */
+
+    state.ndviOverlay =
+
+        L.imageOverlay(
+
+            image,
+
+            bounds,
+
+            {
+
+                opacity:
+                    0.58,
+
+                interactive:
+                    false
+
+            }
+
+        );
+
+
+    state.ndviOverlay.addTo(
+        state.map
+    );
+
+
+    /*
+    ---------------------------------------------------------
+    BRING FIELD BOUNDARY BACK TO FRONT
+    ---------------------------------------------------------
+    */
+
+    if (
+        state.fieldLayer
+    ) {
+
+        state.fieldLayer.bringToFront();
+
+    }
 
 }
 
@@ -2941,7 +3459,14 @@ function initializeResetButton() {
 
                 state.analysisMap.fitBounds(
 
-                    state.fieldLayer.getBounds()
+                    state.fieldLayer.getBounds(),
+
+                    {
+
+                        padding:
+                            [35, 35]
+
+                    }
 
                 );
 
@@ -2995,9 +3520,13 @@ function initializeInfoBubble() {
 
         () => {
 
-            infoBubble.classList.remove(
-                "visible"
-            );
+            if (infoBubble) {
+
+                infoBubble.classList.remove(
+                    "visible"
+                );
+
+            }
 
         }
 
@@ -3020,3 +3549,84 @@ function showInfoBubble() {
     );
 
 }
+
+
+/* =========================================================
+   OPTIONAL TRACTOR ANIMATION
+========================================================= */
+
+function initializeTractor() {
+
+    const tractors =
+        document.querySelectorAll(
+            ".tractor"
+        );
+
+
+    if (!tractors.length) {
+
+        return;
+
+    }
+
+
+    tractors.forEach(
+
+        tractor => {
+
+            tractor.addEventListener(
+
+                "mouseenter",
+
+                () => {
+
+                    tractor.classList.add(
+                        "tractor-active"
+                    );
+
+                }
+
+            );
+
+
+            tractor.addEventListener(
+
+                "mouseleave",
+
+                () => {
+
+                    tractor.classList.remove(
+                        "tractor-active"
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+
+initializeTractor();
+
+
+/* =========================================================
+   SAFETY CHECK
+========================================================= */
+
+console.log(
+    "Satellite Agriculture Monitor initialized."
+);
+
+
+console.log(
+    "NDVI mode: LOCAL DEMONSTRATION"
+);
+
+
+console.log(
+    "Satellite connection: DISABLED"
+);
