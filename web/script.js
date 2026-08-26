@@ -3,10 +3,15 @@
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
- Professional Earth Observation Interface
+ Earth Observation Interface
  Designed by Ali Beltran
 ===========================================================
 */
+
+
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
 
 const missionScreen =
     document.getElementById("missionScreen");
@@ -17,14 +22,14 @@ const agricultureApp =
 const satellite =
     document.getElementById("satellite");
 
-const spectralBurst =
-    document.getElementById("spectralBurst");
-
 const canvas =
     document.getElementById("spaceCanvas");
 
 const ctx =
-    canvas.getContext("2d");
+    canvas ? canvas.getContext("2d") : null;
+
+const spectralBurst =
+    document.getElementById("spectralBurst");
 
 const targetCoordinates =
     document.getElementById("targetCoordinates");
@@ -77,10 +82,13 @@ const closeBubble =
 const resetMap =
     document.getElementById("resetMap");
 
+const mapCoordinates =
+    document.getElementById("mapCoordinates");
 
-/* =====================================================
-   STATE
-===================================================== */
+
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
 
 const state = {
 
@@ -104,16 +112,16 @@ const state = {
 
     fieldLoaded: false,
 
-    animationFrame: null,
+    stars: [],
 
-    stars: []
+    initialMapReady: false
 
 };
 
 
-/* =====================================================
+/* =========================================================
    REDUCED MOTION
-===================================================== */
+========================================================= */
 
 const reducedMotion =
     window.matchMedia(
@@ -121,11 +129,15 @@ const reducedMotion =
     ).matches;
 
 
-/* =====================================================
-   CANVAS
-===================================================== */
+/* =========================================================
+   CANVAS RESIZE
+========================================================= */
 
 function resizeCanvas() {
+
+    if (!canvas || !ctx) {
+        return;
+    }
 
     const ratio =
         window.devicePixelRatio || 1;
@@ -161,17 +173,20 @@ window.addEventListener(
 );
 
 
-/* =====================================================
-   STARS
-===================================================== */
+/* =========================================================
+   STAR FIELD
+========================================================= */
 
 function createStars() {
 
     state.stars = [];
 
+    const amount =
+        reducedMotion ? 180 : 450;
+
     for (
         let i = 0;
-        i < 450;
+        i < amount;
         i++
     ) {
 
@@ -185,8 +200,8 @@ function createStars() {
                 Math.random() * 1.4,
 
             opacity:
-                .2 +
-                Math.random() * .7,
+                0.2 +
+                Math.random() * 0.7,
 
             depth:
                 Math.random()
@@ -200,11 +215,15 @@ function createStars() {
 createStars();
 
 
-/* =====================================================
+/* =========================================================
    SPACE BACKGROUND
-===================================================== */
+========================================================= */
 
 function drawSpace() {
+
+    if (!canvas || !ctx) {
+        return;
+    }
 
     const width =
         window.innerWidth;
@@ -221,13 +240,17 @@ function drawSpace() {
     );
 
 
+    /*
+    Deep-space background
+    */
+
     const background =
         ctx.createRadialGradient(
-            width * .68,
-            height * .52,
+            width * 0.68,
+            height * 0.48,
             0,
-            width * .68,
-            height * .52,
+            width * 0.68,
+            height * 0.48,
             width
         );
 
@@ -237,7 +260,7 @@ function drawSpace() {
     );
 
     background.addColorStop(
-        .4,
+        0.4,
         "#0a1113"
     );
 
@@ -274,7 +297,7 @@ function drawSpace() {
             star.x * width +
             (
                 state.mouseX -
-                .5
+                0.5
             ) * parallax;
 
 
@@ -282,7 +305,7 @@ function drawSpace() {
             star.y * height +
             (
                 state.mouseY -
-                .5
+                0.5
             ) * parallax;
 
 
@@ -306,11 +329,11 @@ function drawSpace() {
 
 
     /*
-    Earth limb
+    Earth
     */
 
     const earthX =
-        width * .73;
+        width * 0.73;
 
     const earthY =
         height * 1.12;
@@ -319,14 +342,16 @@ function drawSpace() {
         Math.min(
             width,
             height
-        ) * .58;
+        ) * 0.58;
 
 
     const earth =
         ctx.createRadialGradient(
-            earthX - earthRadius * .2,
-            earthY - earthRadius * .3,
-            earthRadius * .1,
+            earthX -
+                earthRadius * 0.2,
+            earthY -
+                earthRadius * 0.3,
+            earthRadius * 0.1,
             earthX,
             earthY,
             earthRadius
@@ -339,12 +364,12 @@ function drawSpace() {
     );
 
     earth.addColorStop(
-        .55,
+        0.55,
         "#182628"
     );
 
     earth.addColorStop(
-        .9,
+        0.9,
         "#071012"
     );
 
@@ -371,7 +396,7 @@ function drawSpace() {
 
 
     /*
-    Atmospheric rim
+    Atmospheric edge
     */
 
     ctx.beginPath();
@@ -379,17 +404,15 @@ function drawSpace() {
     ctx.arc(
         earthX,
         earthY,
-        earthRadius * .99,
+        earthRadius * 0.99,
         Math.PI * 1.02,
         Math.PI * 1.95
     );
 
-
     ctx.strokeStyle =
         "rgba(160,205,210,.2)";
 
-    ctx.lineWidth =
-        3;
+    ctx.lineWidth = 3;
 
     ctx.stroke();
 
@@ -401,30 +424,28 @@ function drawSpace() {
     ctx.beginPath();
 
     ctx.ellipse(
-        width * .65,
-        height * .48,
-        width * .4,
-        height * .12,
-        -.12,
+        width * 0.65,
+        height * 0.48,
+        width * 0.4,
+        height * 0.12,
+        -0.12,
         0,
         Math.PI * 2
     );
 
-
     ctx.strokeStyle =
         "rgba(180,195,195,.12)";
 
-    ctx.lineWidth =
-        1;
+    ctx.lineWidth = 1;
 
     ctx.stroke();
 
 }
 
 
-/* =====================================================
-   ANIMATION
-===================================================== */
+/* =========================================================
+   SATELLITE ANIMATION
+========================================================= */
 
 function animate() {
 
@@ -436,60 +457,64 @@ function animate() {
             (
                 state.targetX -
                 state.mouseX
-            ) * .07;
+            ) * 0.07;
 
 
         state.mouseY +=
             (
                 state.targetY -
                 state.mouseY
-            ) * .07;
+            ) * 0.07;
+
+
+        if (satellite) {
+
+            const satelliteX =
+                62 +
+                state.mouseX * 13;
+
+            const satelliteY =
+                30 +
+                state.mouseY * 35;
+
+
+            satellite.style.left =
+                `${satelliteX}%`;
+
+            satellite.style.top =
+                `${satelliteY}%`;
+
+
+            satellite.style.transform =
+                `
+                translate(-50%, -50%)
+                rotate(${(
+                    state.mouseX -
+                    0.5
+                ) * 8}deg)
+                `;
+
+        }
 
 
         /*
-        Move satellite
+        Mission telemetry
         */
 
-        const satelliteX =
-            62 +
-            state.mouseX * 13;
+        if (targetCoordinates) {
 
-        const satelliteY =
-            30 +
-            state.mouseY * 35;
-
-
-        satellite.style.left =
-            `${satelliteX}%`;
-
-        satellite.style.top =
-            `${satelliteY}%`;
+            const lat =
+                39.8283 +
+                (
+                    state.mouseY -
+                    0.5
+                ) * 12;
 
 
-        satellite.style.transform =
-            `
-            translate(-50%, -50%)
-            rotate(${(
-                state.mouseX -
-                .5
-            ) * 8}deg)
-            `;
+            targetCoordinates.textContent =
+                `${lat.toFixed(3)}° N`;
 
-
-        /*
-        Telemetry coordinate
-        */
-
-        const lat =
-            39.8283 +
-            (
-                state.mouseY -
-                .5
-            ) * 12;
-
-
-        targetCoordinates.textContent =
-            `${lat.toFixed(3)}° N`;
+        }
 
 
         drawSpace();
@@ -497,19 +522,18 @@ function animate() {
     }
 
 
-    state.animationFrame =
-        requestAnimationFrame(
-            animate
-        );
+    requestAnimationFrame(
+        animate
+    );
 
 }
 
 animate();
 
 
-/* =====================================================
-   MOUSE CONTROL
-===================================================== */
+/* =========================================================
+   MOUSE / POINTER CONTROL
+========================================================= */
 
 window.addEventListener(
     "pointermove",
@@ -527,11 +551,12 @@ window.addEventListener(
 );
 
 
-/* =====================================================
-   SCROLL TRANSITION
-===================================================== */
+/* =========================================================
+   MISSION TRANSITION
+========================================================= */
 
 let scrollLocked = false;
+
 
 function launchToAgriculture() {
 
@@ -541,7 +566,6 @@ function launchToAgriculture() {
     ) {
 
         return;
-
     }
 
 
@@ -552,49 +576,107 @@ function launchToAgriculture() {
         true;
 
 
-    missionScreen.classList.add(
-        "bursting"
-    );
+    /*
+    Cosmic burst
+    */
+
+    if (missionScreen) {
+
+        missionScreen.classList.add(
+            "bursting"
+        );
+
+    }
+
+
+    /*
+    Move satellite toward Earth
+    */
+
+    if (satellite) {
+
+        satellite.style.transform =
+            `
+            translate(-50%, -50%)
+            scale(1.8)
+            rotate(18deg)
+            `;
+
+    }
 
 
     setTimeout(
         () => {
 
-            missionScreen.classList.add(
-                "departing"
-            );
+            if (missionScreen) {
+
+                missionScreen.classList.add(
+                    "departing"
+                );
+
+            }
 
         },
         450
     );
 
 
+    /*
+    Enter agriculture application
+    */
+
     setTimeout(
         () => {
 
-            missionScreen.style.display =
-                "none";
+            if (missionScreen) {
 
-            agricultureApp.classList.add(
-                "visible"
-            );
+                missionScreen.style.display =
+                    "none";
+
+            }
 
 
-            initializeMap();
+            if (agricultureApp) {
+
+                agricultureApp.classList.add(
+                    "visible"
+                );
+
+            }
 
 
             /*
-            Information bubble appears
-            after the user has entered
-            the agriculture interface.
+            IMPORTANT:
+            Initialize the map only AFTER
+            the agriculture screen exists.
             */
 
             setTimeout(
                 () => {
 
-                    infoBubble.classList.add(
-                        "visible"
-                    );
+                    initializeMap();
+
+                },
+                100
+            );
+
+
+            /*
+            Open information bubble
+            after the user has explored
+            the map for several seconds.
+            */
+
+            setTimeout(
+                () => {
+
+                    if (infoBubble) {
+
+                        infoBubble.classList.add(
+                            "visible"
+                        );
+
+                    }
 
                 },
                 4500
@@ -607,10 +689,9 @@ function launchToAgriculture() {
 }
 
 
-/*
-Scroll down or up initiates
-the mission transition.
-*/
+/* =========================================================
+   SCROLL TO ENTER
+========================================================= */
 
 window.addEventListener(
     "wheel",
@@ -621,7 +702,6 @@ window.addEventListener(
         ) {
 
             return;
-
         }
 
 
@@ -640,9 +720,9 @@ window.addEventListener(
 );
 
 
-/*
-Keyboard alternative
-*/
+/* =========================================================
+   KEYBOARD ACCESS
+========================================================= */
 
 window.addEventListener(
     "keydown",
@@ -668,25 +748,29 @@ window.addEventListener(
 );
 
 
-/* =====================================================
-   CLOSE INFO BUBBLE
-===================================================== */
+/* =========================================================
+   INFORMATION BUBBLE
+========================================================= */
 
-closeBubble.addEventListener(
-    "click",
-    () => {
+if (closeBubble) {
 
-        infoBubble.classList.remove(
-            "visible"
-        );
+    closeBubble.addEventListener(
+        "click",
+        () => {
 
-    }
-);
+            infoBubble.classList.remove(
+                "visible"
+            );
+
+        }
+    );
+
+}
 
 
-/* =====================================================
-   MAP
-===================================================== */
+/* =========================================================
+   GLOBAL WORLD MAP
+========================================================= */
 
 function initializeMap() {
 
@@ -699,12 +783,13 @@ function initializeMap() {
 
                 state.map.invalidateSize();
 
+                updateMapTelemetry();
+
             },
-            100
+            150
         );
 
         return;
-
     }
 
 
@@ -713,42 +798,90 @@ function initializeMap() {
     ) {
 
         console.error(
-            "Leaflet failed to load."
+            "Leaflet did not load."
         );
 
         return;
-
     }
 
+
+    if (
+        !fieldMap
+    ) {
+
+        console.error(
+            "Map container was not found."
+        );
+
+        return;
+    }
+
+
+    /*
+    Create global map
+    */
 
     state.map =
         L.map(
             fieldMap,
             {
 
-                zoomControl: true,
+                zoomControl:
+                    true,
 
-                attributionControl: true,
+                attributionControl:
+                    true,
 
-                minZoom: 2,
+                minZoom:
+                    2,
 
-                maxZoom: 19
+                maxZoom:
+                    19,
+
+                worldCopyJump:
+                    true,
+
+                scrollWheelZoom:
+                    true,
+
+                dragging:
+                    true,
+
+                doubleClickZoom:
+                    true,
+
+                touchZoom:
+                    true,
+
+                boxZoom:
+                    true,
+
+                keyboard:
+                    true
 
             }
         );
 
 
+    /*
+    GLOBAL VIEW
+
+    This is deliberately NOT Wyoming,
+    North Pivot, or any fake field.
+
+    */
+
     state.map.setView(
         [
-            39.8283,
-            -98.5795
+            20,
+            0
         ],
-        4
+        2
     );
 
 
     /*
-    Actual satellite imagery.
+    REAL SATELLITE IMAGERY
     */
 
     state.imageryLayer =
@@ -756,10 +889,14 @@ function initializeMap() {
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             {
 
-                maxZoom: 19,
+                maxZoom:
+                    19,
 
                 attribution:
-                    "Satellite imagery © Esri"
+                    "Satellite imagery © Esri",
+
+                crossOrigin:
+                    true
 
             }
         );
@@ -771,7 +908,7 @@ function initializeMap() {
 
 
     /*
-    Reference layer.
+    REFERENCE MAP
     */
 
     state.referenceLayer =
@@ -779,9 +916,8 @@ function initializeMap() {
             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             {
 
-                maxZoom: 19,
-
-                opacity: .65,
+                maxZoom:
+                    19,
 
                 attribution:
                     "© OpenStreetMap contributors"
@@ -790,105 +926,209 @@ function initializeMap() {
         );
 
 
+    /*
+    MAP EVENTS
+    */
+
+    state.map.on(
+        "zoomend",
+        updateMapTelemetry
+    );
+
+
+    state.map.on(
+        "moveend",
+        updateMapTelemetry
+    );
+
+
+    state.map.on(
+        "mousemove",
+        event => {
+
+            updateMapCursor(
+                event.latlng
+            );
+
+        }
+    );
+
+
+    /*
+    Give Leaflet time to calculate
+    its dimensions.
+    */
+
     setTimeout(
         () => {
 
             state.map.invalidateSize();
 
+            updateMapTelemetry();
+
         },
-        200
+        300
+    );
+
+
+    state.initialMapReady =
+        true;
+
+}
+
+
+/* =========================================================
+   MAP TELEMETRY
+========================================================= */
+
+function updateMapTelemetry() {
+
+    if (
+        !state.map
+    ) {
+
+        return;
+    }
+
+
+    const center =
+        state.map.getCenter();
+
+
+    const zoom =
+        state.map.getZoom();
+
+
+    if (
+        mapCoordinates
+    ) {
+
+        mapCoordinates.textContent =
+            `${center.lat.toFixed(4)}° / ` +
+            `${center.lng.toFixed(4)}° · ` +
+            `ZOOM ${zoom.toFixed(1)}`;
+
+    }
+
+}
+
+
+/* =========================================================
+   MAP CURSOR
+========================================================= */
+
+function updateMapCursor(
+    coordinates
+) {
+
+    /*
+    The map itself remains fully interactive.
+    This function simply keeps the
+    coordinate display current.
+    */
+
+    if (
+        !coordinates
+    ) {
+
+        return;
+    }
+
+}
+
+
+/* =========================================================
+   GEOJSON FILE INPUT
+========================================================= */
+
+if (geojsonInput) {
+
+    geojsonInput.addEventListener(
+        "change",
+        event => {
+
+            const file =
+                event.target.files[0];
+
+
+            if (file) {
+
+                readGeoJSON(
+                    file
+                );
+
+            }
+
+        }
     );
 
 }
 
 
-/* =====================================================
-   GEOJSON INPUT
-===================================================== */
+/* =========================================================
+   DRAG AND DROP
+========================================================= */
 
-geojsonInput.addEventListener(
-    "change",
-    event => {
+if (uploadBox) {
 
-        const file =
-            event.target.files[0];
+    uploadBox.addEventListener(
+        "dragover",
+        event => {
 
-        if (
-            file
-        ) {
+            event.preventDefault();
 
-            readGeoJSON(
-                file
+            uploadBox.classList.add(
+                "dragging"
             );
 
         }
-
-    }
-);
+    );
 
 
-/* =====================================================
-   DRAG / DROP
-===================================================== */
+    uploadBox.addEventListener(
+        "dragleave",
+        () => {
 
-uploadBox.addEventListener(
-    "dragover",
-    event => {
-
-        event.preventDefault();
-
-        uploadBox.classList.add(
-            "dragging"
-        );
-
-    }
-);
-
-
-uploadBox.addEventListener(
-    "dragleave",
-    () => {
-
-        uploadBox.classList.remove(
-            "dragging"
-        );
-
-    }
-);
-
-
-uploadBox.addEventListener(
-    "drop",
-    event => {
-
-        event.preventDefault();
-
-        uploadBox.classList.remove(
-            "dragging"
-        );
-
-
-        const file =
-            event.dataTransfer.files[0];
-
-
-        if (
-            file
-        ) {
-
-            readGeoJSON(
-                file
+            uploadBox.classList.remove(
+                "dragging"
             );
 
         }
-
-    }
-);
+    );
 
 
-/* =====================================================
+    uploadBox.addEventListener(
+        "drop",
+        event => {
+
+            event.preventDefault();
+
+            uploadBox.classList.remove(
+                "dragging"
+            );
+
+
+            const file =
+                event.dataTransfer.files[0];
+
+
+            if (file) {
+
+                readGeoJSON(
+                    file
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    READ GEOJSON
-===================================================== */
+========================================================= */
 
 function readGeoJSON(file) {
 
@@ -909,7 +1149,6 @@ function readGeoJSON(file) {
         );
 
         return;
-
     }
 
 
@@ -959,9 +1198,9 @@ function readGeoJSON(file) {
 }
 
 
-/* =====================================================
+/* =========================================================
    LOAD FIELD
-===================================================== */
+========================================================= */
 
 function loadField(
     data,
@@ -976,9 +1215,12 @@ function loadField(
     ) {
 
         return;
-
     }
 
+
+    /*
+    Remove previous boundary
+    */
 
     if (
         state.fieldLayer
@@ -1001,21 +1243,68 @@ function loadField(
                     style: {
 
                         color:
-                            "#e3e8e8",
+                            "#e4e9e9",
 
                         weight:
                             3,
 
                         opacity:
-                            .95,
+                            0.95,
 
                         fillColor:
                             "#8fa39b",
 
                         fillOpacity:
-                            .12
+                            0.13
 
-                    }
+                    },
+
+                    onEachFeature:
+                        function(
+                            feature,
+                            layer
+                        ) {
+
+                            layer.on(
+                                "mouseover",
+                                () => {
+
+                                    layer.setStyle(
+                                        {
+
+                                            weight:
+                                                4,
+
+                                            fillOpacity:
+                                                0.22
+
+                                        }
+                                    );
+
+                                }
+                            );
+
+
+                            layer.on(
+                                "mouseout",
+                                () => {
+
+                                    layer.setStyle(
+                                        {
+
+                                            weight:
+                                                3,
+
+                                            fillOpacity:
+                                                0.13
+
+                                        }
+                                    );
+
+                                }
+                            );
+
+                        }
 
                 }
             );
@@ -1035,20 +1324,31 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid geometry."
+                "Invalid field geometry."
             );
 
         }
 
 
-        state.map.fitBounds(
+        /*
+        FLY TO THE USER'S FIELD
+        */
+
+        state.map.flyToBounds(
             bounds,
             {
+
                 padding:
-                    [60, 60],
+                    [70, 70],
 
                 maxZoom:
-                    17
+                    17,
+
+                duration:
+                    reducedMotion
+                        ? 0
+                        : 1.8
+
             }
         );
 
@@ -1056,6 +1356,10 @@ function loadField(
         state.fieldLoaded =
             true;
 
+
+        /*
+        Calculate field information
+        */
 
         const area =
             calculateArea(
@@ -1073,6 +1377,11 @@ function loadField(
             bounds.getCenter();
 
 
+        /*
+        Generate field name
+        from filename.
+        */
+
         const cleanFilename =
             filename
                 .replace(
@@ -1087,43 +1396,106 @@ function loadField(
                     /\s+/g,
                     " "
                 )
-                .trim()
-                .replace(
-                    /\b\w/g,
-                    letter =>
-                        letter.toUpperCase()
-                );
+                .trim();
 
 
-        fieldName.textContent =
-            cleanFilename ||
-            "ACTIVE FIELD";
+        const formattedName =
+            cleanFilename
+                ? cleanFilename
+                    .replace(
+                        /\b\w/g,
+                        letter =>
+                            letter.toUpperCase()
+                    )
+                : "ACTIVE FIELD";
 
 
-        fieldMeta.textContent =
-            `${area.toFixed(2)} ACRES · ` +
-            `${perimeter.toFixed(2)} MI PERIMETER`;
+        /*
+        Update interface
+        */
+
+        if (fieldName) {
+
+            fieldName.textContent =
+                formattedName;
+
+        }
 
 
-        areaValue.textContent =
-            `${area.toFixed(2)} AC`;
+        if (fieldMeta) {
+
+            fieldMeta.textContent =
+                `${area.toFixed(2)} ACRES · ` +
+                `${perimeter.toFixed(2)} MI PERIMETER`;
+
+        }
 
 
-        perimeterValue.textContent =
-            `${perimeter.toFixed(2)} MI`;
+        if (areaValue) {
+
+            areaValue.textContent =
+                `${area.toFixed(2)} AC`;
+
+        }
 
 
-        centerValue.textContent =
-            `${center.lat.toFixed(4)}°, ${center.lng.toFixed(4)}°`;
+        if (perimeterValue) {
+
+            perimeterValue.textContent =
+                `${perimeter.toFixed(2)} MI`;
+
+        }
 
 
-        uploadPanel.style.display =
-            "none";
+        if (centerValue) {
+
+            centerValue.textContent =
+                `${center.lat.toFixed(4)}°, ` +
+                `${center.lng.toFixed(4)}°`;
+
+        }
 
 
-        fieldWorkspace.classList.remove(
-            "hidden"
-        );
+        /*
+        No fabricated satellite metrics.
+        */
+
+        if (ndviValue) {
+
+            ndviValue.textContent =
+                "—";
+
+        }
+
+
+        if (stressValue) {
+
+            stressValue.textContent =
+                "—";
+
+        }
+
+
+        /*
+        Move from world upload state
+        to field workspace.
+        */
+
+        if (uploadPanel) {
+
+            uploadPanel.style.display =
+                "none";
+
+        }
+
+
+        if (fieldWorkspace) {
+
+            fieldWorkspace.classList.remove(
+                "hidden"
+            );
+
+        }
 
 
         setTimeout(
@@ -1131,8 +1503,10 @@ function loadField(
 
                 state.map.invalidateSize();
 
+                updateMapTelemetry();
+
             },
-            200
+            250
         );
 
     }
@@ -1154,9 +1528,9 @@ function loadField(
 }
 
 
-/* =====================================================
+/* =========================================================
    AREA CALCULATION
-===================================================== */
+========================================================= */
 
 function calculateArea(
     geojson
@@ -1169,6 +1543,16 @@ function calculateArea(
     function ringArea(
         ring
     ) {
+
+        if (
+            !ring ||
+            ring.length < 3
+        ) {
+
+            return 0;
+
+        }
+
 
         const radius =
             6378137;
@@ -1245,7 +1629,6 @@ function calculateArea(
         ) {
 
             return;
-
         }
 
 
@@ -1270,10 +1653,17 @@ function calculateArea(
             geometry.coordinates.forEach(
                 polygon => {
 
-                    area +=
-                        ringArea(
-                            polygon[0]
-                        );
+                    if (
+                        polygon &&
+                        polygon[0]
+                    ) {
+
+                        area +=
+                            ringArea(
+                                polygon[0]
+                            );
+
+                    }
 
                 }
             );
@@ -1328,9 +1718,9 @@ function calculateArea(
 }
 
 
-/* =====================================================
-   PERIMETER
-===================================================== */
+/* =========================================================
+   PERIMETER CALCULATION
+========================================================= */
 
 function calculatePerimeter(
     geojson
@@ -1403,6 +1793,15 @@ function calculatePerimeter(
         ring
     ) {
 
+        if (
+            !ring ||
+            ring.length < 2
+        ) {
+
+            return;
+        }
+
+
         for (
             let i = 0;
             i < ring.length - 1;
@@ -1429,7 +1828,6 @@ function calculatePerimeter(
         ) {
 
             return;
-
         }
 
 
@@ -1510,104 +1908,167 @@ function calculatePerimeter(
 }
 
 
-/* =====================================================
-   FIELD ANALYSIS
-===================================================== */
+/* =========================================================
+   FIELD ANALYSIS BUTTON
+========================================================= */
 
-scanButton.addEventListener(
-    "click",
-    () => {
+if (scanButton) {
 
-        if (
-            !state.fieldLoaded
-        ) {
+    scanButton.addEventListener(
+        "click",
+        () => {
 
-            return;
+            if (
+                !state.fieldLoaded
+            ) {
 
-        }
-
-
-        scanButton.disabled =
-            true;
+                return;
+            }
 
 
-        scanButton.textContent =
-            "ANALYZING...";
+            scanButton.disabled =
+                true;
 
 
-        /*
-        Intentionally does not invent
-        satellite measurements.
-        */
-
-        ndviValue.textContent =
-            "PENDING";
+            scanButton.textContent =
+                "PROCESSING FIELD...";
 
 
-        stressValue.textContent =
-            "PENDING";
-
-
-        setTimeout(
-            () => {
-
-                scanButton.disabled =
-                    false;
-
-                scanButton.textContent =
-                    "RUN FIELD ANALYSIS";
+            if (ndviValue) {
 
                 ndviValue.textContent =
-                    "—";
+                    "PENDING";
+
+            }
+
+
+            if (stressValue) {
 
                 stressValue.textContent =
-                    "—";
+                    "PENDING";
 
-                alert(
-                    "Field geometry has been processed. Connect a satellite imagery or remote-sensing data source to calculate actual NDVI and crop-stress measurements."
-                );
-
-            },
-            1400
-        );
-
-    }
-);
+            }
 
 
-/* =====================================================
-   RESET MAP
-===================================================== */
+            setTimeout(
+                () => {
 
-resetMap.addEventListener(
-    "click",
-    () => {
+                    scanButton.disabled =
+                        false;
 
-        if (
-            state.fieldLayer &&
-            state.map
-        ) {
+                    scanButton.textContent =
+                        "RUN FIELD ANALYSIS";
 
-            state.map.fitBounds(
-                state.fieldLayer.getBounds(),
-                {
-                    padding:
-                        [60, 60],
 
-                    maxZoom:
-                        17
-                }
+                    if (ndviValue) {
+
+                        ndviValue.textContent =
+                            "—";
+
+                    }
+
+
+                    if (stressValue) {
+
+                        stressValue.textContent =
+                            "—";
+
+                    }
+
+
+                    alert(
+                        "Field geometry has been processed successfully. Connect a satellite remote-sensing data source to calculate actual NDVI and crop-stress measurements."
+                    );
+
+                },
+                1400
             );
 
         }
+    );
 
-    }
-);
+}
 
 
-/* =====================================================
-   IMAGERY LAYERS
-===================================================== */
+/* =========================================================
+   RESET MAP
+========================================================= */
+
+if (resetMap) {
+
+    resetMap.addEventListener(
+        "click",
+        () => {
+
+            if (
+                !state.map
+            ) {
+
+                return;
+            }
+
+
+            /*
+            If a field exists,
+            return to the field.
+
+            Otherwise return to
+            the global world view.
+            */
+
+            if (
+                state.fieldLayer
+            ) {
+
+                state.map.flyToBounds(
+                    state.fieldLayer.getBounds(),
+                    {
+
+                        padding:
+                            [70, 70],
+
+                        maxZoom:
+                            17,
+
+                        duration:
+                            reducedMotion
+                                ? 0
+                                : 1.2
+
+                    }
+                );
+
+            }
+
+            else {
+
+                state.map.flyTo(
+                    [
+                        20,
+                        0
+                    ],
+                    2,
+                    {
+
+                        duration:
+                            reducedMotion
+                                ? 0
+                                : 1.2
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MAP LAYER SWITCHING
+========================================================= */
 
 document
     .querySelectorAll(
@@ -1649,7 +2110,6 @@ document
                     ) {
 
                         return;
-
                     }
 
 
@@ -1673,6 +2133,7 @@ document
 
 
                         if (
+                            state.imageryLayer &&
                             !state.map.hasLayer(
                                 state.imageryLayer
                             )
@@ -1693,6 +2154,7 @@ document
                     ) {
 
                         if (
+                            state.imageryLayer &&
                             state.map.hasLayer(
                                 state.imageryLayer
                             )
@@ -1706,6 +2168,7 @@ document
 
 
                         if (
+                            state.referenceLayer &&
                             !state.map.hasLayer(
                                 state.referenceLayer
                             )
@@ -1724,3 +2187,10 @@ document
 
         }
     );
+
+
+/* =========================================================
+   INITIAL DRAW
+========================================================= */
+
+drawSpace();
