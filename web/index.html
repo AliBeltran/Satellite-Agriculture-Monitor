@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -12,7 +11,7 @@
 
     <meta
         name="description"
-        content="Satellite Agriculture Monitor — geospatial agricultural intelligence and field analysis."
+        content="Satellite Agriculture Monitor — agricultural intelligence through geospatial observation."
     >
 
     <meta
@@ -23,9 +22,7 @@
     <title>Satellite Agriculture Monitor</title>
 
 
-    <!-- ======================================================
-         LEAFLET
-         ====================================================== -->
+    <!-- Leaflet -->
 
     <link
         rel="stylesheet"
@@ -33,9 +30,7 @@
     >
 
 
-    <!-- ======================================================
-         APPLICATION CSS
-         ====================================================== -->
+    <!-- Application -->
 
     <link
         rel="stylesheet"
@@ -51,103 +46,330 @@
 <div class="app">
 
 
-    <!-- ======================================================
-         INTRO SCREEN
-         ====================================================== -->
+    <!-- ==================================================
+         INTERACTIVE MISSION LANDING
+         ================================================== -->
 
     <section
-        id="introScreen"
-        class="intro-screen"
-        aria-label="Application initialization"
+        id="missionScreen"
+        class="mission-screen"
     >
 
+
+        <!-- Atmospheric background -->
+
         <div
-            class="intro-grid"
+            class="mission-grid"
             aria-hidden="true"
         ></div>
 
 
         <div
-            class="intro-scan"
+            class="mission-noise"
             aria-hidden="true"
         ></div>
 
 
-        <div class="intro-content">
-
-            <div
-                class="satellite-symbol"
-                aria-hidden="true"
-            >
-                ◈
-            </div>
+        <div
+            class="mission-scan"
+            aria-hidden="true"
+        ></div>
 
 
-            <div class="intro-kicker">
-                EARTH OBSERVATION SYSTEM
-            </div>
+        <!-- Top system bar -->
+
+        <header class="mission-topbar">
 
 
-            <h1>
+            <div class="mission-brand">
 
-                SATELLITE
-
-                <span>
-                    AGRICULTURE
+                <span class="brand-mark">
+                    ◈
                 </span>
 
-                MONITOR
+                <div>
 
-            </h1>
+                    <strong>
+                        SATELLITE AGRICULTURE MONITOR
+                    </strong>
+
+                    <small>
+                        EARTH OBSERVATION / FIELD INTELLIGENCE
+                    </small>
+
+                </div>
+
+            </div>
 
 
-            <p>
-                Precision agricultural intelligence
-                through geospatial observation.
-            </p>
-
-
-            <div class="system-status">
+            <div class="mission-status">
 
                 <span class="status-dot"></span>
 
+                SYSTEM ONLINE
+
+            </div>
+
+        </header>
+
+
+
+        <!-- Main interactive scene -->
+
+        <div
+            id="missionScene"
+            class="mission-scene"
+        >
+
+
+            <!-- Orbital visualization -->
+
+            <div
+                id="orbitSystem"
+                class="orbit-system"
+                aria-hidden="true"
+            >
+
+
+                <div class="orbit orbit-one"></div>
+
+                <div class="orbit orbit-two"></div>
+
+                <div class="orbit orbit-three"></div>
+
+
+                <div class="earth">
+
+                    <div class="earth-glow"></div>
+
+                    <div class="earth-surface"></div>
+
+                    <div class="earth-latitude"></div>
+
+                    <div class="earth-longitude"></div>
+
+                </div>
+
+
+                <div class="satellite">
+
+                    <span class="satellite-body"></span>
+
+                    <span class="satellite-panel left"></span>
+
+                    <span class="satellite-panel right"></span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Hero typography -->
+
+            <div class="mission-copy">
+
+
+                <div class="mission-kicker">
+
+                    <span></span>
+
+                    EARTH OBSERVATION SYSTEM
+
+                    <span></span>
+
+                </div>
+
+
+                <h1>
+
+                    <span>SATELLITE</span>
+
+                    <span class="accent">
+                        AGRICULTURE
+                    </span>
+
+                    <span>MONITOR</span>
+
+                </h1>
+
+
+                <p class="mission-description">
+
+                    A geospatial intelligence platform
+                    for understanding agricultural landscapes
+                    from above.
+
+                </p>
+
+
+                <div class="designer">
+
+                    DESIGNED BY
+
+                    <strong>
+                        ALI BELTRAN
+                    </strong>
+
+                </div>
+
+
+                <button
+                    id="startMission"
+                    class="start-mission"
+                    type="button"
+                >
+
+                    <span class="button-ring"></span>
+
+                    <span class="button-text">
+                        START MISSION
+                    </span>
+
+                    <span class="button-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <div class="mission-hint">
+
+                    INITIALIZE FIELD INTELLIGENCE
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- Live telemetry -->
+
+            <div
+                id="telemetry"
+                class="telemetry"
+            >
+
+
+                <div class="telemetry-item">
+
+                    <span>
+                        LAT
+                    </span>
+
+                    <strong id="telemetryLat">
+                        39.8283°
+                    </strong>
+
+                </div>
+
+
+                <div class="telemetry-item">
+
+                    <span>
+                        LONG
+                    </span>
+
+                    <strong id="telemetryLong">
+                        -98.5795°
+                    </strong>
+
+                </div>
+
+
+                <div class="telemetry-item">
+
+                    <span>
+                        ORBIT
+                    </span>
+
+                    <strong>
+                        01
+                    </strong>
+
+                </div>
+
+
+                <div class="telemetry-item">
+
+                    <span>
+                        SENSOR
+                    </span>
+
+                    <strong>
+                        READY
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- Side navigation -->
+
+            <div class="mission-side-label">
+
                 <span>
-                    SYSTEM INITIALIZING
+                    01
                 </span>
 
-            </div>
-
-
-            <div class="loading-container">
-
-                <div class="loading-bar">
-
-                    <div
-                        id="loadingBar"
-                        class="loading-progress"
-                    ></div>
-
-                </div>
-
-
-                <div
-                    id="loadingText"
-                    class="loading-text"
-                >
-                    ESTABLISHING GEOSPATIAL LINK
-                </div>
+                FIELD INTELLIGENCE
 
             </div>
+
+
+            <div class="mission-side-label right">
+
+                <span>
+                    2026
+                </span>
+
+                EARTH OBSERVATION
+
+            </div>
+
 
         </div>
+
+
+
+        <!-- Bottom status -->
+
+        <footer class="mission-footer">
+
+
+            <div>
+
+                <span class="footer-dot"></span>
+
+                SATELLITE LINK ESTABLISHED
+
+            </div>
+
+
+            <div>
+                MOUSE / TRACKPAD TO EXPLORE
+            </div>
+
+
+            <div>
+                V 1.0.0
+            </div>
+
+
+        </footer>
+
 
     </section>
 
 
 
-    <!-- ======================================================
-         MAIN APPLICATION
-         ====================================================== -->
+    <!-- ==================================================
+         APPLICATION
+         ================================================== -->
 
     <main
         id="mainInterface"
@@ -155,30 +377,19 @@
     >
 
 
-        <!-- ==================================================
-             FULL SCREEN MAP
-             ================================================== -->
+        <!-- Map -->
 
         <div
             id="fieldMap"
             class="field-map"
-            aria-label="Interactive agricultural map"
         ></div>
 
-
-        <!-- ==================================================
-             MAP ATMOSPHERE
-             ================================================== -->
 
         <div
             class="map-atmosphere"
             aria-hidden="true"
         ></div>
 
-
-        <!-- ==================================================
-             ANIMATED SCAN LINE
-             ================================================== -->
 
         <div
             class="scan-line"
@@ -187,14 +398,10 @@
 
 
 
-        <!-- ==================================================
-             TOP NAVIGATION
-             ================================================== -->
+        <!-- Top navigation -->
 
         <header class="topbar">
 
-
-            <!-- BRAND -->
 
             <div class="brand">
 
@@ -222,12 +429,11 @@
             </div>
 
 
-
-            <!-- DESIGNER -->
-
             <div class="designer-credit">
 
-                DESIGNED BY
+                <span>
+                    DESIGNED BY
+                </span>
 
                 <strong>
                     ALI BELTRAN
@@ -236,45 +442,32 @@
             </div>
 
 
-
-            <!-- NAVIGATION -->
-
-            <nav
-                class="navigation"
-                aria-label="Main navigation"
-            >
+            <nav class="navigation">
 
                 <a
                     href="#"
                     class="nav-item active"
-                    data-view="overview"
                 >
                     OVERVIEW
                 </a>
 
-
                 <a
                     href="#"
                     class="nav-item"
-                    data-view="fields"
                 >
                     FIELDS
                 </a>
 
-
                 <a
                     href="#"
                     class="nav-item"
-                    data-view="satellite"
                 >
                     SATELLITE
                 </a>
 
-
                 <a
                     href="#"
                     class="nav-item"
-                    data-view="analysis"
                 >
                     ANALYSIS
                 </a>
@@ -282,28 +475,19 @@
             </nav>
 
 
-
-            <!-- SYSTEM STATUS -->
-
             <div class="system-indicator">
 
                 <span class="status-dot"></span>
 
-                <span>
-                    SYSTEM ONLINE
-                </span>
+                SYSTEM ONLINE
 
             </div>
-
 
         </header>
 
 
 
-        <!-- ==================================================
-             EMPTY STATE
-             SHOWN BEFORE FIELD UPLOAD
-             ================================================== -->
+        <!-- Empty state -->
 
         <section
             id="emptyState"
@@ -315,7 +499,7 @@
             </div>
 
 
-            <h1 class="field-title">
+            <h2 class="field-title">
 
                 SATELLITE
 
@@ -325,21 +509,18 @@
 
                 MONITOR
 
-            </h1>
+            </h2>
 
 
             <div class="field-location">
-                GEOSPATIAL AGRICULTURAL INTELLIGENCE
+                UPLOAD A FIELD TO BEGIN ANALYSIS
             </div>
 
         </section>
 
 
 
-        <!-- ==================================================
-             ACTIVE FIELD
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Active field -->
 
         <section
             id="fieldState"
@@ -363,27 +544,21 @@
                 id="fieldMeta"
                 class="field-location"
             >
-                FIELD DATA
+                FIELD BOUNDARY LOADED
             </div>
 
         </section>
 
 
 
-        <!-- ==================================================
-             FIELD UPLOAD
-             ================================================== -->
+        <!-- Upload -->
 
         <section
             id="mapUpload"
             class="map-upload"
-            aria-label="Upload field boundary"
         >
 
-            <div
-                class="upload-symbol"
-                aria-hidden="true"
-            >
+            <div class="upload-symbol">
                 ◈
             </div>
 
@@ -395,8 +570,8 @@
 
             <div class="upload-description">
 
-                Upload a field boundary to begin
-                satellite-based agricultural analysis.
+                Upload a GeoJSON field boundary
+                to initialize your agricultural analysis.
 
             </div>
 
@@ -416,17 +591,16 @@
 
 
             <div class="upload-format">
+
                 GEOJSON FIELD BOUNDARY
+
             </div>
 
         </section>
 
 
 
-        <!-- ==================================================
-             FIELD ANALYSIS
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Analysis -->
 
         <aside
             id="analysisPanel"
@@ -441,13 +615,11 @@
                         FIELD ANALYSIS
                     </div>
 
-
                     <div class="panel-title">
                         CURRENT CONDITION
                     </div>
 
                 </div>
-
 
                 <div class="panel-status">
                     READY
@@ -455,9 +627,6 @@
 
             </div>
 
-
-
-            <!-- HEALTH -->
 
             <div class="analysis-row">
 
@@ -467,13 +636,11 @@
                         FIELD HEALTH
                     </span>
 
-
                     <span class="analysis-description">
                         Overall field condition
                     </span>
 
                 </div>
-
 
                 <strong id="healthValue">
                     —
@@ -481,9 +648,6 @@
 
             </div>
 
-
-
-            <!-- NDVI -->
 
             <div class="analysis-row">
 
@@ -493,13 +657,11 @@
                         NDVI
                     </span>
 
-
                     <span class="analysis-description">
                         Vegetation index
                     </span>
 
                 </div>
-
 
                 <strong id="ndviValue">
                     —
@@ -507,9 +669,6 @@
 
             </div>
 
-
-
-            <!-- UNIFORMITY -->
 
             <div class="analysis-row">
 
@@ -519,13 +678,11 @@
                         UNIFORMITY
                     </span>
 
-
                     <span class="analysis-description">
                         Spatial consistency
                     </span>
 
                 </div>
-
 
                 <strong id="uniformityValue">
                     —
@@ -533,9 +690,6 @@
 
             </div>
 
-
-
-            <!-- STRESS -->
 
             <div class="analysis-row">
 
@@ -545,13 +699,11 @@
                         STRESS RISK
                     </span>
 
-
                     <span class="analysis-description">
                         Current assessment
                     </span>
 
                 </div>
-
 
                 <strong id="stressValue">
                     —
@@ -560,18 +712,13 @@
             </div>
 
 
-
-            <!-- FIELD SCAN BUTTON -->
-
             <button
                 id="scanButton"
                 class="scan-button"
                 type="button"
             >
 
-                <span aria-hidden="true">
-                    ◈
-                </span>
+                ◈
 
                 RUN FIELD SCAN
 
@@ -581,10 +728,7 @@
 
 
 
-        <!-- ==================================================
-             MAP LAYERS
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Layers -->
 
         <div
             id="layerPanel"
@@ -635,10 +779,7 @@
 
 
 
-        <!-- ==================================================
-             SATELLITE TIMELINE
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Timeline -->
 
         <section
             id="timeline"
@@ -650,7 +791,6 @@
                 <span>
                     SATELLITE OBSERVATIONS
                 </span>
-
 
                 <span id="timelineDate">
                     —
@@ -665,35 +805,16 @@
                 min="0"
                 max="4"
                 value="4"
-                aria-label="Satellite observation date"
             >
 
 
             <div class="timeline-dates">
 
-                <span>
-                    APR
-                </span>
-
-
-                <span>
-                    MAY
-                </span>
-
-
-                <span>
-                    JUN
-                </span>
-
-
-                <span>
-                    JUL
-                </span>
-
-
-                <span>
-                    AUG
-                </span>
+                <span>APR</span>
+                <span>MAY</span>
+                <span>JUN</span>
+                <span>JUL</span>
+                <span>AUG</span>
 
             </div>
 
@@ -701,10 +822,7 @@
 
 
 
-        <!-- ==================================================
-             MAP LEGEND
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Legend -->
 
         <div
             id="mapLegend"
@@ -713,9 +831,7 @@
 
             <div>
 
-                <span
-                    class="legend-dot healthy"
-                ></span>
+                <span class="legend-dot healthy"></span>
 
                 HEALTHY
 
@@ -724,9 +840,7 @@
 
             <div>
 
-                <span
-                    class="legend-dot watch"
-                ></span>
+                <span class="legend-dot watch"></span>
 
                 WATCH
 
@@ -735,9 +849,7 @@
 
             <div>
 
-                <span
-                    class="legend-dot alert"
-                ></span>
+                <span class="legend-dot alert"></span>
 
                 ALERT
 
@@ -747,10 +859,7 @@
 
 
 
-        <!-- ==================================================
-             MAP CONTROLS
-             HIDDEN UNTIL FIELD UPLOAD
-             ================================================== -->
+        <!-- Controls -->
 
         <div
             id="mapControls"
@@ -767,11 +876,6 @@
         </div>
 
 
-
-        <!-- ==================================================
-             APPLICATION MESSAGE
-             ================================================== -->
-
         <div
             id="appMessage"
             class="app-message"
@@ -787,23 +891,12 @@
 
 
 
-<!-- ==========================================================
-     LEAFLET JAVASCRIPT
-     ========================================================== -->
-
 <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ></script>
 
 
-
-<!-- ==========================================================
-     APPLICATION JAVASCRIPT
-     ========================================================== -->
-
-<script
-    src="script.js"
-></script>
+<script src="script.js"></script>
 
 
 </body>
