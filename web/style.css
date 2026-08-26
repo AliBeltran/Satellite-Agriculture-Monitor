@@ -1,3 +1,8 @@
+/* =========================================================
+   SATELLITE AGRICULTURE MONITOR
+   Designed by Ali Beltran
+========================================================= */
+
 * {
     box-sizing: border-box;
 }
@@ -5,207 +10,114 @@
 
 html,
 body {
-
     margin: 0;
+    padding: 0;
 
     width: 100%;
-
     min-height: 100%;
 
-    background: #050708;
+    background: #020506;
 
-    color: #e5e9e8;
+    color: #e7ecea;
 
     font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+        "Courier New",
+        Courier,
+        monospace;
 }
 
 
 body {
-
     overflow-x: hidden;
-
 }
 
 
 button,
 input {
-
     font: inherit;
-
 }
 
 
-/* =====================================================
+/* =========================================================
    FIRST SCREEN
-===================================================== */
+========================================================= */
 
-.mission-screen {
+#missionScreen {
 
-    position: fixed;
+    position: relative;
 
-    inset: 0;
+    width: 100vw;
+    height: 100vh;
 
-    z-index: 1000;
+    min-height: 700px;
 
     overflow: hidden;
 
     background:
         radial-gradient(
-            ellipse at 70% 45%,
-            #192629 0%,
-            #080d0f 45%,
-            #010203 100%
-        );
-
-    transition:
-        opacity .9s ease,
-        transform 1.2s cubic-bezier(.2,.8,.2,1);
+            ellipse at 68% 45%,
+            rgba(26, 46, 49, 0.35),
+            transparent 38%
+        ),
+        #020506;
 
 }
 
 
-.mission-screen.departing {
+/* =========================================================
+   THREE.JS
+========================================================= */
 
-    opacity: 0;
+#threeContainer {
 
-    transform:
-        scale(1.12);
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1;
 
     pointer-events: none;
 
 }
 
 
-/* =====================================================
-   THREE.JS
-===================================================== */
-
-.three-container {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 2;
-
-}
-
-
-.three-container canvas {
+#threeContainer canvas {
 
     display: block;
 
-    width: 100%;
-
-    height: 100%;
-
-}
-
-/* =====================================================
-   ATMOSPHERE
-===================================================== */
-
-.mission-atmosphere {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 3;
-
-    pointer-events: none;
-
-    background:
-
-        radial-gradient(
-            ellipse at 75% 50%,
-            transparent 20%,
-            rgba(5,10,11,.12) 55%,
-            rgba(0,0,0,.75) 100%
-        );
+    width: 100% !important;
+    height: 100% !important;
 
 }
 
 
-.mission-grid {
+/* =========================================================
+   HEADER
+========================================================= */
+
+.mission-header {
 
     position: absolute;
 
-    inset: 0;
-
-    z-index: 4;
-
-    pointer-events: none;
-
-    opacity: .07;
-
-    background-image:
-
-        linear-gradient(
-            rgba(190,210,215,.15) 1px,
-            transparent 1px
-        ),
-
-        linear-gradient(
-            90deg,
-            rgba(190,210,215,.15) 1px,
-            transparent 1px
-        );
-
-    background-size:
-        90px 90px;
-
-    mask-image:
-        radial-gradient(
-            ellipse at center,
-            black,
-            transparent 80%
-        );
-
-}
-
-
-.mission-vignette {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 5;
-
-    pointer-events: none;
-
-    background:
-
-        radial-gradient(
-            ellipse at center,
-            transparent 25%,
-            rgba(0,0,0,.25) 60%,
-            rgba(0,0,0,.92) 100%
-        );
-
-}
-
-
-/* =====================================================
-   IDENTIFICATION
-===================================================== */
-
-.mission-identification {
-
-    position: absolute;
-
-    top: 34px;
-
-    left: 40px;
+    top: 30px;
+    left: 42px;
+    right: 42px;
 
     z-index: 20;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+}
+
+
+.brand {
 
     display: flex;
 
@@ -216,82 +128,57 @@ input {
 }
 
 
-.mission-symbol {
+.brand-mark {
 
-    width: 32px;
+    width: 34px;
+    height: 34px;
 
-    height: 32px;
-
-    display: grid;
-
-    place-items: center;
-
-    border:
-        1px solid #879396;
-
-    color: #dce2e2;
-
-}
-
-
-.mission-identification strong {
-
-    display: block;
-
-    color: #e0e6e6;
-
-    font-size: 10px;
-
-    font-weight: 500;
-
-    letter-spacing: .16em;
-
-}
-
-
-.mission-identification span {
-
-    display: block;
-
-    margin-top: 5px;
-
-    color: #6e7a7d;
-
-    font-size: 8px;
-
-    letter-spacing: .13em;
-
-}
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-.mission-status {
-
-    position: absolute;
-
-    top: 34px;
-
-    right: 40px;
-
-    z-index: 20;
+    border: 1px solid
+        rgba(210, 225, 220, 0.5);
 
     display: flex;
 
-    gap: 25px;
+    align-items: center;
+    justify-content: center;
 
-    color: #687477;
+    color: #dce5e2;
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    font-size: 16px;
+
+}
+
+
+.brand-title {
+
+    color: #e1e7e5;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+}
+
+
+.brand-subtitle {
+
+    margin-top: 7px;
+
+    color: #657370;
 
     font-size: 8px;
 
-    letter-spacing: .1em;
+    letter-spacing: 2px;
+
+}
+
+
+.mission-status {
+
+    display: flex;
+
+    gap: 28px;
 
 }
 
@@ -307,134 +194,145 @@ input {
 }
 
 
-.mission-status strong {
+.mission-status span {
 
-    color: #d8dede;
+    color: #52605e;
 
-    font-weight: 500;
+    font-size: 7px;
+
+    letter-spacing: 2px;
 
 }
 
 
-/* =====================================================
-   TITLE
-===================================================== */
+.mission-status strong {
 
-.mission-title {
+    color: #bdc8c5;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-content {
 
     position: absolute;
 
-    left: 5vw;
+    z-index: 15;
 
-    top: 22vh;
-
-    z-index: 20;
-
-    pointer-events: none;
+    top: 19%;
+    left: 5%;
 
 }
 
 
-.mission-title > div {
+.hero-kicker {
 
-    color: #edf0ef;
+    margin-bottom: 25px;
+
+    color: #71807d;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+}
+
+
+.hero-content h1 {
+
+    margin: 0;
+
+    color: #f1f4f3;
 
     font-family:
-        "Arial Narrow",
-        "Helvetica Neue",
         Arial,
+        Helvetica,
         sans-serif;
 
     font-size:
-        clamp(3rem, 6.5vw, 7rem);
+        clamp(
+            64px,
+            7vw,
+            120px
+        );
 
-    font-weight: 700;
+    line-height: 0.87;
 
-    line-height: .84;
+    font-weight: 600;
 
-    letter-spacing: -.055em;
-
-}
-
-
-.mission-title > div:nth-child(2) {
-
-    color: #aeb9b7;
+    letter-spacing: -6px;
 
 }
 
 
-.mission-title p {
+.hero-content h1 span {
 
-    margin-top: 25px;
+    color: #aeb9b6;
 
-    color: #687477;
+}
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+
+.hero-content p {
+
+    margin-top: 34px;
+
+    color: #697875;
 
     font-size: 9px;
 
     line-height: 1.8;
 
-    letter-spacing: .14em;
+    letter-spacing: 2px;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    TELEMETRY
-===================================================== */
+========================================================= */
 
-.telemetry-card {
+.telemetry-panel {
 
     position: absolute;
 
-    left: 5vw;
-
-    bottom: 13vh;
-
-    width: 260px;
-
-    padding: 17px;
-
     z-index: 20;
+
+    left: 5%;
+    bottom: 13%;
+
+    width: 280px;
+
+    padding: 22px 20px;
 
     border:
         1px solid
-        rgba(150,165,167,.2);
+        rgba(155, 174, 169, 0.22);
 
     background:
-        rgba(5,9,11,.65);
+        rgba(2, 6, 7, 0.65);
 
     backdrop-filter:
-        blur(14px);
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+        blur(12px);
 
 }
 
 
-.telemetry-heading {
+.panel-title {
 
-    padding-bottom: 12px;
+    margin-bottom: 15px;
 
-    margin-bottom: 7px;
-
-    border-bottom:
-        1px solid
-        rgba(150,165,167,.15);
-
-    color: #9ba6a8;
+    color: #798784;
 
     font-size: 8px;
 
-    letter-spacing: .16em;
+    letter-spacing: 2px;
 
 }
 
@@ -445,44 +343,74 @@ input {
 
     justify-content: space-between;
 
-    gap: 20px;
+    align-items: center;
 
-    padding: 6px 0;
+    padding: 9px 0;
 
-    color: #657174;
+    border-top:
+        1px solid
+        rgba(150, 170, 165, 0.1);
 
-    font-size: 8px;
+}
+
+
+.telemetry-row span {
+
+    color: #52605d;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
 
 }
 
 
 .telemetry-row strong {
 
-    color: #c1c9ca;
+    color: #c9d2cf;
 
-    font-weight: 500;
-
-    text-align: right;
+    font-size: 8px;
 
 }
 
 
-/* =====================================================
-   INSTRUCTIONS
-===================================================== */
+/* =========================================================
+   COORDINATES
+========================================================= */
 
-.mission-instructions {
+.coordinates {
 
     position: absolute;
 
-    left: 50%;
+    z-index: 20;
 
-    bottom: 7vh;
+    right: 5%;
+    bottom: 14%;
+
+    color: #82908d;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =========================================================
+   SCROLL PROMPT
+========================================================= */
+
+.scroll-prompt {
+
+    position: absolute;
+
+    z-index: 20;
+
+    left: 50%;
+    bottom: 4%;
 
     transform:
         translateX(-50%);
-
-    z-index: 20;
 
     display: flex;
 
@@ -490,485 +418,200 @@ input {
 
     align-items: center;
 
-}
+    gap: 8px;
 
-
-.mission-instructions strong {
-
-    color: #c8d0d0;
-
-    font-size: 10px;
-
-    font-weight: 500;
-
-    letter-spacing: .18em;
+    text-align: center;
 
 }
 
 
-.mission-instructions small {
+.scroll-icon {
 
-    margin-top: 8px;
-
-    color: #626d70;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 7px;
-
-    letter-spacing: .12em;
-
-}
-
-
-.scroll-indicator {
-
-    width: 18px;
-
-    height: 29px;
-
-    margin-bottom: 13px;
+    width: 30px;
+    height: 30px;
 
     border:
-        1px solid #7f8b8d;
+        1px solid
+        rgba(210, 225, 220, 0.45);
 
-    border-radius: 10px;
+    border-radius: 50%;
 
-}
+    display: flex;
 
+    align-items: center;
+    justify-content: center;
 
-.scroll-indicator span {
-
-    display: block;
-
-    width: 3px;
-
-    height: 7px;
-
-    margin: 6px auto;
-
-    border-radius: 2px;
-
-    background: #bdc6c7;
+    color: #d5dfdc;
 
     animation:
         scrollPulse
-        1.6s
+        2s
+        ease-in-out
         infinite;
+
+}
+
+
+.scroll-prompt strong {
+
+    color: #bfc9c6;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.scroll-prompt span {
+
+    color: #52605e;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
 
 }
 
 
 @keyframes scrollPulse {
 
-    0% {
-
-        transform:
-            translateY(0);
-
-        opacity: 1;
-
-    }
-
-    70% {
-
-        transform:
-            translateY(8px);
-
-        opacity: .2;
-
-    }
-
+    0%,
     100% {
+        transform: translateY(0);
+        opacity: 0.65;
+    }
 
-        opacity: 0;
-
+    50% {
+        transform: translateY(5px);
+        opacity: 1;
     }
 
 }
 
 
-/* =====================================================
-   CREDIT
-===================================================== */
+/* =========================================================
+   DESIGNER
+========================================================= */
 
-.mission-credit {
+.designer {
 
     position: absolute;
-
-    right: 40px;
-
-    bottom: 32px;
 
     z-index: 20;
 
-    color: #626d70;
+    right: 42px;
+    bottom: 25px;
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #52605e;
 
     font-size: 8px;
 
-    letter-spacing: .15em;
+    letter-spacing: 2px;
 
 }
 
 
-.mission-credit strong {
+.designer strong {
 
-    color: #c5cdce;
-
-    font-weight: 500;
+    color: #899692;
 
 }
 
 
-/* =====================================================
-   SPECTRAL TRANSITION
-===================================================== */
+/* =========================================================
+   TRANSITION
+========================================================= */
 
-.spectral-transition {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 100;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    opacity: 0;
-
-}
-
-
-.mission-screen.transitioning
-.spectral-transition {
-
-    opacity: 1;
-
-}
-
-
-.spectral-core {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    width: 8px;
-
-    height: 8px;
-
-    transform:
-        translate(-50%,-50%);
-
-    border-radius: 50%;
-
-    background: white;
-
-    box-shadow:
-
-        0 0 30px white,
-
-        0 0 80px #b5ecff,
-
-        0 0 150px #7b7cff,
-
-        0 0 250px #ff62b5;
-
-    opacity: 0;
-
-}
-
-
-.mission-screen.transitioning
-.spectral-core {
+#missionScreen.transitioning {
 
     animation:
-        spectralCore
-        1.8s
-        ease-out
+        earthTransition
+        1.6s
+        cubic-bezier(
+            0.7,
+            0,
+            0.2,
+            1
+        )
         forwards;
 
 }
 
 
-@keyframes spectralCore {
+@keyframes earthTransition {
 
     0% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%,-50%)
-            scale(.1);
-
-    }
-
-    20% {
-
         opacity: 1;
-
+        transform: scale(1);
+        filter: brightness(1);
     }
 
-    55% {
-
-        transform:
-            translate(-50%,-50%)
-            scale(30);
-
+    35% {
+        filter: brightness(1.8);
     }
 
-    100% {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%,-50%)
-            scale(120);
-
-    }
-
-}
-
-
-/* =====================================================
-   SPECTRAL RAYS
-===================================================== */
-
-.spectral-rays {
-
-    position: absolute;
-
-    inset: -100%;
-
-    background:
-
-        conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            rgba(0,105,255,.65) 8deg,
-            transparent 18deg,
-            rgba(0,230,255,.6) 26deg,
-            transparent 37deg,
-            rgba(125,80,255,.7) 47deg,
-            transparent 59deg,
-            rgba(255,55,170,.65) 70deg,
-            transparent 82deg,
-            rgba(255,190,70,.7) 94deg,
-            transparent 108deg,
-            rgba(100,255,160,.55) 122deg,
-            transparent 140deg,
-            rgba(70,140,255,.6) 160deg,
-            transparent 180deg,
-            rgba(255,70,150,.55) 205deg,
-            transparent 220deg,
-            rgba(255,210,70,.6) 245deg,
-            transparent 270deg,
-            rgba(60,220,255,.55) 300deg,
-            transparent 325deg,
-            rgba(120,80,255,.65) 342deg,
-            transparent 360deg
-        );
-
-    opacity: 0;
-
-}
-
-
-.mission-screen.transitioning
-.spectral-rays {
-
-    animation:
-        spectralRays
-        1.7s
-        cubic-bezier(.2,.8,.2,1)
-        forwards;
-
-}
-
-
-@keyframes spectralRays {
-
-    0% {
-
-        transform:
-            rotate(0deg)
-            scale(.2);
-
-        opacity: 0;
-
-    }
-
-    20% {
-
-        opacity: .8;
-
-    }
-
-    55% {
-
-        transform:
-            rotate(70deg)
-            scale(1.2);
-
+    70% {
+        filter:
+            brightness(2.8)
+            saturate(1.8);
     }
 
     100% {
-
-        transform:
-            rotate(180deg)
-            scale(2.3);
-
         opacity: 0;
-
+        transform: scale(1.5);
+        filter:
+            brightness(4)
+            saturate(2);
     }
 
 }
 
 
-/* =====================================================
-   SPECTRAL NOISE
-===================================================== */
-
-.spectral-noise {
-
-    position: absolute;
-
-    inset: 0;
-
-    opacity: 0;
-
-    background:
-
-        repeating-linear-gradient(
-            90deg,
-            rgba(255,255,255,.04) 0px,
-            rgba(255,255,255,.04) 1px,
-            transparent 1px,
-            transparent 5px
-        );
-
-    mix-blend-mode:
-        screen;
-
-}
-
-
-.mission-screen.transitioning
-.spectral-noise {
-
-    animation:
-        spectralNoise
-        1.5s
-        ease-out
-        forwards;
-
-}
-
-
-@keyframes spectralNoise {
-
-    0% {
-
-        opacity: 0;
-
-        transform:
-            translateX(-20%);
-
-    }
-
-    40% {
-
-        opacity: .6;
-
-    }
-
-    100% {
-
-        opacity: 0;
-
-        transform:
-            translateX(20%);
-
-    }
-
-}
-
-
-/* =====================================================
-   AGRICULTURE APP
-===================================================== */
+/* =========================================================
+   SECOND SCREEN
+========================================================= */
 
 .agriculture-app {
 
-    display: none;
+    position: relative;
 
     width: 100%;
 
     min-height: 100vh;
 
-    background: #0a0f10;
+    background: #080d0e;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 0.8s ease;
 
 }
 
 
 .agriculture-app.visible {
 
-    display: block;
+    opacity: 1;
 
-    animation:
-        applicationEnter
-        .8s
-        ease;
+    visibility: visible;
 
 }
 
 
-@keyframes applicationEnter {
-
-    from {
-
-        opacity: 0;
-
-        transform:
-            scale(.985);
-
-    }
-
-    to {
-
-        opacity: 1;
-
-        transform:
-            scale(1);
-
-    }
-
-}
-
-
-/* =====================================================
+/* =========================================================
    APP HEADER
-===================================================== */
+========================================================= */
 
 .app-header {
 
     position: relative;
 
-    z-index: 100;
+    z-index: 50;
 
-    height: 72px;
+    height: 82px;
 
     display: flex;
 
@@ -976,81 +619,59 @@ input {
 
     justify-content: space-between;
 
-    padding: 0 32px;
+    padding:
+        0 34px;
 
     border-bottom:
         1px solid
-        rgba(220,230,230,.15);
+        rgba(160, 180, 175, 0.15);
 
     background:
-        rgba(5,9,10,.96);
+        rgba(5, 10, 11, 0.92);
+
+    backdrop-filter:
+        blur(15px);
 
 }
 
 
-.app-brand {
+.app-header nav {
 
     display: flex;
 
-    align-items: center;
-
-    gap: 13px;
+    gap: 8px;
 
 }
 
 
-.app-logo {
+.nav-button {
 
-    width: 32px;
+    border: 0;
 
-    height: 32px;
+    background: transparent;
 
-    display: grid;
+    color: #687571;
 
-    place-items: center;
+    padding: 9px 13px;
 
-    border:
-        1px solid #677174;
+    font-size: 8px;
 
-}
-
-
-.app-brand strong {
-
-    display: block;
-
-    color: #dce1e2;
-
-    font-size: 11px;
-
-    font-weight: 500;
-
-    letter-spacing: .13em;
+    letter-spacing: 1.5px;
 
 }
 
 
-.app-brand span {
+.nav-button.active {
 
-    display: block;
+    color: #d5ddda;
 
-    margin-top: 4px;
-
-    color: #647074;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 7px;
-
-    letter-spacing: .12em;
+    background:
+        rgba(130, 157, 145, 0.12);
 
 }
 
 
-.app-status {
+.system-online {
 
     display: flex;
 
@@ -1058,47 +679,46 @@ input {
 
     gap: 8px;
 
-    color: #b5c0bf;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #6d7976;
 
     font-size: 8px;
+
+    letter-spacing: 1.5px;
 
 }
 
 
-.app-status span {
+.system-online span {
 
     width: 6px;
-
     height: 6px;
 
     border-radius: 50%;
 
-    background: #91b6a2;
+    background: #8eb59b;
+
+    box-shadow:
+        0 0 10px
+        rgba(142, 181, 155, 0.5);
 
 }
 
 
-/* =====================================================
-   MAP
-===================================================== */
+/* =========================================================
+   WORLD MAP
+========================================================= */
 
-.earth-interface {
+.world-section {
 
     position: relative;
 
-    width: 100%;
+    height: 62vh;
 
-    height:
-        calc(100vh - 72px);
+    min-height: 480px;
 
-    min-height: 650px;
-
-    overflow: hidden;
+    border-bottom:
+        1px solid
+        rgba(160, 180, 175, 0.15);
 
 }
 
@@ -1109,196 +729,265 @@ input {
 
     inset: 0;
 
-    z-index: 1;
-
-    background: #182224;
+    background: #172020;
 
 }
 
 
-.world-map .leaflet-tile {
-
-    filter:
-        saturate(.9)
-        contrast(1.04)
-        brightness(.92);
-
-}
-
-
-.earth-overlay {
+.map-overlay-top {
 
     position: absolute;
 
-    inset: 0;
+    z-index: 10;
 
-    z-index: 2;
+    top: 24px;
+    left: 28px;
+    right: 28px;
+
+    display: flex;
+
+    justify-content: space-between;
 
     pointer-events: none;
 
-    background:
+}
 
+
+.map-label {
+
+    padding: 10px 14px;
+
+    color: #e1e7e4;
+
+    background:
+        rgba(4, 9, 10, 0.82);
+
+    border:
+        1px solid
+        rgba(220, 230, 226, 0.16);
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.map-coordinates {
+
+    padding: 10px 14px;
+
+    color: #a1afaa;
+
+    background:
+        rgba(4, 9, 10, 0.82);
+
+    font-size: 7px;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+.map-overlay-bottom {
+
+    position: absolute;
+
+    z-index: 10;
+
+    bottom: 20px;
+    left: 28px;
+    right: 28px;
+
+    display: flex;
+
+    gap: 25px;
+
+    pointer-events: none;
+
+}
+
+
+.map-overlay-bottom span {
+
+    padding: 8px 11px;
+
+    background:
+        rgba(4, 9, 10, 0.8);
+
+    color: #a0aca8;
+
+    font-size: 7px;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.workspace {
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        0.7fr 1.3fr;
+
+    gap: 40px;
+
+    padding: 75px 5%;
+
+    background:
         linear-gradient(
             180deg,
-            rgba(3,8,9,.74) 0%,
-            rgba(3,8,9,.08) 32%,
-            rgba(3,8,9,.02) 60%,
-            rgba(3,8,9,.8) 100%
+            #080d0e,
+            #0b1112
         );
 
 }
 
 
-.earth-heading {
+.workspace-intro {
 
-    position: absolute;
-
-    left: 42px;
-
-    top: 48px;
-
-    z-index: 10;
-
-    max-width: 600px;
-
-    pointer-events: none;
+    padding-top: 20px;
 
 }
 
 
-.section-label {
+.section-kicker {
 
-    color: #c0c9c7;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #72807c;
 
     font-size: 8px;
 
-    letter-spacing: .18em;
+    letter-spacing: 3px;
 
 }
 
 
-.earth-heading h1 {
+.workspace-intro h2 {
 
-    margin:
-        10px 0 15px;
+    margin: 22px 0 25px;
 
-    color: #eef2f1;
+    color: #e8eeeb;
 
-    font-size:
-        clamp(3rem,6vw,6rem);
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    line-height: .86;
+    font-size: clamp(
+        48px,
+        5vw,
+        78px
+    );
 
-    font-weight: 500;
+    line-height: 0.88;
 
-    letter-spacing: -.06em;
-
-    text-shadow:
-        0 4px 30px rgba(0,0,0,.55);
+    letter-spacing: -4px;
 
 }
 
 
-.earth-heading p {
+.workspace-intro > p {
 
-    max-width: 430px;
+    max-width: 400px;
 
-    color: #e0e6e4;
+    color: #75827f;
 
-    font-size: 13px;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 14px;
 
     line-height: 1.6;
 
 }
 
 
-/* =====================================================
-   MAP STATUS
-===================================================== */
+/* =========================================================
+   PRIVACY
+========================================================= */
 
-.earth-status {
+.privacy-note {
 
-    position: absolute;
+    max-width: 410px;
 
-    top: 48px;
+    margin-top: 42px;
 
-    right: 40px;
-
-    z-index: 10;
+    padding: 17px;
 
     display: flex;
 
-    gap: 25px;
-
-    padding:
-        13px 17px;
+    gap: 14px;
 
     border:
         1px solid
-        rgba(220,230,230,.25);
+        rgba(150, 170, 164, 0.16);
 
     background:
-        rgba(4,8,9,.68);
-
-    backdrop-filter:
-        blur(12px);
+        rgba(255,255,255,0.015);
 
 }
 
 
-.earth-status div {
+.privacy-icon {
 
-    display: flex;
+    color: #a6b6b0;
 
-    flex-direction: column;
-
-    gap: 5px;
+    font-size: 16px;
 
 }
 
 
-.earth-status span {
+.privacy-note strong {
 
-    color: #9ba5a4;
-
-    font-size: 7px;
-
-}
-
-
-.earth-status strong {
-
-    color: #e0e6e5;
+    color: #aebbb7;
 
     font-size: 8px;
 
+    letter-spacing: 1.5px;
+
 }
 
 
-/* =====================================================
+.privacy-note p {
+
+    margin: 8px 0 0;
+
+    color: #687571;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
    UPLOAD
-===================================================== */
+========================================================= */
 
-.floating-upload {
+.upload-panel {
 
-    position: absolute;
+    min-height: 390px;
 
-    left: 50%;
+    display: flex;
 
-    top: 53%;
+    align-items: center;
 
-    z-index: 20;
-
-    transform:
-        translate(-50%,-50%);
-
-    width:
-        min(560px,90%);
+    justify-content: center;
 
 }
 
@@ -1307,94 +996,66 @@ input {
 
     width: 100%;
 
-    padding:
-        42px 48px;
+    max-width: 680px;
+
+    min-height: 360px;
+
+    border:
+        1px dashed
+        rgba(170, 190, 184, 0.27);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 
-    border:
-        1px solid
-        rgba(220,230,230,.42);
-
-    background:
-        rgba(6,11,12,.8);
-
-    box-shadow:
-        0 30px 100px
-        rgba(0,0,0,.42);
-
-    backdrop-filter:
-        blur(20px);
-
     transition:
-        transform .3s ease,
-        border-color .3s ease;
+        border-color 0.25s ease,
+        background 0.25s ease;
 
 }
 
 
-.upload-box:hover {
-
-    border-color:
-        rgba(235,242,240,.65);
-
-    transform:
-        translateY(-3px);
-
-}
-
-
+.upload-box:hover,
 .upload-box.dragging {
 
     border-color:
-        #c4d4cc;
+        rgba(190, 215, 205, 0.65);
 
     background:
-        rgba(80,110,95,.3);
-
-    transform:
-        scale(1.02);
+        rgba(120, 150, 135, 0.035);
 
 }
 
 
 .upload-symbol {
 
-    margin-bottom: 15px;
+    color: #bdc9c5;
 
-    font-size: 26px;
+    font-size: 36px;
+
+    margin-bottom: 20px;
 
 }
 
 
-.upload-kicker {
+.upload-box h3 {
 
-    display: block;
+    margin: 0;
 
-    margin-bottom: 8px;
-
-    color: #aeb9b7;
+    color: #dce3e0;
 
     font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    font-size: 8px;
-
-    letter-spacing: .16em;
-
-}
-
-
-.upload-box h2 {
-
-    margin:
-        8px 0;
-
-    color: #edf1f0;
-
-    font-size: 25px;
+    font-size: 22px;
 
     font-weight: 500;
 
@@ -1403,14 +1064,20 @@ input {
 
 .upload-box p {
 
-    margin:
-        12px auto 20px;
+    max-width: 470px;
 
-    color: #c1cac8;
+    margin: 15px auto 25px;
+
+    color: #707d79;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 12px;
 
     line-height: 1.6;
-
-    font-size: 13px;
 
 }
 
@@ -1419,363 +1086,61 @@ input {
 
     display: inline-block;
 
-    padding:
-        13px 21px;
+    padding: 13px 20px;
 
     border:
-        1px solid #8c9997;
+        1px solid
+        rgba(180, 200, 194, 0.45);
 
-    color: #edf2f0;
+    color: #d5dfdc;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
 
     cursor: pointer;
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 9px;
-
-    letter-spacing: .12em;
+    transition:
+        background 0.2s ease;
 
 }
 
 
 .upload-button:hover {
 
-    border-color: #e1e8e6;
-
     background:
-        rgba(220,230,225,.12);
+        rgba(180, 200, 194, 0.08);
 
 }
 
 
-.privacy-note {
+.upload-meta {
 
-    display: flex;
+    margin-top: 18px;
 
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 8px;
-
-    margin-top: 20px;
-
-    color: #b6c0be;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #4f5d5a;
 
     font-size: 7px;
 
-}
-
-
-.privacy-dot {
-
-    width: 5px;
-
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: #9ab9a8;
+    letter-spacing: 2px;
 
 }
 
 
-/* =====================================================
-   TRACTOR
-===================================================== */
-
-.tractor-track {
-
-    position: absolute;
-
-    left: 0;
-
-    right: 0;
-
-    bottom: 0;
-
-    height: 43px;
-
-    z-index: 25;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            to top,
-            rgba(4,8,8,.95),
-            rgba(4,8,8,.18)
-        );
-
-    border-top:
-        1px solid
-        rgba(230,240,235,.15);
-
-}
-
-
-.tractor {
-
-    position: absolute;
-
-    left: -70px;
-
-    bottom: 8px;
-
-    width: 55px;
-
-    height: 28px;
-
-    animation:
-        tractorJourney
-        30s
-        linear
-        infinite;
-
-}
-
-
-@keyframes tractorJourney {
-
-    from {
-
-        left: -70px;
-
-    }
-
-    to {
-
-        left:
-            calc(100% + 70px);
-
-    }
-
-}
-
-
-.tractor-cabin {
-
-    position: absolute;
-
-    left: 18px;
-
-    top: 0;
-
-    width: 22px;
-
-    height: 17px;
-
-    border:
-        1px solid #d0d7d3;
-
-    background: #56625e;
-
-}
-
-
-.tractor-window {
-
-    position: absolute;
-
-    left: 4px;
-
-    top: 3px;
-
-    width: 12px;
-
-    height: 8px;
-
-    background:
-        rgba(120,150,155,.55);
-
-}
-
-
-.tractor-body {
-
-    position: absolute;
-
-    left: 11px;
-
-    top: 16px;
-
-    width: 35px;
-
-    height: 10px;
-
-    background: #6e7975;
-
-}
-
-
-.tractor-wheel {
-
-    position: absolute;
-
-    bottom: -5px;
-
-    border:
-        2px solid #b4bfba;
-
-    background: #111718;
-
-    border-radius: 50%;
-
-}
-
-
-.tractor-wheel.rear {
-
-    left: 12px;
-
-    width: 14px;
-
-    height: 14px;
-
-}
-
-
-.tractor-wheel.front {
-
-    right: 4px;
-
-    width: 9px;
-
-    height: 9px;
-
-}
-
-
-.tractor-exhaust {
-
-    position: absolute;
-
-    left: 7px;
-
-    top: 7px;
-
-    width: 3px;
-
-    height: 10px;
-
-    background: #343d3d;
-
-}
-
-
-/* =====================================================
-   MAP INSTRUCTIONS
-===================================================== */
-
-.map-instructions {
-
-    position: absolute;
-
-    left: 50%;
-
-    bottom: 70px;
-
-    z-index: 15;
-
-    transform:
-        translateX(-50%);
-
-    display: flex;
-
-    gap: 25px;
-
-    padding:
-        9px 15px;
-
-    border:
-        1px solid
-        rgba(220,230,230,.22);
-
-    background:
-        rgba(4,8,9,.7);
-
-    backdrop-filter:
-        blur(10px);
-
-    color: #c1cbca;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 7px;
-
-}
-
-
-/* =====================================================
+/* =========================================================
    FIELD WORKSPACE
-===================================================== */
+========================================================= */
 
 .field-workspace {
 
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 50;
-
-    overflow: auto;
-
-    padding:
-        100px 5vw;
-
-    background:
-        rgba(5,9,10,.96);
-
-    backdrop-filter:
-        blur(10px);
-
-    animation:
-        workspaceEnter
-        .7s
-        ease;
+    grid-column: 1 / -1;
 
 }
 
 
-.hidden {
+.field-workspace.hidden {
 
-    display: none !important;
-
-}
-
-
-@keyframes workspaceEnter {
-
-    from {
-
-        opacity: 0;
-
-        transform:
-            scale(1.02);
-
-    }
-
-    to {
-
-        opacity: 1;
-
-        transform:
-            scale(1);
-
-    }
+    display: none;
 
 }
 
@@ -1784,26 +1149,38 @@ input {
 
     display: flex;
 
-    align-items: end;
+    align-items: flex-end;
 
     justify-content: space-between;
 
-    gap: 30px;
+    margin-bottom: 30px;
 
-    margin-bottom: 25px;
+}
+
+
+.field-kicker {
+
+    color: #71807b;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
 
 }
 
 
 .field-header h2 {
 
-    margin:
-        8px 0;
+    margin: 9px 0 7px;
 
-    color: #e1e6e6;
+    color: #e8eeeb;
 
-    font-size:
-        clamp(2rem,5vw,4rem);
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 40px;
 
     font-weight: 500;
 
@@ -1814,230 +1191,248 @@ input {
 
     margin: 0;
 
-    color: #879290;
-
-    font-size: 12px;
-
-}
-
-
-.primary-button {
-
-    padding:
-        13px 18px;
-
-    border:
-        1px solid #788582;
-
-    background: #101617;
-
-    color: #d7dddd;
-
-    cursor: pointer;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #65736f;
 
     font-size: 8px;
 
+    letter-spacing: 1.5px;
+
 }
 
 
-/* =====================================================
-   WORKSPACE
-===================================================== */
+.scan-button {
 
-.workspace-grid {
+    padding: 13px 20px;
+
+    border:
+        1px solid
+        rgba(180, 200, 194, 0.4);
+
+    background:
+        rgba(120, 150, 135, 0.06);
+
+    color: #d5dfdc;
+
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+}
+
+
+.scan-button:hover {
+
+    background:
+        rgba(120, 150, 135, 0.14);
+
+}
+
+
+.scan-button:disabled {
+
+    opacity: 0.5;
+
+    cursor: wait;
+
+}
+
+
+.field-grid {
 
     display: grid;
 
     grid-template-columns:
-        minmax(0,1fr)
-        310px;
+        0.7fr 0.7fr 1.6fr;
 
-    gap: 20px;
+    gap: 16px;
 
 }
 
 
-.map-card,
-.analysis-card {
+.field-analysis-card {
+
+    min-height: 270px;
+
+    padding: 23px;
 
     border:
-        1px solid #2a3435;
+        1px solid
+        rgba(160, 180, 175, 0.16);
 
-    background: #0a0e0f;
+    background:
+        rgba(255,255,255,0.015);
 
 }
 
 
-.map-toolbar {
+.card-title {
 
-    height: 48px;
+    margin-bottom: 20px;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding:
-        0 16px;
-
-    border-bottom:
-        1px solid #2a3435;
-
-    color: #9ba5a5;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    color: #72807c;
 
     font-size: 8px;
 
-}
-
-
-.map-toolbar button {
-
-    border: 0;
-
-    background: transparent;
-
-    color: #aeb8b7;
-
-    cursor: pointer;
-
-}
-
-
-.analysis-map-preview {
-
-    height: 500px;
-
-    background: #162021;
-
-}
-
-
-.analysis-card {
-
-    padding: 20px;
-
-}
-
-
-.card-label {
-
-    padding-bottom: 15px;
-
-    border-bottom:
-        1px solid #242c2e;
-
-    color: #8d9998;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
+    letter-spacing: 2px;
 
 }
 
 
 .metric {
 
+    padding: 15px 0;
+
+    border-top:
+        1px solid
+        rgba(160,180,175,0.1);
+
     display: flex;
 
-    justify-content: space-between;
+    flex-direction: column;
 
-    padding:
-        18px 0;
-
-    border-bottom:
-        1px solid #20282a;
+    gap: 8px;
 
 }
 
 
 .metric span {
 
-    color: #84908e;
+    color: #586562;
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+    font-size: 7px;
 
-    font-size: 8px;
+    letter-spacing: 1px;
 
 }
 
 
 .metric strong {
 
-    color: #d7dddd;
+    color: #cbd5d1;
 
-    font-size: 18px;
-
-}
-
-
-.analysis-note {
-
-    color: #7c8986;
-
-    font-size: 11px;
-
-    line-height: 1.7;
+    font-size: 15px;
 
 }
 
 
-/* =====================================================
-   INFO BUBBLE
-===================================================== */
+.data-warning {
 
-.info-bubble {
+    margin-top: 22px;
+
+    color: #596663;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   ANALYSIS MAP
+========================================================= */
+
+.analysis-preview {
+
+    position: relative;
+
+    min-height: 270px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(160,180,175,0.16);
+
+}
+
+
+#analysisMapPreview {
 
     position: absolute;
 
-    right: 28px;
+    inset: 0;
 
-    bottom: 70px;
+}
 
-    z-index: 60;
 
-    width:
-        min(370px,calc(100% - 40px));
+.map-reset {
 
-    padding:
-        20px 21px;
+    position: absolute;
+
+    z-index: 20;
+
+    top: 15px;
+    right: 15px;
+
+    padding: 8px 11px;
 
     border:
-        1px solid #52605e;
+        1px solid
+        rgba(220,230,225,0.25);
 
     background:
-        rgba(9,13,14,.96);
+        rgba(4,8,9,0.85);
+
+    color: #c7d0cd;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   INFO BUBBLE
+========================================================= */
+
+.info-bubble {
+
+    position: fixed;
+
+    z-index: 100;
+
+    right: 30px;
+    bottom: 30px;
+
+    width: 360px;
+
+    padding: 25px;
+
+    border:
+        1px solid
+        rgba(180,200,194,0.24);
+
+    background:
+        rgba(7,13,14,0.94);
+
+    backdrop-filter:
+        blur(18px);
 
     box-shadow:
-        0 20px 60px
-        rgba(0,0,0,.45);
-
-    opacity: 0;
+        0 20px 70px
+        rgba(0,0,0,0.35);
 
     transform:
-        translateY(25px);
+        translateY(30px);
+
+    opacity: 0;
 
     pointer-events: none;
 
     transition:
-        opacity .5s ease,
-        transform .5s ease;
+        opacity 0.5s ease,
+        transform 0.5s ease;
 
 }
 
@@ -2058,68 +1453,113 @@ input {
 
     position: absolute;
 
-    right: 10px;
-
-    top: 8px;
+    top: 13px;
+    right: 15px;
 
     border: 0;
 
     background: transparent;
 
-    color: #9da8a6;
-
-    cursor: pointer;
+    color: #899591;
 
     font-size: 20px;
 
-}
-
-
-.bubble-header {
-
-    display: flex;
-
-    gap: 10px;
-
-    margin-bottom: 13px;
+    cursor: pointer;
 
 }
 
 
-.bubble-header strong {
+.bubble-label {
 
-    color: #d7dddd;
+    margin-bottom: 18px;
+
+    color: #899691;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.info-bubble h3 {
+
+    margin: 0 0 15px;
+
+    color: #dce4e1;
 
     font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    font-size: 8px;
+    font-size: 18px;
+
+    font-weight: 500;
 
 }
 
 
 .info-bubble p {
 
-    margin: 0;
+    margin: 11px 0;
 
-    color: #aab5b2;
+    color: #7d8986;
 
-    font-size: 12px;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    line-height: 1.7;
+    font-size: 11px;
+
+    line-height: 1.6;
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.app-footer {
+
+    min-height: 70px;
+
+    padding:
+        0 5%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-top:
+        1px solid
+        rgba(160,180,175,0.12);
+
+    color: #56635f;
+
+    font-size: 7px;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+/* =========================================================
    LEAFLET
-===================================================== */
+========================================================= */
 
 .leaflet-container {
 
-    background: #182224;
+    font-family:
+        "Courier New",
+        monospace;
+
+    background:
+        #101718;
 
 }
 
@@ -2128,7 +1568,7 @@ input {
 
     border:
         1px solid
-        rgba(220,230,230,.3) !important;
+        rgba(200,215,210,0.2) !important;
 
 }
 
@@ -2136,12 +1576,12 @@ input {
 .leaflet-control-zoom a {
 
     background:
-        rgba(7,11,12,.9) !important;
+        rgba(5,10,11,0.85) !important;
 
-    color: #e0e6e5 !important;
+    color: #d0d9d6 !important;
 
     border-color:
-        rgba(220,230,230,.2) !important;
+        rgba(200,215,210,0.15) !important;
 
 }
 
@@ -2149,18 +1589,27 @@ input {
 .leaflet-control-attribution {
 
     background:
-        rgba(4,8,9,.8) !important;
+        rgba(5,10,11,0.75) !important;
 
-    color: #aab3b2 !important;
+    color: #87938f !important;
 
 }
 
 
-/* =====================================================
-   RESPONSIVE
-===================================================== */
+.leaflet-control-attribution a {
 
-@media (max-width: 900px) {
+    color: #a7b6b1 !important;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+    max-width: 900px
+) {
 
     .mission-status {
 
@@ -2169,89 +1618,75 @@ input {
     }
 
 
-    .earth-status {
+    .hero-content h1 {
+
+        font-size:
+            55px;
+
+        letter-spacing:
+            -4px;
+
+    }
+
+
+    .telemetry-panel {
+
+        width: 230px;
+
+    }
+
+
+    .coordinates {
 
         display: none;
 
     }
 
 
-    .workspace-grid {
+    .workspace {
 
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
 
     }
 
-}
+
+    .field-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
 
 
-@media (max-width: 650px) {
+    .app-header nav {
 
-    .mission-identification {
+        display: none;
+
+    }
+
+
+    .info-bubble {
 
         left: 20px;
-
-        top: 20px;
-
-    }
-
-
-    .mission-title {
-
-        left: 25px;
-
-        top: 20vh;
-
-    }
-
-
-    .mission-title > div {
-
-        font-size: 3.2rem;
-
-    }
-
-
-    .telemetry-card {
-
-        display: none;
-
-    }
-
-
-    .mission-credit {
-
         right: 20px;
 
         bottom: 20px;
 
-    }
-
-
-    .floating-upload {
-
-        width: 92%;
+        width: auto;
 
     }
 
 
-    .upload-box {
+    .app-footer {
 
-        padding:
-            30px 22px;
+        flex-direction:
+            column;
 
-    }
+        justify-content:
+            center;
 
-
-    .map-instructions {
-
-        width: 90%;
-
-        justify-content: center;
-
-        gap: 10px;
-
-        text-align: center;
+        gap: 8px;
 
     }
 
