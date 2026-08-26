@@ -20,9 +20,7 @@
     </title>
 
 
-    <!-- =====================================================
-         LEAFLET
-    ====================================================== -->
+    <!-- LEAFLET -->
 
     <link
         rel="stylesheet"
@@ -30,18 +28,14 @@
     >
 
 
-    <!-- =====================================================
-         THREE.JS
-    ====================================================== -->
+    <!-- THREE.JS -->
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
     ></script>
 
 
-    <!-- =====================================================
-         SITE CSS
-    ====================================================== -->
+    <!-- SITE CSS -->
 
     <link
         rel="stylesheet"
@@ -55,7 +49,8 @@
 
 
 <!-- =========================================================
-     LANDING PAGE
+     PAGE 1
+     SINGLE FULL-SCREEN LANDING PAGE
 ========================================================= -->
 
 <section id="missionScreen">
@@ -66,10 +61,7 @@
     <div id="threeContainer"></div>
 
 
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- HEADER -->
 
     <header class="mission-header">
 
@@ -97,41 +89,18 @@
         <div class="mission-status">
 
             <div>
-
-                <span>
-                    MISSION
-                </span>
-
-                <strong>
-                    READY
-                </strong>
-
+                <span>MISSION</span>
+                <strong>READY</strong>
             </div>
 
-
             <div>
-
-                <span>
-                    ORBIT
-                </span>
-
-                <strong>
-                    LEO
-                </strong>
-
+                <span>ORBIT</span>
+                <strong>LEO</strong>
             </div>
 
-
             <div>
-
-                <span>
-                    LINK
-                </span>
-
-                <strong>
-                    98.7%
-                </strong>
-
+                <span>LINK</span>
+                <strong>98.7%</strong>
             </div>
 
         </div>
@@ -139,10 +108,7 @@
     </header>
 
 
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
+    <!-- HERO -->
 
     <main class="hero-content">
 
@@ -155,9 +121,7 @@
 
             SATELLITE<br>
 
-            <span>
-                AGRICULTURE
-            </span><br>
+            <span>AGRICULTURE</span><br>
 
             MONITOR
 
@@ -175,10 +139,7 @@
     </main>
 
 
-
-    <!-- =====================================================
-         TELEMETRY
-    ====================================================== -->
+    <!-- TELEMETRY -->
 
     <aside class="telemetry-panel">
 
@@ -254,26 +215,18 @@
     </aside>
 
 
-
-    <!-- =====================================================
-         COORDINATES
-    ====================================================== -->
+    <!-- COORDINATES -->
 
     <div class="coordinates">
 
         <span id="targetCoordinates">
-
             38.000° N / 97.000° W
-
         </span>
 
     </div>
 
 
-
-    <!-- =====================================================
-         SCROLL PROMPT
-    ====================================================== -->
+    <!-- SCROLL PROMPT -->
 
     <div class="scroll-prompt">
 
@@ -292,45 +245,29 @@
     </div>
 
 
+    <!-- TRACTOR -->
 
-    <!-- =====================================================
-         TRACTOR
-    ====================================================== -->
-
-    <div class="tractor-track">
+    <div class="tractor-track landing-tractor">
 
         <div class="tractor">
 
             <div class="tractor-cab">
-
                 <div class="tractor-window"></div>
-
             </div>
-
 
             <div class="tractor-hood">
-
                 <div class="tractor-light"></div>
-
             </div>
-
 
             <div class="tractor-body"></div>
 
-
             <div class="tractor-wheel tractor-wheel-large">
-
                 <div class="wheel-hub"></div>
-
             </div>
-
 
             <div class="tractor-wheel tractor-wheel-small">
-
                 <div class="wheel-hub"></div>
-
             </div>
-
 
             <div class="tractor-exhaust"></div>
 
@@ -339,10 +276,7 @@
     </div>
 
 
-
-    <!-- =====================================================
-         DESIGNER
-    ====================================================== -->
+    <!-- DESIGNER -->
 
     <div class="designer">
 
@@ -360,40 +294,31 @@
 
 
 <!-- =========================================================
-     SECOND PAGE / AGRICULTURAL MAP
+     PAGE 2
+     SINGLE FULL-SCREEN AGRICULTURAL MAP
 ========================================================= -->
 
-<section
-    id="agricultureApp"
-    class="agriculture-app"
->
+<section id="agricultureApp">
 
 
     <!-- =====================================================
-         FULL-SCREEN WORLD MAP
+         WORLD SATELLITE MAP
     ====================================================== -->
 
-    <section class="world-section">
+    <div class="world-section">
 
-        <div
-            id="worldMap"
-            class="world-map"
-        ></div>
+        <div id="worldMap"></div>
 
 
         <div class="map-overlay-top">
 
             <div class="map-label">
-
                 GLOBAL EARTH OBSERVATION
-
             </div>
 
 
             <div class="map-coordinates">
-
-                MOVE · PAN · ZOOM
-
+                PAN · ZOOM · EXPLORE
             </div>
 
         </div>
@@ -415,23 +340,21 @@
 
         </div>
 
-    </section>
+    </div>
 
 
 
     <!-- =====================================================
-         SECOND PAGE HEADER
+         APPLICATION HEADER
     ====================================================== -->
 
     <header class="app-header">
-
 
         <div class="brand">
 
             <div class="brand-mark">
                 ◈
             </div>
-
 
             <div>
 
@@ -448,7 +371,6 @@
         </div>
 
 
-
         <nav>
 
             <button
@@ -458,7 +380,6 @@
                 OVERVIEW
             </button>
 
-
             <button
                 class="nav-button"
                 type="button"
@@ -466,14 +387,12 @@
                 FIELDS
             </button>
 
-
             <button
                 class="nav-button"
                 type="button"
             >
                 SATELLITE
             </button>
-
 
             <button
                 class="nav-button"
@@ -483,7 +402,6 @@
             </button>
 
         </nav>
-
 
 
         <div class="system-online">
@@ -499,38 +417,29 @@
 
 
     <!-- =====================================================
-         FIELD WORKSPACE
+         FIELD PANEL
     ====================================================== -->
 
-    <section class="workspace">
+    <main class="workspace">
 
-
-        <!-- INTRO -->
 
         <div class="workspace-intro">
 
             <div class="section-kicker">
-
                 AGRICULTURAL INTELLIGENCE
-
             </div>
 
 
             <h2>
-
                 FIELD<br>
                 OBSERVATION
-
             </h2>
 
 
             <p>
-
                 Upload a field boundary to begin
                 geospatial analysis.
-
             </p>
-
 
 
             <!-- PRIVACY -->
@@ -550,11 +459,9 @@
 
 
                     <p>
-
                         Imported files are processed
                         in your browser and are not
                         saved by this site.
-
                     </p>
 
                 </div>
@@ -566,7 +473,7 @@
 
 
         <!-- =================================================
-             UPLOAD PANEL
+             UPLOAD
         ================================================== -->
 
         <div
@@ -590,11 +497,9 @@
 
 
                 <p>
-
                     Drag and drop a GeoJSON file
                     here or select one from your
                     computer.
-
                 </p>
 
 
@@ -602,9 +507,7 @@
                     for="geojsonInput"
                     class="upload-button"
                 >
-
                     SELECT GEOJSON
-
                 </label>
 
 
@@ -617,9 +520,7 @@
 
 
                 <div class="upload-meta">
-
                     GEOJSON · LOCAL PROCESSING
-
                 </div>
 
             </div>
@@ -629,7 +530,7 @@
 
 
         <!-- =================================================
-             FIELD WORKSPACE
+             FIELD RESULTS
         ================================================== -->
 
         <div
@@ -637,8 +538,6 @@
             class="field-workspace hidden"
         >
 
-
-            <!-- FIELD HEADER -->
 
             <div class="field-header">
 
@@ -666,21 +565,15 @@
                     class="scan-button"
                     type="button"
                 >
-
                     ◈ RUN FIELD SCAN
-
                 </button>
 
             </div>
 
 
 
-            <!-- FIELD DATA -->
-
             <div class="field-grid">
 
-
-                <!-- GEOMETRY -->
 
                 <div class="field-analysis-card">
 
@@ -731,8 +624,6 @@
 
 
 
-                <!-- REMOTE SENSING -->
-
                 <div class="field-analysis-card">
 
                     <div class="card-title">
@@ -768,24 +659,19 @@
 
                     <p class="data-warning">
 
-                        Remote-sensing values require
-                        satellite imagery data.
+                        Actual satellite-derived
+                        values require imagery data.
 
                     </p>
 
                 </div>
 
-
             </div>
 
 
-            <!-- FIELD MAP -->
-
             <div class="analysis-preview">
 
-                <div
-                    id="analysisMapPreview"
-                ></div>
+                <div id="analysisMapPreview"></div>
 
 
                 <button
@@ -793,17 +679,14 @@
                     class="map-reset"
                     type="button"
                 >
-
                     RESET VIEW
-
                 </button>
 
             </div>
 
-
         </div>
 
-    </section>
+    </main>
 
 
 
@@ -816,104 +699,76 @@
         class="info-bubble"
     >
 
-
         <button
             id="closeBubble"
             class="close-bubble"
             type="button"
-            aria-label="Close"
         >
-
             ×
-
         </button>
 
 
         <div class="bubble-label">
-
             ◇ ABOUT THIS PROJECT
-
         </div>
 
 
         <h3>
-
             Open agricultural intelligence.
-
         </h3>
 
 
         <p>
-
             Satellite Agriculture Monitor uses
             geospatial and satellite-observation
             technologies to help visualize and
             analyze agricultural fields.
-
         </p>
 
 
         <p>
-
             It is designed to give producers,
             agronomists, conservation professionals,
             and anyone working in agriculture a
-            practical way to explore field information.
-
+            practical way to explore field information
+            and support better-informed decisions.
         </p>
 
 
         <p>
-
             This project is open source and is being
             developed to make agricultural technology
             more accessible to producers and the
             agricultural community.
-
         </p>
 
     </aside>
 
 
 
-    <!-- =====================================================
-         TRACTOR ON SECOND PAGE
-    ====================================================== -->
+    <!-- SECOND PAGE TRACTOR -->
 
-    <div class="tractor-track">
+    <div class="tractor-track map-tractor">
 
         <div class="tractor">
 
             <div class="tractor-cab">
-
                 <div class="tractor-window"></div>
-
             </div>
-
 
             <div class="tractor-hood">
-
                 <div class="tractor-light"></div>
-
             </div>
-
 
             <div class="tractor-body"></div>
 
-
             <div class="tractor-wheel tractor-wheel-large">
-
                 <div class="wheel-hub"></div>
-
             </div>
-
 
             <div class="tractor-wheel tractor-wheel-small">
-
                 <div class="wheel-hub"></div>
-
             </div>
-
 
             <div class="tractor-exhaust"></div>
 
@@ -923,9 +778,7 @@
 
 
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
+    <!-- FOOTER -->
 
     <footer class="app-footer">
 
@@ -933,11 +786,9 @@
             SATELLITE AGRICULTURE MONITOR
         </span>
 
-
         <span>
             OPEN SOURCE · LOCAL FILE PROCESSING
         </span>
-
 
         <span>
             DESIGNED BY ALI BELTRAN
@@ -950,18 +801,14 @@
 
 
 
-<!-- =========================================================
-     JAVASCRIPT LIBRARIES
-========================================================= -->
+<!-- LEAFLET -->
 
 <script
     src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
 ></script>
 
 
-<!-- =========================================================
-     APPLICATION JAVASCRIPT
-========================================================= -->
+<!-- APPLICATION -->
 
 <script src="script.js"></script>
 
