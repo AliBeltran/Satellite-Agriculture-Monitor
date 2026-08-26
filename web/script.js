@@ -3,11 +3,15 @@
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
- 3D EARTH OBSERVATION SYSTEM
+ Agricultural Earth Observation Interface
  Designed by Ali Beltran
 ===========================================================
 */
 
+
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
 
 const state = {
 
@@ -46,6 +50,7 @@ const state = {
     transitioning: false
 
 };
+
 
 
 /* =========================================================
@@ -172,8 +177,9 @@ const analysisMapPreview =
     );
 
 
+
 /* =========================================================
-   START
+   INITIALIZE
 ========================================================= */
 
 window.addEventListener(
@@ -184,23 +190,31 @@ window.addEventListener(
 
         initializeInteractions();
 
+        initializeGeoJSON();
+
+        initializeInfoBubble();
+
+        initializeScanButton();
+
+        initializeResetButton();
+
     }
 );
 
 
+
 /* =========================================================
-   INITIALIZE THREE
+   3D EARTH
 ========================================================= */
 
 function initializeEarth() {
 
     if (
-        typeof THREE ===
-        "undefined"
+        typeof THREE === "undefined"
     ) {
 
         console.error(
-            "Three.js did not load."
+            "Three.js is not loaded."
         );
 
         return;
@@ -213,7 +227,7 @@ function initializeEarth() {
     ) {
 
         console.error(
-            "#threeContainer is missing."
+            "threeContainer was not found."
         );
 
         return;
@@ -221,9 +235,17 @@ function initializeEarth() {
     }
 
 
+    /* -----------------------------------------------------
+       Scene
+    ----------------------------------------------------- */
+
     state.scene =
         new THREE.Scene();
 
+
+    /* -----------------------------------------------------
+       Camera
+    ----------------------------------------------------- */
 
     state.camera =
         new THREE.PerspectiveCamera(
@@ -241,20 +263,26 @@ function initializeEarth() {
 
 
     state.camera.position.set(
+
         0,
+
         0.15,
+
         7.2
+
     );
 
+
+    /* -----------------------------------------------------
+       Renderer
+    ----------------------------------------------------- */
 
     state.renderer =
         new THREE.WebGLRenderer({
 
-            antialias:
-                true,
+            antialias: true,
 
-            alpha:
-                true,
+            alpha: true,
 
             powerPreference:
                 "high-performance"
@@ -275,6 +303,7 @@ function initializeEarth() {
     state.renderer.setSize(
 
         window.innerWidth,
+
         window.innerHeight
 
     );
@@ -301,38 +330,55 @@ function initializeEarth() {
         new THREE.Clock();
 
 
-    createLighting();
+    /* -----------------------------------------------------
+       Build Scene
+    ----------------------------------------------------- */
 
-    createStars();
+    createEarthLighting();
+
+    createStarField();
 
     createEarth();
 
     createAtmosphere();
 
-    createClouds();
+    createCloudLayer();
 
-    animate();
+
+    /* -----------------------------------------------------
+       Begin Rendering
+    ----------------------------------------------------- */
+
+    animateEarth();
 
 }
 
 
+
 /* =========================================================
-   LIGHTING
+   EARTH LIGHTING
 ========================================================= */
 
-function createLighting() {
+function createEarthLighting() {
 
     const sun =
         new THREE.DirectionalLight(
+
             0xffffff,
+
             4.5
+
         );
 
 
     sun.position.set(
+
         -5,
+
         3,
+
         8
+
     );
 
 
@@ -343,8 +389,11 @@ function createLighting() {
 
     const ambient =
         new THREE.AmbientLight(
-            0x5f7580,
+
+            0x607967,
+
             0.65
+
         );
 
 
@@ -355,15 +404,22 @@ function createLighting() {
 
     const rim =
         new THREE.DirectionalLight(
-            0x6594b0,
+
+            0x719a76,
+
             1.2
+
         );
 
 
     rim.position.set(
+
         7,
+
         -3,
+
         -6
+
     );
 
 
@@ -374,11 +430,12 @@ function createLighting() {
 }
 
 
+
 /* =========================================================
-   STAR FIELD
+   STARS
 ========================================================= */
 
-function createStars() {
+function createStarField() {
 
     const count =
         4000;
@@ -390,7 +447,9 @@ function createStars() {
 
     const positions =
         new Float32Array(
+
             count * 3
+
         );
 
 
@@ -413,9 +472,11 @@ function createStars() {
 
         const phi =
             Math.acos(
+
                 2 *
                 Math.random() -
                 1
+
             );
 
 
@@ -449,8 +510,11 @@ function createStars() {
         "position",
 
         new THREE.BufferAttribute(
+
             positions,
+
             3
+
         )
 
     );
@@ -460,7 +524,7 @@ function createStars() {
         new THREE.PointsMaterial({
 
             color:
-                0xd9e0df,
+                0xd7dfd3,
 
             size:
                 0.045,
@@ -479,8 +543,11 @@ function createStars() {
 
     state.stars =
         new THREE.Points(
+
             geometry,
+
             material
+
         );
 
 
@@ -489,6 +556,7 @@ function createStars() {
     );
 
 }
+
 
 
 /* =========================================================
@@ -513,7 +581,7 @@ function createEarth() {
         new THREE.TextureLoader();
 
 
-    const texture =
+    const earthTexture =
         loader.load(
 
             "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
@@ -530,7 +598,7 @@ function createEarth() {
             error => {
 
                 console.warn(
-                    "Earth texture could not load.",
+                    "Earth texture failed to load.",
                     error
                 );
 
@@ -543,10 +611,10 @@ function createEarth() {
         new THREE.MeshStandardMaterial({
 
             map:
-                texture,
+                earthTexture,
 
             roughness:
-                0.9,
+                0.88,
 
             metalness:
                 0.02
@@ -565,9 +633,13 @@ function createEarth() {
 
 
     state.earth.position.set(
-        1.1,
+
+        1.15,
+
         -0.05,
+
         -0.25
+
     );
 
 
@@ -576,6 +648,7 @@ function createEarth() {
     );
 
 }
+
 
 
 /* =========================================================
@@ -600,13 +673,13 @@ function createAtmosphere() {
         new THREE.MeshBasicMaterial({
 
             color:
-                0x62afd0,
+                0x70ad76,
 
             transparent:
                 true,
 
             opacity:
-                0.16,
+                0.15,
 
             side:
                 THREE.BackSide
@@ -650,13 +723,13 @@ function createAtmosphere() {
         new THREE.MeshBasicMaterial({
 
             color:
-                0x78c9e7,
+                0x9bc59b,
 
             transparent:
                 true,
 
             opacity:
-                0.055,
+                0.045,
 
             side:
                 THREE.BackSide
@@ -686,11 +759,12 @@ function createAtmosphere() {
 }
 
 
+
 /* =========================================================
-   CLOUD LAYER
+   CLOUDS
 ========================================================= */
 
-function createClouds() {
+function createCloudLayer() {
 
     const geometry =
         new THREE.SphereGeometry(
@@ -747,14 +821,15 @@ function createClouds() {
 }
 
 
+
 /* =========================================================
-   ANIMATION
+   EARTH ANIMATION
 ========================================================= */
 
-function animate() {
+function animateEarth() {
 
     requestAnimationFrame(
-        animate
+        animateEarth
     );
 
 
@@ -762,21 +837,33 @@ function animate() {
         state.clock.getElapsedTime();
 
 
+    /* -----------------------------------------------------
+       Smooth mouse
+    ----------------------------------------------------- */
+
     state.smoothMouseX +=
+
         (
             state.mouseX -
             state.smoothMouseX
         ) *
+
         0.025;
 
 
     state.smoothMouseY +=
+
         (
             state.mouseY -
             state.smoothMouseY
         ) *
+
         0.025;
 
+
+    /* -----------------------------------------------------
+       Earth rotation
+    ----------------------------------------------------- */
 
     if (
         state.earth
@@ -798,6 +885,10 @@ function animate() {
     }
 
 
+    /* -----------------------------------------------------
+       Clouds
+    ----------------------------------------------------- */
+
     if (
         state.clouds
     ) {
@@ -808,26 +899,41 @@ function animate() {
     }
 
 
+    /* -----------------------------------------------------
+       Atmosphere pulse
+    ----------------------------------------------------- */
+
     if (
         state.atmosphere
     ) {
 
         const pulse =
+
             1 +
+
             Math.sin(
                 time * 0.5
             ) *
+
             0.006;
 
 
         state.atmosphere.scale.set(
+
             pulse,
+
             pulse,
+
             pulse
+
         );
 
     }
 
+
+    /* -----------------------------------------------------
+       Stars
+    ----------------------------------------------------- */
 
     if (
         state.stars
@@ -839,37 +945,16 @@ function animate() {
     }
 
 
-    if (
-        targetCoordinates
-    ) {
+    /* -----------------------------------------------------
+       Coordinates
+    ----------------------------------------------------- */
 
-        const latitude =
-            38 +
-            state.smoothMouseY *
-            10;
+    updateCoordinates();
 
 
-        const longitude =
-            -97 +
-            state.smoothMouseX *
-            25;
-
-
-        targetCoordinates.textContent =
-            `${Math.abs(latitude).toFixed(3)}° ${
-                latitude >= 0
-                    ? "N"
-                    : "S"
-            } / ${
-                Math.abs(longitude).toFixed(3)
-            }° ${
-                longitude >= 0
-                    ? "E"
-                    : "W"
-            }`;
-
-    }
-
+    /* -----------------------------------------------------
+       Render
+    ----------------------------------------------------- */
 
     if (
         state.renderer &&
@@ -878,8 +963,11 @@ function animate() {
     ) {
 
         state.renderer.render(
+
             state.scene,
+
             state.camera
+
         );
 
     }
@@ -887,49 +975,115 @@ function animate() {
 }
 
 
+
 /* =========================================================
-   INTERACTION
+   COORDINATES
+========================================================= */
+
+function updateCoordinates() {
+
+    if (
+        !targetCoordinates
+    ) {
+
+        return;
+
+    }
+
+
+    const latitude =
+
+        38 +
+
+        state.smoothMouseY *
+        10;
+
+
+    const longitude =
+
+        -97 +
+
+        state.smoothMouseX *
+        25;
+
+
+    targetCoordinates.textContent =
+
+        `${Math.abs(latitude).toFixed(3)}° ` +
+
+        `${latitude >= 0 ? "N" : "S"} / ` +
+
+        `${Math.abs(longitude).toFixed(3)}° ` +
+
+        `${longitude >= 0 ? "E" : "W"}`;
+
+}
+
+
+
+/* =========================================================
+   INTERACTIONS
 ========================================================= */
 
 function initializeInteractions() {
 
     window.addEventListener(
+
         "pointermove",
+
         event => {
 
             state.mouseX =
+
                 (
                     event.clientX /
                     window.innerWidth -
                     0.5
-                ) * 2;
+                ) *
+
+                2;
 
 
             state.mouseY =
+
                 (
                     event.clientY /
                     window.innerHeight -
                     0.5
-                ) * 2;
+                ) *
+
+                2;
 
         }
+
     );
 
 
     window.addEventListener(
+
         "resize",
+
         resizeThree
+
     );
 
 
+    /* -----------------------------------------------------
+       Mouse wheel transition
+    ----------------------------------------------------- */
+
     window.addEventListener(
+
         "wheel",
+
         event => {
 
             if (
                 state.transitioning
             ) {
+
                 return;
+
             }
 
 
@@ -942,32 +1096,48 @@ function initializeInteractions() {
             }
 
         },
+
         {
             passive: true
         }
+
     );
 
 
+    /* -----------------------------------------------------
+       Keyboard transition
+    ----------------------------------------------------- */
+
     window.addEventListener(
+
         "keydown",
+
         event => {
 
             if (
                 state.transitioning
             ) {
+
                 return;
+
             }
 
 
             if (
-                event.key ===
-                "ArrowDown" ||
 
                 event.key ===
-                "PageDown" ||
+                "ArrowDown"
+
+                ||
+
+                event.key ===
+                "PageDown"
+
+                ||
 
                 event.key ===
                 " "
+
             ) {
 
                 launchTransition();
@@ -975,9 +1145,11 @@ function initializeInteractions() {
             }
 
         }
+
     );
 
 }
+
 
 
 /* =========================================================
@@ -997,6 +1169,7 @@ function resizeThree() {
 
 
     state.camera.aspect =
+
         window.innerWidth /
         window.innerHeight;
 
@@ -1007,6 +1180,7 @@ function resizeThree() {
     state.renderer.setSize(
 
         window.innerWidth,
+
         window.innerHeight
 
     );
@@ -1014,8 +1188,9 @@ function resizeThree() {
 }
 
 
+
 /* =========================================================
-   TRANSITION
+   PAGE TRANSITION
 ========================================================= */
 
 function launchTransition() {
@@ -1044,18 +1219,8 @@ function launchTransition() {
     }
 
 
-    if (
-        state.earth
-    ) {
-
-        state.earth.scale.setScalar(
-            1
-        );
-
-    }
-
-
     setTimeout(
+
         () => {
 
             if (
@@ -1079,50 +1244,51 @@ function launchTransition() {
             }
 
 
-            initializeMap();
+            initializeWorldMap();
 
 
             setTimeout(
+
                 () => {
 
-                    if (
-                        infoBubble
-                    ) {
-
-                        infoBubble.classList.add(
-                            "visible"
-                        );
-
-                    }
+                    showInfoBubble();
 
                 },
+
                 3500
+
             );
 
         },
+
         1450
+
     );
 
 }
 
 
+
 /* =========================================================
-   MAP
+   WORLD MAP
 ========================================================= */
 
-function initializeMap() {
+function initializeWorldMap() {
 
     if (
         state.map
     ) {
 
         setTimeout(
+
             () => {
 
                 state.map.invalidateSize();
 
             },
+
             300
+
         );
 
         return;
@@ -1136,7 +1302,7 @@ function initializeMap() {
     ) {
 
         console.error(
-            "Leaflet did not load."
+            "Leaflet is not loaded."
         );
 
         return;
@@ -1160,6 +1326,7 @@ function initializeMap() {
 
 
     state.map =
+
         L.map(
 
             worldMap,
@@ -1185,6 +1352,9 @@ function initializeMap() {
                     true,
 
                 touchZoom:
+                    true,
+
+                zoomControl:
                     true
 
             }
@@ -1193,10 +1363,17 @@ function initializeMap() {
 
 
     state.map.setView(
+
         [20, 0],
+
         2
+
     );
 
+
+    /* -----------------------------------------------------
+       Satellite imagery
+    ----------------------------------------------------- */
 
     L.tileLayer(
 
@@ -1218,27 +1395,40 @@ function initializeMap() {
 
 
     setTimeout(
+
         () => {
 
             state.map.invalidateSize();
 
         },
+
         500
+
     );
 
 }
+
 
 
 /* =========================================================
    GEOJSON
 ========================================================= */
 
-if (
-    geojsonInput
-) {
+function initializeGeoJSON() {
+
+    if (
+        !geojsonInput
+    ) {
+
+        return;
+
+    }
+
 
     geojsonInput.addEventListener(
+
         "change",
+
         event => {
 
             const file =
@@ -1256,10 +1446,92 @@ if (
             }
 
         }
+
     );
+
+
+    /* -----------------------------------------------------
+       Drag and drop
+    ----------------------------------------------------- */
+
+    if (
+        uploadBox
+    ) {
+
+        uploadBox.addEventListener(
+
+            "dragover",
+
+            event => {
+
+                event.preventDefault();
+
+
+                uploadBox.classList.add(
+                    "dragging"
+                );
+
+            }
+
+        );
+
+
+        uploadBox.addEventListener(
+
+            "dragleave",
+
+            () => {
+
+                uploadBox.classList.remove(
+                    "dragging"
+                );
+
+            }
+
+        );
+
+
+        uploadBox.addEventListener(
+
+            "drop",
+
+            event => {
+
+                event.preventDefault();
+
+
+                uploadBox.classList.remove(
+                    "dragging"
+                );
+
+
+                const file =
+                    event.dataTransfer.files[0];
+
+
+                if (
+                    file
+                ) {
+
+                    readGeoJSON(
+                        file
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
 
 }
 
+
+
+/* =========================================================
+   READ GEOJSON
+========================================================= */
 
 function readGeoJSON(
     file
@@ -1270,6 +1542,7 @@ function readGeoJSON(
 
 
     reader.onload =
+
         event => {
 
             try {
@@ -1286,6 +1559,7 @@ function readGeoJSON(
                 );
 
             }
+
             catch (
                 error
             ) {
@@ -1311,71 +1585,6 @@ function readGeoJSON(
 }
 
 
-/* =========================================================
-   DRAG AND DROP
-========================================================= */
-
-if (
-    uploadBox
-) {
-
-    uploadBox.addEventListener(
-        "dragover",
-        event => {
-
-            event.preventDefault();
-
-            uploadBox.classList.add(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    uploadBox.addEventListener(
-        "dragleave",
-        () => {
-
-            uploadBox.classList.remove(
-                "dragging"
-            );
-
-        }
-    );
-
-
-    uploadBox.addEventListener(
-        "drop",
-        event => {
-
-            event.preventDefault();
-
-
-            uploadBox.classList.remove(
-                "dragging"
-            );
-
-
-            const file =
-                event.dataTransfer.files[0];
-
-
-            if (
-                file
-            ) {
-
-                readGeoJSON(
-                    file
-                );
-
-            }
-
-        }
-    );
-
-}
-
 
 /* =========================================================
    LOAD FIELD
@@ -1386,7 +1595,7 @@ function loadField(
     filename
 ) {
 
-    initializeMap();
+    initializeWorldMap();
 
 
     if (
@@ -1412,6 +1621,7 @@ function loadField(
     try {
 
         state.fieldLayer =
+
             L.geoJSON(
 
                 data,
@@ -1421,7 +1631,7 @@ function loadField(
                     style: {
 
                         color:
-                            "#f2f5f3",
+                            "#edf5e7",
 
                         weight:
                             3,
@@ -1430,10 +1640,10 @@ function loadField(
                             1,
 
                         fillColor:
-                            "#8da895",
+                            "#6f995c",
 
                         fillOpacity:
-                            0.22
+                            0.28
 
                     }
 
@@ -1456,7 +1666,7 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid boundary."
+                "Invalid field boundary."
             );
 
         }
@@ -1469,7 +1679,7 @@ function loadField(
             {
 
                 padding:
-                    [70, 70],
+                    [80, 80],
 
                 maxZoom:
                     17,
@@ -1485,6 +1695,10 @@ function loadField(
         state.fieldLoaded =
             true;
 
+
+        /* -------------------------------------------------
+           Calculate geometry
+        ------------------------------------------------- */
 
         const area =
             calculateArea(
@@ -1502,7 +1716,12 @@ function loadField(
             bounds.getCenter();
 
 
+        /* -------------------------------------------------
+           Field name
+        ------------------------------------------------- */
+
         let name =
+
             filename
 
                 .replace(
@@ -1530,11 +1749,18 @@ function loadField(
 
         name =
             name.replace(
+
                 /\b\w/g,
+
                 letter =>
                     letter.toUpperCase()
+
             );
 
+
+        /* -------------------------------------------------
+           Update interface
+        ------------------------------------------------- */
 
         if (
             fieldName
@@ -1551,7 +1777,9 @@ function loadField(
         ) {
 
             fieldMeta.textContent =
+
                 `${area.toFixed(2)} ACRES · ` +
+
                 `${perimeter.toFixed(2)} MI PERIMETER`;
 
         }
@@ -1562,6 +1790,7 @@ function loadField(
         ) {
 
             areaValue.textContent =
+
                 `${area.toFixed(2)} AC`;
 
         }
@@ -1572,6 +1801,7 @@ function loadField(
         ) {
 
             perimeterValue.textContent =
+
                 `${perimeter.toFixed(2)} MI`;
 
         }
@@ -1582,15 +1812,17 @@ function loadField(
         ) {
 
             centerValue.textContent =
+
                 `${center.lat.toFixed(4)}°, ` +
+
                 `${center.lng.toFixed(4)}°`;
 
         }
 
 
-        /*
-        Do not invent satellite measurements.
-        */
+        /* -------------------------------------------------
+           Do not fabricate remote sensing data
+        ------------------------------------------------- */
 
         if (
             ndviValue
@@ -1611,6 +1843,10 @@ function loadField(
 
         }
 
+
+        /* -------------------------------------------------
+           Hide upload
+        ------------------------------------------------- */
 
         if (
             uploadPanel
@@ -1634,11 +1870,15 @@ function loadField(
 
 
         initializeAnalysisMap(
+
             data,
+
             bounds
+
         );
 
     }
+
     catch (
         error
     ) {
@@ -1655,6 +1895,7 @@ function loadField(
     }
 
 }
+
 
 
 /* =========================================================
@@ -1685,6 +1926,7 @@ function initializeAnalysisMap(
 
 
     state.analysisMap =
+
         L.map(
 
             analysisMapPreview,
@@ -1692,6 +1934,9 @@ function initializeAnalysisMap(
             {
 
                 attributionControl:
+                    false,
+
+                zoomControl:
                     false
 
             }
@@ -1724,16 +1969,16 @@ function initializeAnalysisMap(
             style: {
 
                 color:
-                    "#f4f7f5",
+                    "#f0f6eb",
 
                 weight:
                     3,
 
                 fillColor:
-                    "#91aa99",
+                    "#769b62",
 
                 fillOpacity:
-                    0.2
+                    0.25
 
             }
 
@@ -1745,24 +1990,33 @@ function initializeAnalysisMap(
 
 
     state.analysisMap.fitBounds(
+
         bounds,
+
         {
+
             padding:
                 [35, 35]
+
         }
+
     );
 
 
     setTimeout(
+
         () => {
 
             state.analysisMap.invalidateSize();
 
         },
+
         300
+
     );
 
 }
+
 
 
 /* =========================================================
@@ -1800,10 +2054,13 @@ function calculateArea(
 
 
         for (
+
             let i = 0;
-            i <
-            ring.length - 1;
+
+            i < ring.length - 1;
+
             i++
+
         ) {
 
             const a =
@@ -1839,10 +2096,14 @@ function calculateArea(
 
 
             area +=
+
                 (lon2 - lon1) *
+
                 (
                     2 +
+
                     Math.sin(lat1) +
+
                     Math.sin(lat2)
                 );
 
@@ -1850,10 +2111,15 @@ function calculateArea(
 
 
         return Math.abs(
+
             area *
+
             R *
+
             R /
+
             2
+
         );
 
     }
@@ -1878,8 +2144,11 @@ function calculateArea(
         ) {
 
             totalArea +=
+
                 ringArea(
+
                     geometry.coordinates[0]
+
                 );
 
         }
@@ -1891,14 +2160,19 @@ function calculateArea(
         ) {
 
             geometry.coordinates.forEach(
+
                 polygon => {
 
                     totalArea +=
+
                         ringArea(
+
                             polygon[0]
+
                         );
 
                 }
+
             );
 
         }
@@ -1916,12 +2190,14 @@ function calculateArea(
         );
 
     }
+
     else if (
         geojson.type ===
         "FeatureCollection"
     ) {
 
         geojson.features.forEach(
+
             feature => {
 
                 processGeometry(
@@ -1929,9 +2205,11 @@ function calculateArea(
                 );
 
             }
+
         );
 
     }
+
     else {
 
         processGeometry(
@@ -1942,11 +2220,15 @@ function calculateArea(
 
 
     return (
+
         totalArea /
+
         4046.8564224
+
     );
 
 }
+
 
 
 /* =========================================================
@@ -1983,29 +2265,35 @@ function calculatePerimeter(
 
 
         const dLat =
+
             (
                 b[1] -
                 a[1]
             ) *
+
             Math.PI /
             180;
 
 
         const dLon =
+
             (
                 b[0] -
                 a[0]
             ) *
+
             Math.PI /
             180;
 
 
         const value =
+
             Math.sin(
                 dLat / 2
             ) ** 2 +
 
             Math.cos(lat1) *
+
             Math.cos(lat2) *
 
             Math.sin(
@@ -2014,14 +2302,21 @@ function calculatePerimeter(
 
 
         return (
+
             2 *
+
             R *
+
             Math.atan2(
+
                 Math.sqrt(value),
+
                 Math.sqrt(
                     1 - value
                 )
+
             )
+
         );
 
     }
@@ -2042,16 +2337,23 @@ function calculatePerimeter(
 
 
         for (
+
             let i = 0;
-            i <
-            ring.length - 1;
+
+            i < ring.length - 1;
+
             i++
+
         ) {
 
             total +=
+
                 distance(
+
                     ring[i],
+
                     ring[i + 1]
+
                 );
 
         }
@@ -2090,6 +2392,7 @@ function calculatePerimeter(
         ) {
 
             geometry.coordinates.forEach(
+
                 polygon => {
 
                     polygon.forEach(
@@ -2097,6 +2400,7 @@ function calculatePerimeter(
                     );
 
                 }
+
             );
 
         }
@@ -2114,12 +2418,14 @@ function calculatePerimeter(
         );
 
     }
+
     else if (
         geojson.type ===
         "FeatureCollection"
     ) {
 
         geojson.features.forEach(
+
             feature => {
 
                 processGeometry(
@@ -2127,9 +2433,11 @@ function calculatePerimeter(
                 );
 
             }
+
         );
 
     }
+
     else {
 
         processGeometry(
@@ -2140,23 +2448,36 @@ function calculatePerimeter(
 
 
     return (
+
         total /
+
         1609.344
+
     );
 
 }
+
 
 
 /* =========================================================
    FIELD SCAN
 ========================================================= */
 
-if (
-    scanButton
-) {
+function initializeScanButton() {
+
+    if (
+        !scanButton
+    ) {
+
+        return;
+
+    }
+
 
     scanButton.addEventListener(
+
         "click",
+
         () => {
 
             if (
@@ -2177,6 +2498,7 @@ if (
 
 
             setTimeout(
+
                 () => {
 
                     scanButton.disabled =
@@ -2188,29 +2510,44 @@ if (
 
 
                     alert(
+
                         "Field geometry processed successfully. Actual NDVI and crop-stress measurements require a connected satellite remote-sensing data source."
+
                     );
 
                 },
+
                 1400
+
             );
 
         }
+
     );
 
 }
+
 
 
 /* =========================================================
    RESET MAP
 ========================================================= */
 
-if (
-    resetMap
-) {
+function initializeResetButton() {
+
+    if (
+        !resetMap
+    ) {
+
+        return;
+
+    }
+
 
     resetMap.addEventListener(
+
         "click",
+
         () => {
 
             if (
@@ -2219,54 +2556,85 @@ if (
             ) {
 
                 state.analysisMap.fitBounds(
+
                     state.fieldLayer.getBounds()
+
                 );
 
             }
+
             else if (
                 state.map
             ) {
 
                 state.map.flyTo(
+
                     [20, 0],
+
                     2,
+
                     {
                         duration:
                             1.2
                     }
+
                 );
 
             }
 
         }
+
     );
 
 }
 
 
+
 /* =========================================================
-   CLOSE ABOUT BUBBLE
+   INFO BUBBLE
 ========================================================= */
 
-if (
-    closeBubble
-) {
+function initializeInfoBubble() {
 
-    closeBubble.addEventListener(
-        "click",
-        () => {
+    if (
+        closeBubble
+    ) {
 
-            if (
-                infoBubble
-            ) {
+        closeBubble.addEventListener(
 
-                infoBubble.classList.remove(
-                    "visible"
-                );
+            "click",
+
+            () => {
+
+                if (
+                    infoBubble
+                ) {
+
+                    infoBubble.classList.remove(
+                        "visible"
+                    );
+
+                }
 
             }
 
-        }
-    );
+        );
+
+    }
+
+}
+
+
+function showInfoBubble() {
+
+    if (
+        infoBubble
+    ) {
+
+        infoBubble.classList.add(
+            "visible"
+        );
+
+    }
 
 }
