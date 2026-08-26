@@ -1,16 +1,34 @@
-/* ==========================================================
-   SATELLITE AGRICULTURE MONITOR
-   Designed by Ali Beltran
-   ========================================================== */
-
 "use strict";
+
+/*
+============================================================
+ SATELLITE AGRICULTURE MONITOR
+ Designed by Ali Beltran
+
+ Frontend Application
+ -----------------------------------------------------------
+ • Interactive mission landing screen
+ • Mouse / trackpad parallax
+ • Live telemetry
+ • Mission transition
+ • Leaflet map
+ • GeoJSON upload
+ • Drag & drop
+ • Field boundary visualization
+ • Acreage calculation
+ • Perimeter calculation
+ • Field coordinates
+ • Map layers
+ • Field scan animation
+============================================================
+*/
 
 
 /* ==========================================================
    APPLICATION STATE
-   ========================================================== */
+========================================================== */
 
-const AppState = {
+const app = {
 
     map: null,
 
@@ -18,391 +36,666 @@ const AppState = {
 
     fieldData: null,
 
+    fieldName: null,
+
+    fieldAreaAcres: null,
+
+    fieldPerimeterMiles: null,
+
+    fieldCenter: null,
+
     fieldLoaded: false,
 
-    scanRunning: false,
+    satelliteLayer: null,
 
-    baseLayer: null,
+    ndviLayer: null,
 
-    satelliteLayer: null
+    vegetationLayer: null,
 
-};
-
-
-/* ==========================================================
-   DOM
-   ========================================================== */
-
-const elements = {
-
-    introScreen: document.getElementById("introScreen"),
-
-    loadingBar: document.getElementById("loadingBar"),
-
-    loadingText: document.getElementById("loadingText"),
-
-    mainInterface: document.getElementById("mainInterface"),
-
-    emptyState: document.getElementById("emptyState"),
-
-    fieldState: document.getElementById("fieldState"),
-
-    fieldName: document.getElementById("fieldName"),
-
-    fieldMeta: document.getElementById("fieldMeta"),
-
-    mapUpload: document.getElementById("mapUpload"),
-
-    geojsonInput: document.getElementById("geojsonInput"),
-
-    analysisPanel: document.getElementById("analysisPanel"),
-
-    layerPanel: document.getElementById("layerPanel"),
-
-    timeline: document.getElementById("timeline"),
-
-    mapLegend: document.getElementById("mapLegend"),
-
-    mapControls: document.getElementById("mapControls"),
-
-    resetMap: document.getElementById("resetMap"),
-
-    scanButton: document.getElementById("scanButton"),
-
-    appMessage: document.getElementById("appMessage"),
-
-    healthValue: document.getElementById("healthValue"),
-
-    ndviValue: document.getElementById("ndviValue"),
-
-    uniformityValue: document.getElementById("uniformityValue"),
-
-    stressValue: document.getElementById("stressValue"),
-
-    timelineSlider: document.getElementById("timelineSlider"),
-
-    timelineDate: document.getElementById("timelineDate")
+    waterStressLayer: null
 
 };
 
 
 /* ==========================================================
-   INITIALIZATION
-   ========================================================== */
+   DOM ELEMENTS
+========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+const missionScreen =
+    document.getElementById("missionScreen");
 
-    initializeIntro();
+const missionScene =
+    document.getElementById("missionScene");
+
+const orbitSystem =
+    document.getElementById("orbitSystem");
+
+const startMission =
+    document.getElementById("startMission");
+
+const telemetryLat =
+    document.getElementById("telemetryLat");
+
+const telemetryLong =
+    document.getElementById("telemetryLong");
+
+const mainInterface =
+    document.getElementById("mainInterface");
+
+const fieldMap =
+    document.getElementById("fieldMap");
+
+const emptyState =
+    document.getElementById("emptyState");
+
+const fieldState =
+    document.getElementById("fieldState");
+
+const fieldName =
+    document.getElementById("fieldName");
+
+const fieldMeta =
+    document.getElementById("fieldMeta");
+
+const mapUpload =
+    document.getElementById("mapUpload");
+
+const geojsonInput =
+    document.getElementById("geojsonInput");
+
+const analysisPanel =
+    document.getElementById("analysisPanel");
+
+const layerPanel =
+    document.getElementById("layerPanel");
+
+const timeline =
+    document.getElementById("timeline");
+
+const mapLegend =
+    document.getElementById("mapLegend");
+
+const mapControls =
+    document.getElementById("mapControls");
+
+const resetMap =
+    document.getElementById("resetMap");
+
+const appMessage =
+    document.getElementById("appMessage");
+
+const scanButton =
+    document.getElementById("scanButton");
+
+
+/* ==========================================================
+   APPLICATION START
+========================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeApplication
+);
+
+
+function initializeApplication() {
+
+    initializeMissionScreen();
 
     initializeUpload();
 
+    initializeControls();
+
     initializeNavigation();
 
-    initializeMapControls();
-
     initializeTimeline();
-
-});
-
-
-/* ==========================================================
-   INTRO ANIMATION
-   ========================================================== */
-
-function initializeIntro() {
-
-    let progress = 0;
-
-    const messages = [
-
-        "ESTABLISHING GEOSPATIAL LINK",
-
-        "LOADING EARTH OBSERVATION SYSTEM",
-
-        "INITIALIZING FIELD ENGINE",
-
-        "READY"
-
-    ];
-
-    const interval = setInterval(() => {
-
-        progress += 4;
-
-        if (elements.loadingBar) {
-
-            elements.loadingBar.style.width =
-                `${Math.min(progress, 100)}%`;
-
-        }
-
-        if (elements.loadingText) {
-
-            const index = Math.min(
-                Math.floor(progress / 30),
-                messages.length - 1
-            );
-
-            elements.loadingText.textContent =
-                messages[index];
-
-        }
-
-        if (progress >= 100) {
-
-            clearInterval(interval);
-
-            setTimeout(() => {
-
-                if (elements.introScreen) {
-
-                    elements.introScreen.classList.add("intro-complete");
-
-                }
-
-                if (elements.mainInterface) {
-
-                    elements.mainInterface.classList.add("interface-ready");
-
-                }
-
-                initializeMap();
-
-            }, 500);
-
-        }
-
-    }, 45);
 
 }
 
 
 /* ==========================================================
-   MAP
-   ========================================================== */
+   INTERACTIVE MISSION SCREEN
+========================================================== */
 
-function initializeMap() {
+function initializeMissionScreen() {
 
-    if (!window.L) {
-
-        showMessage("Mapping engine unavailable.");
-
+    if (!missionScreen) {
         return;
-
-    }
-
-    const mapElement =
-        document.getElementById("fieldMap");
-
-    if (!mapElement) {
-
-        return;
-
     }
 
 
-    AppState.map = L.map(mapElement, {
+    /*
+    ----------------------------------------------------------
+    Mouse / trackpad parallax
+    ----------------------------------------------------------
+    */
 
-        zoomControl: false,
-
-        attributionControl: true,
-
-        minZoom: 3,
-
-        maxZoom: 20,
-
-        worldCopyJump: true
-
-    }).setView([39.8283, -98.5795], 4);
-
-
-    AppState.baseLayer = L.tileLayer(
-
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
-        {
-
-            maxZoom: 19,
-
-            attribution:
-                '&copy; OpenStreetMap contributors'
-
-        }
-
+    missionScreen.addEventListener(
+        "pointermove",
+        handleMissionPointer
     );
 
 
-    AppState.baseLayer.addTo(AppState.map);
+    /*
+    ----------------------------------------------------------
+    Reset parallax when pointer leaves
+    ----------------------------------------------------------
+    */
 
+    missionScreen.addEventListener(
+        "pointerleave",
+        resetMissionParallax
+    );
+
+
+    /*
+    ----------------------------------------------------------
+    Start mission button
+    ----------------------------------------------------------
+    */
+
+    if (startMission) {
+
+        startMission.addEventListener(
+            "click",
+            launchMission
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   MISSION POINTER
+========================================================== */
+
+function handleMissionPointer(event) {
+
+    const x =
+        (event.clientX / window.innerWidth) - 0.5;
+
+    const y =
+        (event.clientY / window.innerHeight) - 0.5;
+
+
+    /*
+    ----------------------------------------------------------
+    Move entire scene slightly
+    ----------------------------------------------------------
+    */
+
+    if (missionScene) {
+
+        missionScene.style.transform =
+            `translate(
+                ${x * -10}px,
+                ${y * -7}px
+            )`;
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Rotate orbital system
+    ----------------------------------------------------------
+    */
+
+    if (orbitSystem) {
+
+        orbitSystem.style.transform =
+            `
+            translate(-50%, -50%)
+            rotateX(${65 + y * -9}deg)
+            rotateZ(${-20 + x * 10}deg)
+            `;
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Telemetry reacts to cursor
+    ----------------------------------------------------------
+    */
+
+    if (telemetryLat) {
+
+        const latitude =
+            39.8283 + (y * 12);
+
+        telemetryLat.textContent =
+            `${latitude.toFixed(4)}°`;
+
+    }
+
+
+    if (telemetryLong) {
+
+        const longitude =
+            -98.5795 + (x * 24);
+
+        telemetryLong.textContent =
+            `${longitude.toFixed(4)}°`;
+
+    }
+
+}
+
+
+/* ==========================================================
+   RESET MISSION PARALLAX
+========================================================== */
+
+function resetMissionParallax() {
+
+    if (missionScene) {
+
+        missionScene.style.transform =
+            "";
+
+    }
+
+
+    if (orbitSystem) {
+
+        orbitSystem.style.transform =
+            "";
+
+    }
+
+
+    if (telemetryLat) {
+
+        telemetryLat.textContent =
+            "39.8283°";
+
+    }
+
+
+    if (telemetryLong) {
+
+        telemetryLong.textContent =
+            "-98.5795°";
+
+    }
+
+}
+
+
+/* ==========================================================
+   START MISSION
+========================================================== */
+
+function launchMission() {
+
+    if (!missionScreen) {
+        return;
+    }
+
+
+    if (startMission) {
+
+        startMission.disabled =
+            true;
+
+
+        const buttonText =
+            startMission.querySelector(
+                ".button-text"
+            );
+
+
+        if (buttonText) {
+
+            buttonText.textContent =
+                "INITIALIZING";
+
+        }
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Mission launch effect
+    ----------------------------------------------------------
+    */
+
+    missionScreen.classList.add(
+        "launching"
+    );
+
+
+    /*
+    ----------------------------------------------------------
+    Start map during transition
+    ----------------------------------------------------------
+    */
+
+    setTimeout(
+        () => {
+
+            initializeMap();
+
+            if (mainInterface) {
+
+                mainInterface.classList.add(
+                    "interface-ready"
+                );
+
+            }
+
+        },
+        450
+    );
+
+
+    /*
+    ----------------------------------------------------------
+    Remove mission screen
+    ----------------------------------------------------------
+    */
+
+    setTimeout(
+        () => {
+
+            missionScreen.style.display =
+                "none";
+
+        },
+        1200
+    );
+
+}
+
+
+/* ==========================================================
+   MAP INITIALIZATION
+========================================================== */
+
+function initializeMap() {
+
+    /*
+    Prevent duplicate map initialization
+    */
+
+    if (app.map) {
+
+        setTimeout(
+            () => {
+
+                app.map.invalidateSize();
+
+            },
+            100
+        );
+
+        return;
+
+    }
+
+
+    if (!window.L) {
+
+        showMessage(
+            "Mapping engine could not load."
+        );
+
+        return;
+
+    }
+
+
+    if (!fieldMap) {
+
+        return;
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Create map
+    ----------------------------------------------------------
+    */
+
+    app.map =
+        L.map(
+            fieldMap,
+            {
+
+                zoomControl: false,
+
+                attributionControl: true,
+
+                minZoom: 2,
+
+                maxZoom: 20,
+
+                worldCopyJump: true
+
+            }
+        );
+
+
+    /*
+    ----------------------------------------------------------
+    Initial world view
+    ----------------------------------------------------------
+    */
+
+    app.map.setView(
+        [39.8283, -98.5795],
+        4
+    );
+
+
+    /*
+    ----------------------------------------------------------
+    Satellite-style imagery layer
+    ----------------------------------------------------------
+
+    This uses Esri World Imagery as the visual basemap.
+    It is not yet agricultural satellite analysis.
+    ----------------------------------------------------------
+    */
+
+    app.satelliteLayer =
+        L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+            "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            {
+
+                maxZoom: 19,
+
+                attribution:
+                    "Tiles &copy; Esri"
+
+            }
+        );
+
+
+    app.satelliteLayer.addTo(
+        app.map
+    );
+
+
+    /*
+    ----------------------------------------------------------
+    Add zoom controls
+    ----------------------------------------------------------
+    */
 
     L.control.zoom({
 
         position: "bottomright"
 
-    }).addTo(AppState.map);
+    }).addTo(
+        app.map
+    );
 
 
-    addMapAtmosphere();
+    /*
+    ----------------------------------------------------------
+    Force Leaflet to calculate dimensions
+    ----------------------------------------------------------
+    */
 
-}
+    setTimeout(
+        () => {
 
+            app.map.invalidateSize();
 
-/* ==========================================================
-   MAP ATMOSPHERE
-   ========================================================== */
-
-function addMapAtmosphere() {
-
-    const mapElement =
-        document.getElementById("fieldMap");
-
-    if (!mapElement) return;
-
-
-    const atmosphere =
-        document.createElement("div");
-
-    atmosphere.className =
-        "map-particle-field";
-
-
-    for (let i = 0; i < 28; i++) {
-
-        const particle =
-            document.createElement("span");
-
-        particle.className =
-            "map-particle";
-
-        particle.style.left =
-            `${Math.random() * 100}%`;
-
-        particle.style.top =
-            `${Math.random() * 100}%`;
-
-        particle.style.animationDelay =
-            `${Math.random() * 8}s`;
-
-        particle.style.animationDuration =
-            `${7 + Math.random() * 8}s`;
-
-        atmosphere.appendChild(particle);
-
-    }
-
-
-    mapElement.parentElement.appendChild(atmosphere);
+        },
+        200
+    );
 
 }
 
 
 /* ==========================================================
    GEOJSON UPLOAD
-   ========================================================== */
+========================================================== */
 
 function initializeUpload() {
 
-    if (!elements.geojsonInput) return;
+    if (!geojsonInput) {
+
+        return;
+
+    }
 
 
-    elements.geojsonInput.addEventListener(
+    /*
+    ----------------------------------------------------------
+    Standard file selection
+    ----------------------------------------------------------
+    */
+
+    geojsonInput.addEventListener(
         "change",
-        handleGeoJSONUpload
-    );
-
-
-    const uploadArea =
-        elements.mapUpload;
-
-
-    if (!uploadArea) return;
-
-
-    uploadArea.addEventListener(
-        "dragover",
         event => {
 
-            event.preventDefault();
-
-            uploadArea.classList.add("drag-active");
-
-        }
-    );
+            const file =
+                event.target.files[0];
 
 
-    uploadArea.addEventListener(
-        "dragleave",
-        () => {
+            if (!file) {
 
-            uploadArea.classList.remove("drag-active");
+                return;
 
-        }
-    );
+            }
 
 
-    uploadArea.addEventListener(
-        "drop",
-        event => {
-
-            event.preventDefault();
-
-            uploadArea.classList.remove("drag-active");
-
-            const files =
-                event.dataTransfer.files;
-
-            if (!files.length) return;
-
-            processGeoJSONFile(files[0]);
+            readGeoJSONFile(file);
 
         }
     );
+
+
+    /*
+    ----------------------------------------------------------
+    Drag over
+    ----------------------------------------------------------
+    */
+
+    if (mapUpload) {
+
+        mapUpload.addEventListener(
+            "dragover",
+            event => {
+
+                event.preventDefault();
+
+                mapUpload.classList.add(
+                    "drag-active"
+                );
+
+            }
+        );
+
+
+        /*
+        ------------------------------------------------------
+        Drag leave
+        ------------------------------------------------------
+        */
+
+        mapUpload.addEventListener(
+            "dragleave",
+            () => {
+
+                mapUpload.classList.remove(
+                    "drag-active"
+                );
+
+            }
+        );
+
+
+        /*
+        ------------------------------------------------------
+        Drop
+        ------------------------------------------------------
+        */
+
+        mapUpload.addEventListener(
+            "drop",
+            event => {
+
+                event.preventDefault();
+
+                mapUpload.classList.remove(
+                    "drag-active"
+                );
+
+
+                const file =
+                    event.dataTransfer.files[0];
+
+
+                if (!file) {
+
+                    return;
+
+                }
+
+
+                readGeoJSONFile(file);
+
+            }
+        );
+
+    }
 
 }
 
 
 /* ==========================================================
-   FILE HANDLER
-   ========================================================== */
+   READ GEOJSON FILE
+========================================================== */
 
-function handleGeoJSONUpload(event) {
+function readGeoJSONFile(file) {
 
-    const file =
-        event.target.files[0];
-
-    if (!file) return;
-
-    processGeoJSONFile(file);
-
-}
+    const filename =
+        file.name.toLowerCase();
 
 
-/* ==========================================================
-   GEOJSON PROCESSOR
-   ========================================================== */
+    /*
+    ----------------------------------------------------------
+    Check file type
+    ----------------------------------------------------------
+    */
 
-function processGeoJSONFile(file) {
-
-    const validTypes = [
-
-        "application/geo+json",
-
-        "application/json",
-
-        ""
-
-    ];
-
-
-    const isGeoJSON =
-        file.name.toLowerCase().endsWith(".geojson") ||
-        file.name.toLowerCase().endsWith(".json");
-
-
-    if (!isGeoJSON && !validTypes.includes(file.type)) {
+    if (
+        !filename.endsWith(".geojson") &&
+        !filename.endsWith(".json")
+    ) {
 
         showMessage(
-            "Please upload a GeoJSON or JSON field boundary."
+            "Please upload a GeoJSON file."
         );
 
         return;
@@ -410,41 +703,63 @@ function processGeoJSONFile(file) {
     }
 
 
+    showMessage(
+        "Reading field boundary..."
+    );
+
+
     const reader =
         new FileReader();
 
 
-    reader.onload = event => {
+    reader.onload =
+        event => {
 
-        try {
+            try {
 
-            const geojson =
-                JSON.parse(event.target.result);
+                const geojson =
+                    JSON.parse(
+                        event.target.result
+                    );
 
-            loadField(geojson, file.name);
 
-        }
+                validateGeoJSON(
+                    geojson
+                );
 
-        catch (error) {
 
-            console.error(error);
+                loadField(
+                    geojson,
+                    file.name
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "GeoJSON error:",
+                    error
+                );
+
+
+                showMessage(
+                    "Invalid GeoJSON file."
+                );
+
+            }
+
+        };
+
+
+    reader.onerror =
+        () => {
 
             showMessage(
-                "The selected file could not be read as valid GeoJSON."
+                "Unable to read the selected file."
             );
 
-        }
-
-    };
-
-
-    reader.onerror = () => {
-
-        showMessage(
-            "Unable to read the selected file."
-        );
-
-    };
+        };
 
 
     reader.readAsText(file);
@@ -453,15 +768,121 @@ function processGeoJSONFile(file) {
 
 
 /* ==========================================================
+   VALIDATE GEOJSON
+========================================================== */
+
+function validateGeoJSON(
+    geojson
+) {
+
+    if (
+        !geojson ||
+        typeof geojson !== "object"
+    ) {
+
+        throw new Error(
+            "GeoJSON is not an object."
+        );
+
+    }
+
+
+    const supportedTypes = [
+
+        "Feature",
+
+        "FeatureCollection",
+
+        "Polygon",
+
+        "MultiPolygon"
+
+    ];
+
+
+    if (
+        !supportedTypes.includes(
+            geojson.type
+        )
+    ) {
+
+        throw new Error(
+            "Unsupported GeoJSON type."
+        );
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Feature validation
+    ----------------------------------------------------------
+    */
+
+    if (
+        geojson.type === "Feature"
+    ) {
+
+        if (!geojson.geometry) {
+
+            throw new Error(
+                "Feature has no geometry."
+            );
+
+        }
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    FeatureCollection validation
+    ----------------------------------------------------------
+    */
+
+    if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        if (
+            !Array.isArray(
+                geojson.features
+            ) ||
+            geojson.features.length === 0
+        ) {
+
+            throw new Error(
+                "FeatureCollection contains no features."
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================================
    LOAD FIELD
-   ========================================================== */
+========================================================== */
 
-function loadField(geojson, filename) {
+function loadField(
+    geojson,
+    filename
+) {
 
-    if (!AppState.map) {
+    if (!app.map) {
+
+        initializeMap();
+
+    }
+
+
+    if (!app.map) {
 
         showMessage(
-            "Map engine is still initializing."
+            "Map is still loading."
         );
 
         return;
@@ -469,102 +890,206 @@ function loadField(geojson, filename) {
     }
 
 
-    if (AppState.fieldLayer) {
+    /*
+    ----------------------------------------------------------
+    Remove previous field
+    ----------------------------------------------------------
+    */
 
-        AppState.map.removeLayer(
-            AppState.fieldLayer
+    if (app.fieldLayer) {
+
+        app.map.removeLayer(
+            app.fieldLayer
         );
+
+        app.fieldLayer =
+            null;
 
     }
 
 
     try {
 
-        AppState.fieldLayer =
+        /*
+        ------------------------------------------------------
+        Create GeoJSON layer
+        ------------------------------------------------------
+        */
+
+        app.fieldLayer =
             L.geoJSON(
-
                 geojson,
-
                 {
 
                     style: {
 
-                        color: "#b8e986",
+                        color:
+                            "#d9ffb7",
 
-                        weight: 3,
+                        weight:
+                            3,
 
-                        opacity: 1,
+                        opacity:
+                            1,
 
-                        fillColor: "#8fcf72",
+                        fillColor:
+                            "#86c66b",
 
-                        fillOpacity: 0.18,
+                        fillOpacity:
+                            0.22
 
-                        className:
-                            "field-boundary-glow"
+                    },
 
-                    }
+                    onEachFeature:
+                        (feature, layer) => {
+
+                            /*
+                            ----------------------------------
+                            Optional field popup
+                            ----------------------------------
+                            */
+
+                            layer.bindTooltip(
+                                "FIELD BOUNDARY",
+                                {
+
+                                    sticky: true,
+
+                                    direction:
+                                        "top"
+
+                                }
+                            );
+
+                        }
 
                 }
+            );
 
-            ).addTo(AppState.map);
 
+        /*
+        ------------------------------------------------------
+        Add field
+        ------------------------------------------------------
+        */
+
+        app.fieldLayer.addTo(
+            app.map
+        );
+
+
+        /*
+        ------------------------------------------------------
+        Calculate bounds
+        ------------------------------------------------------
+        */
 
         const bounds =
-            AppState.fieldLayer.getBounds();
+            app.fieldLayer.getBounds();
 
 
-        if (bounds.isValid()) {
+        if (
+            !bounds ||
+            !bounds.isValid()
+        ) {
 
-            AppState.map.fitBounds(
-
-                bounds,
-
-                {
-
-                    padding: [120, 120],
-
-                    maxZoom: 16
-
-                }
-
+            throw new Error(
+                "Field has invalid bounds."
             );
 
         }
 
 
-        AppState.fieldData =
-            geojson;
+        /*
+        ------------------------------------------------------
+        Zoom to field
+        ------------------------------------------------------
+        */
 
-        AppState.fieldLoaded =
-            true;
+        app.map.fitBounds(
+            bounds,
+            {
 
+                padding:
+                    [100, 100],
 
-        const fieldName =
-            cleanFieldName(filename);
+                maxZoom:
+                    17
 
-
-        activateFieldInterface(
-            fieldName,
-            bounds
+            }
         );
 
 
-        createFieldPulse();
+        /*
+        ------------------------------------------------------
+        Save state
+        ------------------------------------------------------
+        */
+
+        app.fieldData =
+            geojson;
+
+
+        app.fieldName =
+            cleanFilename(
+                filename
+            );
+
+
+        app.fieldCenter =
+            bounds.getCenter();
+
+
+        app.fieldAreaAcres =
+            calculateGeoJSONArea(
+                geojson
+            );
+
+
+        app.fieldPerimeterMiles =
+            calculateGeoJSONPerimeter(
+                geojson
+            );
+
+
+        app.fieldLoaded =
+            true;
+
+
+        /*
+        ------------------------------------------------------
+        Update UI
+        ------------------------------------------------------
+        */
+
+        showFieldInterface();
+
+
+        /*
+        ------------------------------------------------------
+        Animate field
+        ------------------------------------------------------
+        */
+
+        animateFieldBoundary();
 
 
         showMessage(
             "Field boundary loaded successfully."
         );
 
-
     }
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Field loading error:",
+            error
+        );
+
 
         showMessage(
-            "Unable to display this field boundary."
+            "Unable to display field boundary."
         );
 
     }
@@ -573,133 +1098,706 @@ function loadField(geojson, filename) {
 
 
 /* ==========================================================
-   FIELD NAME
-   ========================================================== */
+   CLEAN FIELD NAME
+========================================================== */
 
-function cleanFieldName(filename) {
-
-    return filename
-        .replace(/\.(geojson|json)$/i, "")
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, letter =>
-            letter.toUpperCase()
-        );
-
-}
-
-
-/* ==========================================================
-   ACTIVATE FIELD INTERFACE
-   ========================================================== */
-
-function activateFieldInterface(
-    fieldName,
-    bounds
+function cleanFilename(
+    filename
 ) {
 
-    if (elements.emptyState) {
+    return filename
 
-        elements.emptyState.classList.add(
+        .replace(
+            /\.(geojson|json)$/i,
+            ""
+        )
+
+        .replace(
+            /[-_]+/g,
+            " "
+        )
+
+        .replace(
+            /\s+/g,
+            " "
+        )
+
+        .trim()
+
+        .replace(
+            /\b\w/g,
+            letter =>
+                letter.toUpperCase()
+        );
+
+}
+
+
+/* ==========================================================
+   SHOW FIELD INTERFACE
+========================================================== */
+
+function showFieldInterface() {
+
+    /*
+    ----------------------------------------------------------
+    Hide empty state
+    ----------------------------------------------------------
+    */
+
+    if (emptyState) {
+
+        emptyState.classList.add(
             "hidden"
         );
 
     }
 
 
-    if (elements.fieldState) {
+    /*
+    ----------------------------------------------------------
+    Hide upload panel
+    ----------------------------------------------------------
+    */
 
-        elements.fieldState.classList.remove(
+    if (mapUpload) {
+
+        mapUpload.classList.add(
+            "field-loaded"
+        );
+
+
+        setTimeout(
+            () => {
+
+                mapUpload.classList.add(
+                    "hidden"
+                );
+
+            },
+            450
+        );
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Show field information
+    ----------------------------------------------------------
+    */
+
+    if (fieldState) {
+
+        fieldState.classList.remove(
             "hidden"
         );
 
     }
 
 
-    if (elements.fieldName) {
+    /*
+    ----------------------------------------------------------
+    Field name
+    ----------------------------------------------------------
+    */
 
-        elements.fieldName.textContent =
-            fieldName;
+    if (fieldName) {
+
+        fieldName.textContent =
+            app.fieldName;
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Field metadata
+    ----------------------------------------------------------
+    */
+
+    if (fieldMeta) {
+
+        const acres =
+            app.fieldAreaAcres || 0;
+
+
+        const perimeter =
+            app.fieldPerimeterMiles || 0;
+
+
+        const latitude =
+            app.fieldCenter.lat;
+
+
+        const longitude =
+            app.fieldCenter.lng;
+
+
+        const latDirection =
+            latitude >= 0
+                ? "N"
+                : "S";
+
+
+        const longDirection =
+            longitude >= 0
+                ? "E"
+                : "W";
+
+
+        fieldMeta.textContent =
+
+            `${acres.toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 2
+                }
+            )} ACRES · ` +
+
+            `${perimeter.toFixed(
+                2
+            )} MI PERIMETER · ` +
+
+            `${Math.abs(latitude).toFixed(
+                5
+            )}° ${latDirection} / ` +
+
+            `${Math.abs(longitude).toFixed(
+                5
+            )}° ${longDirection}`;
 
     }
 
 
-    if (elements.fieldMeta) {
-
-        elements.fieldMeta.textContent =
-            "FIELD BOUNDARY LOADED · READY FOR ANALYSIS";
-
-    }
-
+    /*
+    ----------------------------------------------------------
+    Show analysis controls
+    ----------------------------------------------------------
+    */
 
     const panels = [
 
-        elements.analysisPanel,
+        analysisPanel,
 
-        elements.layerPanel,
+        layerPanel,
 
-        elements.timeline,
+        timeline,
 
-        elements.mapLegend,
+        mapLegend,
 
-        elements.mapControls
+        mapControls
 
     ];
 
 
-    panels.forEach(panel => {
+    panels.forEach(
+        panel => {
 
-        if (panel) {
+            if (!panel) {
+                return;
+            }
+
 
             panel.classList.remove(
                 "hidden"
             );
 
+
             panel.classList.add(
                 "panel-enter"
             );
 
+
+            setTimeout(
+                () => {
+
+                    panel.classList.remove(
+                        "panel-enter"
+                    );
+
+                },
+                700
+            );
+
         }
-
-    });
-
-
-    setTimeout(() => {
-
-        panels.forEach(panel => {
-
-            if (panel) {
-
-                panel.classList.remove(
-                    "panel-enter"
-                );
-
-            }
-
-        });
-
-    }, 900);
-
-
-    updateFieldMetrics(false);
+    );
 
 }
 
 
 /* ==========================================================
-   FIELD PULSE
-   ========================================================== */
+   CALCULATE GEOJSON AREA
+========================================================== */
 
-function createFieldPulse() {
+/*
+Returns acres.
 
-    if (!AppState.fieldLayer) return;
+Uses a spherical-earth approximation.
+*/
+
+function calculateGeoJSONArea(
+    geojson
+) {
+
+    let totalArea =
+        0;
 
 
-    AppState.fieldLayer.eachLayer(
+    function polygonArea(
+        coordinates
+    ) {
+
+        if (
+            !Array.isArray(
+                coordinates
+            )
+        ) {
+
+            return 0;
+
+        }
+
+
+        let area =
+            0;
+
+
+        const earthRadius =
+            6378137;
+
+
+        for (
+            const ring
+            of coordinates
+        ) {
+
+            if (
+                !Array.isArray(
+                    ring
+                ) ||
+                ring.length < 3
+            ) {
+
+                continue;
+
+            }
+
+
+            let ringArea =
+                0;
+
+
+            for (
+                let i = 0;
+                i < ring.length - 1;
+                i++
+            ) {
+
+                const point1 =
+                    ring[i];
+
+                const point2 =
+                    ring[i + 1];
+
+
+                const lon1 =
+                    point1[0] *
+                    Math.PI / 180;
+
+
+                const lat1 =
+                    point1[1] *
+                    Math.PI / 180;
+
+
+                const lon2 =
+                    point2[0] *
+                    Math.PI / 180;
+
+
+                const lat2 =
+                    point2[1] *
+                    Math.PI / 180;
+
+
+                ringArea +=
+
+                    (lon2 - lon1) *
+
+                    (
+                        2 +
+                        Math.sin(lat1) +
+                        Math.sin(lat2)
+                    );
+
+            }
+
+
+            ringArea =
+
+                Math.abs(
+                    ringArea *
+                    earthRadius *
+                    earthRadius /
+                    2
+                );
+
+
+            area +=
+                ringArea;
+
+        }
+
+
+        return area;
+
+    }
+
+
+    function processGeometry(
+        geometry
+    ) {
+
+        if (!geometry) {
+            return;
+        }
+
+
+        if (
+            geometry.type ===
+            "Polygon"
+        ) {
+
+            totalArea +=
+                polygonArea(
+                    geometry.coordinates
+                );
+
+        }
+
+
+        if (
+            geometry.type ===
+            "MultiPolygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                polygon => {
+
+                    totalArea +=
+                        polygonArea(
+                            polygon
+                        );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    if (
+        geojson.type ===
+        "Feature"
+    ) {
+
+        processGeometry(
+            geojson.geometry
+        );
+
+    }
+
+
+    else if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        geojson.features.forEach(
+            feature => {
+
+                processGeometry(
+                    feature.geometry
+                );
+
+            }
+        );
+
+    }
+
+
+    else {
+
+        processGeometry(
+            geojson
+        );
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Convert square meters to acres
+    ----------------------------------------------------------
+    */
+
+    return totalArea /
+        4046.8564224;
+
+}
+
+
+/* ==========================================================
+   CALCULATE GEOJSON PERIMETER
+========================================================== */
+
+function calculateGeoJSONPerimeter(
+    geojson
+) {
+
+    let totalMeters =
+        0;
+
+
+    /*
+    ----------------------------------------------------------
+    Haversine distance
+    ----------------------------------------------------------
+    */
+
+    function distance(
+        lat1,
+        lon1,
+        lat2,
+        lon2
+    ) {
+
+        const earthRadius =
+            6371000;
+
+
+        const dLat =
+            (lat2 - lat1) *
+            Math.PI / 180;
+
+
+        const dLon =
+            (lon2 - lon1) *
+            Math.PI / 180;
+
+
+        const a =
+
+            Math.sin(
+                dLat / 2
+            ) ** 2 +
+
+            Math.cos(
+                lat1 *
+                Math.PI / 180
+            ) *
+
+            Math.cos(
+                lat2 *
+                Math.PI / 180
+            ) *
+
+            Math.sin(
+                dLon / 2
+            ) ** 2;
+
+
+        return (
+
+            2 *
+            earthRadius *
+            Math.atan2(
+                Math.sqrt(a),
+                Math.sqrt(1 - a)
+            )
+
+        );
+
+    }
+
+
+    function ringLength(
+        ring
+    ) {
+
+        if (
+            !Array.isArray(
+                ring
+            ) ||
+            ring.length < 2
+        ) {
+
+            return 0;
+
+        }
+
+
+        let length =
+            0;
+
+
+        for (
+            let i = 0;
+            i < ring.length - 1;
+            i++
+        ) {
+
+            const pointA =
+                ring[i];
+
+            const pointB =
+                ring[i + 1];
+
+
+            length +=
+                distance(
+                    pointA[1],
+                    pointA[0],
+                    pointB[1],
+                    pointB[0]
+                );
+
+        }
+
+
+        return length;
+
+    }
+
+
+    function processGeometry(
+        geometry
+    ) {
+
+        if (!geometry) {
+            return;
+        }
+
+
+        if (
+            geometry.type ===
+            "Polygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                ring => {
+
+                    totalMeters +=
+                        ringLength(
+                            ring
+                        );
+
+                }
+            );
+
+        }
+
+
+        if (
+            geometry.type ===
+            "MultiPolygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                polygon => {
+
+                    polygon.forEach(
+                        ring => {
+
+                            totalMeters +=
+                                ringLength(
+                                    ring
+                                );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    if (
+        geojson.type ===
+        "Feature"
+    ) {
+
+        processGeometry(
+            geojson.geometry
+        );
+
+    }
+
+
+    else if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        geojson.features.forEach(
+            feature => {
+
+                processGeometry(
+                    feature.geometry
+                );
+
+            }
+        );
+
+    }
+
+
+    else {
+
+        processGeometry(
+            geojson
+        );
+
+    }
+
+
+    /*
+    ----------------------------------------------------------
+    Convert meters to miles
+    ----------------------------------------------------------
+    */
+
+    return totalMeters /
+        1609.344;
+
+}
+
+
+/* ==========================================================
+   FIELD BOUNDARY ANIMATION
+========================================================== */
+
+function animateFieldBoundary() {
+
+    if (!app.fieldLayer) {
+        return;
+    }
+
+
+    /*
+    Leaflet SVG paths
+    */
+
+    app.fieldLayer.eachLayer(
         layer => {
 
             const element =
-                layer.getElement &&
-                layer.getElement();
+                layer.getElement?.();
 
 
             if (element) {
@@ -717,123 +1815,208 @@ function createFieldPulse() {
 
 
 /* ==========================================================
-   ANALYSIS
-   ========================================================== */
+   MAP LAYER CONTROLS
+========================================================== */
 
-function updateFieldMetrics(scanned) {
+function initializeControls() {
 
-    if (!elements.healthValue) return;
+    /*
+    ----------------------------------------------------------
+    Reset map
+    ----------------------------------------------------------
+    */
 
+    if (resetMap) {
 
-    if (!scanned) {
+        resetMap.addEventListener(
+            "click",
+            () => {
 
-        elements.healthValue.textContent =
-            "READY";
+                if (
+                    app.map &&
+                    app.fieldLayer
+                ) {
 
-        elements.ndviValue.textContent =
-            "—";
+                    app.map.fitBounds(
+                        app.fieldLayer.getBounds(),
+                        {
 
-        elements.uniformityValue.textContent =
-            "—";
+                            padding:
+                                [100, 100],
 
-        elements.stressValue.textContent =
-            "READY";
+                            maxZoom:
+                                17
 
-        return;
+                        }
+                    );
+
+                }
+
+            }
+        );
 
     }
 
 
-    elements.healthValue.textContent =
-        "87";
+    /*
+    ----------------------------------------------------------
+    Layer buttons
+    ----------------------------------------------------------
+    */
+
+    document
+        .querySelectorAll(
+            ".layer-button"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        activateLayer(
+                            button.dataset.layer
+                        );
 
 
-    elements.ndviValue.textContent =
-        "0.72";
+                        document
+                            .querySelectorAll(
+                                ".layer-button"
+                            )
+                            .forEach(
+                                item => {
+
+                                    item.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+                            );
 
 
-    elements.uniformityValue.textContent =
-        "92%";
+                        button.classList.add(
+                            "active"
+                        );
+
+                    }
+                );
+
+            }
+        );
 
 
-    elements.stressValue.textContent =
-        "LOW";
+    /*
+    ----------------------------------------------------------
+    Field scan
+    ----------------------------------------------------------
+    */
 
-}
+    if (scanButton) {
 
-
-/* ==========================================================
-   SCAN BUTTON
-   ========================================================== */
-
-function initializeMapControls() {
-
-    if (elements.scanButton) {
-
-        elements.scanButton.addEventListener(
+        scanButton.addEventListener(
             "click",
             runFieldScan
         );
 
     }
 
+}
 
-    if (elements.resetMap) {
 
-        elements.resetMap.addEventListener(
-            "click",
-            resetMap
-        );
+/* ==========================================================
+   ACTIVATE MAP LAYER
+========================================================== */
 
+function activateLayer(
+    layerName
+) {
+
+    if (!app.map) {
+        return;
     }
 
 
-    document
-        .querySelectorAll(".layer-button")
-        .forEach(button => {
+    /*
+    ----------------------------------------------------------
+    Keep satellite imagery active for now.
+    Actual NDVI / vegetation / water-stress imagery
+    will be connected to satellite data later.
+    ----------------------------------------------------------
+    */
 
-            button.addEventListener(
-                "click",
-                () => {
+    switch (layerName) {
 
-                    document
-                        .querySelectorAll(
-                            ".layer-button"
-                        )
-                        .forEach(item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                        );
+        case "satellite":
 
+            if (
+                app.satelliteLayer &&
+                !app.map.hasLayer(
+                    app.satelliteLayer
+                )
+            ) {
 
-                    button.classList.add(
-                        "active"
-                    );
+                app.satelliteLayer.addTo(
+                    app.map
+                );
 
+            }
 
-                    switchLayer(
-                        button.dataset.layer
-                    );
-
-                }
+            showMessage(
+                "Satellite imagery layer active."
             );
 
-        });
+            break;
+
+
+        case "ndvi":
+
+            showMessage(
+                "NDVI layer ready for satellite data."
+            );
+
+            break;
+
+
+        case "vegetation":
+
+            showMessage(
+                "Vegetation layer ready for satellite data."
+            );
+
+            break;
+
+
+        case "water":
+
+            showMessage(
+                "Water stress layer ready for satellite data."
+            );
+
+            break;
+
+
+        default:
+
+            showMessage(
+                "Unknown map layer."
+            );
+
+    }
 
 }
 
 
 /* ==========================================================
    FIELD SCAN
-   ========================================================== */
+========================================================== */
 
 function runFieldScan() {
 
-    if (!AppState.fieldLoaded) {
+    if (!app.fieldLoaded) {
 
         showMessage(
-            "Upload a field boundary first."
+            "Load a field before scanning."
         );
 
         return;
@@ -841,22 +2024,20 @@ function runFieldScan() {
     }
 
 
-    if (AppState.scanRunning) return;
+    if (!scanButton) {
+        return;
+    }
 
 
-    AppState.scanRunning =
+    scanButton.disabled =
         true;
 
 
-    if (elements.scanButton) {
-
-        elements.scanButton.disabled =
-            true;
-
-        elements.scanButton.innerHTML =
-            "<span>◈</span> SCANNING FIELD...";
-
-    }
+    scanButton.innerHTML =
+        `
+        <span>◈</span>
+        SCANNING FIELD...
+        `;
 
 
     document.body.classList.add(
@@ -864,265 +2045,185 @@ function runFieldScan() {
     );
 
 
-    let progress = 0;
+    /*
+    ----------------------------------------------------------
+    Visual scan only for now.
 
+    This will eventually be replaced by actual satellite
+    analysis.
+    ----------------------------------------------------------
+    */
 
-    const interval =
-        setInterval(() => {
+    setTimeout(
+        () => {
 
-            progress += 5;
-
-
-            if (progress >= 100) {
-
-                clearInterval(interval);
-
-
-                AppState.scanRunning =
-                    false;
-
-
-                document.body.classList.remove(
-                    "global-scan"
-                );
-
-
-                updateFieldMetrics(true);
-
-
-                if (elements.scanButton) {
-
-                    elements.scanButton.disabled =
-                        false;
-
-                    elements.scanButton.innerHTML =
-                        "<span>◈</span> RUN FIELD SCAN";
-
-                }
-
-
-                showMessage(
-                    "Field scan complete."
-                );
-
-            }
-
-        }, 70);
-
-}
-
-
-/* ==========================================================
-   LAYER SWITCHING
-   ========================================================== */
-
-function switchLayer(layer) {
-
-    if (!AppState.map) return;
-
-
-    if (layer === "satellite") {
-
-        if (AppState.satelliteLayer) {
-
-            AppState.map.removeLayer(
-                AppState.satelliteLayer
+            document.body.classList.remove(
+                "global-scan"
             );
 
-        }
+
+            scanButton.disabled =
+                false;
 
 
-        showMessage(
-            "Satellite basemap selected."
-        );
-
-        return;
-
-    }
+            scanButton.innerHTML =
+                `
+                <span>◈</span>
+                RUN FIELD SCAN
+                `;
 
 
-    if (layer === "ndvi") {
-
-        showMessage(
-            "NDVI visualization selected."
-        );
-
-        return;
-
-    }
-
-
-    if (layer === "vegetation") {
-
-        showMessage(
-            "Vegetation layer selected."
-        );
-
-        return;
-
-    }
-
-
-    if (layer === "water") {
-
-        showMessage(
-            "Water stress layer selected."
-        );
-
-    }
-
-}
-
-
-/* ==========================================================
-   RESET
-   ========================================================== */
-
-function resetMap() {
-
-    if (!AppState.map) return;
-
-
-    if (AppState.fieldLayer) {
-
-        const bounds =
-            AppState.fieldLayer.getBounds();
-
-
-        if (bounds.isValid()) {
-
-            AppState.map.fitBounds(
-                bounds,
-                {
-                    padding: [120, 120]
-                }
+            showMessage(
+                "Field geometry scan complete."
             );
 
-        }
-
-    }
-
-}
-
-
-/* ==========================================================
-   TIMELINE
-   ========================================================== */
-
-function initializeTimeline() {
-
-    if (!elements.timelineSlider) return;
-
-
-    const dates = [
-
-        "APR 18 2026",
-
-        "MAY 09 2026",
-
-        "JUN 02 2026",
-
-        "JUL 11 2026",
-
-        "AUG 25 2026"
-
-    ];
-
-
-    updateTimeline(
-        dates,
-        elements.timelineSlider.value
+        },
+        2500
     );
-
-
-    elements.timelineSlider.addEventListener(
-        "input",
-        event => {
-
-            updateTimeline(
-                dates,
-                event.target.value
-            );
-
-        }
-    );
-
-}
-
-
-function updateTimeline(
-    dates,
-    index
-) {
-
-    if (!elements.timelineDate) return;
-
-
-    elements.timelineDate.textContent =
-        dates[index] || "—";
 
 }
 
 
 /* ==========================================================
    NAVIGATION
-   ========================================================== */
+========================================================== */
 
 function initializeNavigation() {
 
     document
-        .querySelectorAll(".nav-item")
-        .forEach(item => {
+        .querySelectorAll(
+            ".nav-item"
+        )
+        .forEach(
+            item => {
 
-            item.addEventListener(
-                "click",
-                event => {
+                item.addEventListener(
+                    "click",
+                    event => {
 
-                    event.preventDefault();
+                        event.preventDefault();
 
 
-                    document
-                        .querySelectorAll(
-                            ".nav-item"
-                        )
-                        .forEach(nav =>
-                            nav.classList.remove(
-                                "active"
+                        document
+                            .querySelectorAll(
+                                ".nav-item"
                             )
+                            .forEach(
+                                nav => {
+
+                                    nav.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+                            );
+
+
+                        item.classList.add(
+                            "active"
                         );
 
 
-                    item.classList.add(
-                        "active"
-                    );
+                        showMessage(
+                            `${item.textContent.trim()} selected.`
+                        );
 
+                    }
+                );
 
-                    showMessage(
-                        `${item.textContent.trim()} view selected.`
-                    );
-
-                }
-            );
-
-        });
+            }
+        );
 
 }
 
 
 /* ==========================================================
-   MESSAGE
-   ========================================================== */
+   TIMELINE
+========================================================== */
 
-function showMessage(message) {
+function initializeTimeline() {
 
-    if (!elements.appMessage) return;
+    const slider =
+        document.getElementById(
+            "timelineSlider"
+        );
 
 
-    elements.appMessage.textContent =
+    const dateDisplay =
+        document.getElementById(
+            "timelineDate"
+        );
+
+
+    if (
+        !slider ||
+        !dateDisplay
+    ) {
+
+        return;
+
+    }
+
+
+    const dates = [
+
+        "APR 2026",
+
+        "MAY 2026",
+
+        "JUN 2026",
+
+        "JUL 2026",
+
+        "AUG 2026"
+
+    ];
+
+
+    slider.addEventListener(
+        "input",
+        () => {
+
+            const index =
+                Number(
+                    slider.value
+                );
+
+
+            dateDisplay.textContent =
+                dates[index] ||
+                "—";
+
+        }
+    );
+
+
+    dateDisplay.textContent =
+        dates[
+            Number(slider.value)
+        ] || "—";
+
+}
+
+
+/* ==========================================================
+   MESSAGE SYSTEM
+========================================================== */
+
+function showMessage(
+    message
+) {
+
+    if (!appMessage) {
+        return;
+    }
+
+
+    appMessage.textContent =
         message;
 
 
-    elements.appMessage.classList.add(
+    appMessage.classList.add(
         "visible"
     );
 
@@ -1133,12 +2234,40 @@ function showMessage(message) {
 
 
     showMessage.timeout =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            elements.appMessage.classList.remove(
-                "visible"
-            );
+                appMessage.classList.remove(
+                    "visible"
+                );
 
-        }, 3000);
+            },
+            3000
+        );
 
 }
+
+
+/* ==========================================================
+   WINDOW RESIZE
+========================================================== */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (app.map) {
+
+            setTimeout(
+                () => {
+
+                    app.map.invalidateSize();
+
+                },
+                100
+            );
+
+        }
+
+    }
+);
