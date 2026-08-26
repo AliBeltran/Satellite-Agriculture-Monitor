@@ -4,7 +4,10 @@
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
+
  Designed by Ali Beltran
+
+ 3D orbital interface
 ===========================================================
 */
 
@@ -25,22 +28,22 @@ const agricultureApp =
     );
 
 
-const satellite =
+const threeContainer =
     document.getElementById(
-        "satellite"
+        "threeContainer"
     );
 
 
-const canvas =
+const cursorCanvas =
     document.getElementById(
-        "spaceCanvas"
+        "cursorGalaxy"
     );
 
 
-const ctx =
-    canvas
-        ? canvas.getContext("2d")
-        : null;
+const spectralTransition =
+    document.getElementById(
+        "spectralTransition"
+    );
 
 
 const targetCoordinates =
@@ -139,11 +142,27 @@ const resetMap =
     );
 
 
+const analysisMapPreview =
+    document.getElementById(
+        "analysisMapPreview"
+    );
+
+
 /* =====================================================
    STATE
 ===================================================== */
 
 const state = {
+
+    transitioning: false,
+
+    map: null,
+
+    analysisMap: null,
+
+    fieldLayer: null,
+
+    fieldLoaded: false,
 
     targetX: 0,
 
@@ -153,367 +172,1377 @@ const state = {
 
     currentY: 0,
 
-    satelliteOrbitX: 0,
+    satellite: null,
 
-    satelliteOrbitY: 0,
+    satelliteGroup: null,
 
-    transitioning: false,
+    renderer: null,
 
-    map: null,
+    camera: null,
 
-    fieldLayer: null,
+    scene: null,
 
-    fieldLoaded: false,
+    clock: null,
 
-    stars: []
+    cursorParticles: []
 
 };
 
 
-const reducedMotion =
-    window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-
 /* =====================================================
-   SPACE CANVAS
+   WAIT FOR LIBRARIES
 ===================================================== */
 
-function resizeCanvas() {
+window.addEventListener(
+    "load",
+    () => {
 
-    if (!canvas || !ctx) {
+        initializeThree();
 
-        return;
+        initializeCursor();
 
     }
-
-
-    const ratio =
-        window.devicePixelRatio || 1;
-
-
-    canvas.width =
-        window.innerWidth *
-        ratio;
-
-
-    canvas.height =
-        window.innerHeight *
-        ratio;
-
-
-    canvas.style.width =
-        `${window.innerWidth}px`;
-
-
-    canvas.style.height =
-        `${window.innerHeight}px`;
-
-
-    ctx.setTransform(
-        ratio,
-        0,
-        0,
-        ratio,
-        0,
-        0
-    );
-
-}
-
-
-resizeCanvas();
-
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
 );
 
 
 /* =====================================================
-   STARS
+   THREE.JS SCENE
 ===================================================== */
 
-function createStars() {
+function initializeThree() {
 
-    state.stars = [];
-
-
-    const amount =
-        reducedMotion
-            ? 150
-            : 450;
-
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
+    if (
+        typeof THREE ===
+        "undefined"
     ) {
 
-        state.stars.push({
-
-            x:
-                Math.random(),
-
-            y:
-                Math.random(),
-
-            size:
-                .4 +
-                Math.random() * 1.4,
-
-            opacity:
-                .2 +
-                Math.random() * .75,
-
-            depth:
-                Math.random()
-
-        });
-
-    }
-
-}
-
-
-createStars();
-
-
-/* =====================================================
-   SPACE
-===================================================== */
-
-function drawSpace() {
-
-    if (!ctx) {
+        console.error(
+            "Three.js did not load."
+        );
 
         return;
 
     }
 
 
-    const width =
-        window.innerWidth;
+    /*
+    Scene
+    */
+
+    state.scene =
+        new THREE.Scene();
 
 
-    const height =
-        window.innerHeight;
+    /*
+    Camera
+    */
+
+    state.camera =
+        new THREE.PerspectiveCamera(
+            42,
+            window.innerWidth /
+            window.innerHeight,
+            .1,
+            2000
+        );
 
 
-    ctx.clearRect(
+    state.camera.position.set(
         0,
-        0,
-        width,
-        height
+        1.5,
+        13
     );
 
 
     /*
-    Background
+    Renderer
     */
 
-    const background =
-        ctx.createRadialGradient(
-            width * .68,
-            height * .45,
-            0,
-            width * .68,
-            height * .45,
-            width
-        );
+    state.renderer =
+        new THREE.WebGLRenderer({
+
+            antialias: true,
+
+            alpha: true,
+
+            powerPreference:
+                "high-performance"
+
+        });
 
 
-    background.addColorStop(
-        0,
-        "#1b292d"
+    state.renderer.setPixelRatio(
+        Math.min(
+            window.devicePixelRatio,
+            2
+        )
     );
 
 
-    background.addColorStop(
-        .4,
-        "#0a1113"
+    state.renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
     );
 
 
-    background.addColorStop(
-        1,
-        "#010203"
+    state.renderer.outputColorSpace =
+        THREE.SRGBColorSpace;
+
+
+    state.renderer.toneMapping =
+        THREE.ACESFilmicToneMapping;
+
+
+    state.renderer.toneMappingExposure =
+        1.1;
+
+
+    threeContainer.appendChild(
+        state.renderer.domElement
     );
 
 
-    ctx.fillStyle =
-        background;
+    /*
+    Clock
+    */
+
+    state.clock =
+        new THREE.Clock();
 
 
-    ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-    );
+    /*
+    Lighting
+    */
+
+    createLighting();
 
 
     /*
     Stars
     */
 
+    createThreeStars();
+
+
+    /*
+    Satellite
+    */
+
+    createSatellite();
+
+
+    /*
+    Earth
+    */
+
+    createEarth();
+
+
+    /*
+    Animation
+    */
+
+    animateThree();
+
+}
+
+
+/* =====================================================
+   LIGHTING
+===================================================== */
+
+function createLighting() {
+
+    /*
+    Sun.
+    */
+
+    const sun =
+        new THREE.DirectionalLight(
+            0xffffff,
+            4.5
+        );
+
+
+    sun.position.set(
+        -8,
+        7,
+        12
+    );
+
+
+    state.scene.add(
+        sun
+    );
+
+
+    /*
+    Cool fill.
+    */
+
+    const fill =
+        new THREE.DirectionalLight(
+            0x7899b5,
+            1.2
+        );
+
+
+    fill.position.set(
+        8,
+        2,
+        -8
+    );
+
+
+    state.scene.add(
+        fill
+    );
+
+
+    /*
+    Ambient.
+    */
+
+    const ambient =
+        new THREE.AmbientLight(
+            0x536166,
+            .45
+        );
+
+
+    state.scene.add(
+        ambient
+    );
+
+}
+
+
+/* =====================================================
+   THREE STARFIELD
+===================================================== */
+
+function createThreeStars() {
+
+    const geometry =
+        new THREE.BufferGeometry();
+
+
+    const count = 2800;
+
+
+    const positions =
+        new Float32Array(
+            count * 3
+        );
+
+
     for (
-        const star of state.stars
+        let i = 0;
+        i < count;
+        i++
     ) {
 
-        const parallax =
-            star.depth * 22;
+        const radius =
+            70 +
+            Math.random() *
+            120;
 
 
-        const x =
-            star.x *
-            width +
-            state.targetX *
-            parallax;
+        const theta =
+            Math.random() *
+            Math.PI *
+            2;
 
 
-        const y =
-            star.y *
-            height +
-            state.targetY *
-            parallax;
+        const phi =
+            Math.acos(
+                2 *
+                Math.random() -
+                1
+            );
 
 
-        ctx.fillStyle =
-            `rgba(
-                220,
-                230,
-                230,
-                ${star.opacity}
-            )`;
+        positions[i * 3] =
+            radius *
+            Math.sin(phi) *
+            Math.cos(theta);
 
 
-        ctx.fillRect(
-            x,
-            y,
-            star.size,
-            star.size
+        positions[i * 3 + 1] =
+            radius *
+            Math.sin(phi) *
+            Math.sin(theta);
+
+
+        positions[i * 3 + 2] =
+            radius *
+            Math.cos(phi);
+
+    }
+
+
+    geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            positions,
+            3
+        )
+    );
+
+
+    const material =
+        new THREE.PointsMaterial({
+
+            color:
+                0xdce7e8,
+
+            size:
+                .06,
+
+            transparent:
+                true,
+
+            opacity:
+                .8,
+
+            sizeAttenuation:
+                true
+
+        });
+
+
+    const stars =
+        new THREE.Points(
+            geometry,
+            material
+        );
+
+
+    state.scene.add(
+        stars
+    );
+
+}
+
+
+/* =====================================================
+   EARTH
+===================================================== */
+
+function createEarth() {
+
+    const geometry =
+        new THREE.SphereGeometry(
+            8,
+            64,
+            64
+        );
+
+
+    const material =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x183a42,
+
+            roughness:
+                1,
+
+            metalness:
+                0
+
+        });
+
+
+    const earth =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    earth.position.set(
+        7,
+        -8,
+        -20
+    );
+
+
+    earth.scale.set(
+        1.5,
+        1.5,
+        1.5
+    );
+
+
+    state.scene.add(
+        earth
+    );
+
+
+    /*
+    Atmosphere.
+    */
+
+    const atmosphereGeometry =
+        new THREE.SphereGeometry(
+            8.1,
+            64,
+            64
+        );
+
+
+    const atmosphereMaterial =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0x6bbad0,
+
+            transparent:
+                true,
+
+            opacity:
+                .12,
+
+            side:
+                THREE.BackSide
+
+        });
+
+
+    const atmosphere =
+        new THREE.Mesh(
+            atmosphereGeometry,
+            atmosphereMaterial
+        );
+
+
+    atmosphere.position.copy(
+        earth.position
+    );
+
+
+    atmosphere.scale.copy(
+        earth.scale
+    );
+
+
+    state.scene.add(
+        atmosphere
+    );
+
+}
+
+
+/* =====================================================
+   SATELLITE
+===================================================== */
+
+function createSatellite() {
+
+    const satellite =
+        new THREE.Group();
+
+
+    state.satelliteGroup =
+        satellite;
+
+
+    satellite.scale.set(
+        1.35,
+        1.35,
+        1.35
+    );
+
+
+    state.scene.add(
+        satellite
+    );
+
+
+    /*
+    Main spacecraft bus.
+    */
+
+    createSpacecraftBody(
+        satellite
+    );
+
+
+    /*
+    Solar panels.
+    */
+
+    createSolarPanel(
+        satellite,
+        -3.4
+    );
+
+
+    createSolarPanel(
+        satellite,
+        3.4
+    );
+
+
+    /*
+    Communication dish.
+    */
+
+    createDish(
+        satellite
+    );
+
+
+    /*
+    Earth observation sensor.
+    */
+
+    createSensor(
+        satellite
+    );
+
+
+    /*
+    Antennas.
+    */
+
+    createAntennas(
+        satellite
+    );
+
+
+    /*
+    Thermal blankets.
+    */
+
+    createThermalPanels(
+        satellite
+    );
+
+
+    /*
+    Initial position.
+    */
+
+    satellite.position.set(
+        1,
+        1,
+        0
+    );
+
+}
+
+
+/* =====================================================
+   SPACECRAFT BODY
+===================================================== */
+
+function createSpacecraftBody(
+    parent
+) {
+
+    const geometry =
+        new THREE.BoxGeometry(
+            2.8,
+            2,
+            2.2
+        );
+
+
+    const material =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x9da29f,
+
+            roughness:
+                .48,
+
+            metalness:
+                .58
+
+        });
+
+
+    const body =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    parent.add(
+        body
+    );
+
+
+    /*
+    Dark equipment panel.
+    */
+
+    const panelMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x202829,
+
+            roughness:
+                .7,
+
+            metalness:
+                .45
+
+        });
+
+
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
+
+        const panel =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .65,
+                    .45,
+                    .025
+                ),
+                panelMaterial
+            );
+
+
+        panel.position.set(
+            -0.85 +
+            (i % 3) *
+            .82,
+            .2 -
+            Math.floor(i / 3) *
+            .75,
+            1.12
+        );
+
+
+        parent.add(
+            panel
         );
 
     }
 
 
     /*
-    Earth horizon
+    Gold thermal side panels.
     */
 
-    const earthX =
-        width * .72;
+    const goldMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0xb89545,
+
+            roughness:
+                .62,
+
+            metalness:
+                .42
+
+        });
 
 
-    const earthY =
-        height * 1.15;
-
-
-    const earthRadius =
-        Math.min(
-            width,
-            height
-        ) * .58;
-
-
-    const earth =
-        ctx.createRadialGradient(
-            earthX -
-                earthRadius * .2,
-            earthY -
-                earthRadius * .3,
-            earthRadius * .1,
-            earthX,
-            earthY,
-            earthRadius
+    const side =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                2.5,
+                1.65,
+                .04
+            ),
+            goldMaterial
         );
 
 
-    earth.addColorStop(
-        0,
-        "#3c5659"
+    side.position.z =
+        -1.13;
+
+
+    parent.add(
+        side
     );
-
-
-    earth.addColorStop(
-        .5,
-        "#1a2c30"
-    );
-
-
-    earth.addColorStop(
-        .9,
-        "#071012"
-    );
-
-
-    earth.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-
-    ctx.fillStyle =
-        earth;
-
-
-    ctx.beginPath();
-
-
-    ctx.arc(
-        earthX,
-        earthY,
-        earthRadius,
-        0,
-        Math.PI * 2
-    );
-
-
-    ctx.fill();
 
 
     /*
-    Atmospheric rim
+    Structural rails.
     */
 
-    ctx.beginPath();
+    const railMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x535c5c,
+
+            roughness:
+                .38,
+
+            metalness:
+                .72
+
+        });
 
 
-    ctx.arc(
-        earthX,
-        earthY,
-        earthRadius * .985,
-        Math.PI * 1.02,
-        Math.PI * 1.95
-    );
+    for (
+        let x of [-1.15, 1.15]
+    ) {
+
+        const rail =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .12,
+                    2.05,
+                    2.3
+                ),
+                railMaterial
+            );
 
 
-    ctx.strokeStyle =
-        "rgba(165,215,225,.22)";
+        rail.position.x =
+            x;
 
 
-    ctx.lineWidth = 3;
+        parent.add(
+            rail
+        );
 
-
-    ctx.stroke();
-
+    }
 
 }
 
 
 /* =====================================================
-   SATELLITE MOVEMENT
+   SOLAR PANEL
 ===================================================== */
 
-function updateSatellite() {
+function createSolarPanel(
+    parent,
+    x
+) {
+
+    const panelGroup =
+        new THREE.Group();
+
+
+    panelGroup.position.x =
+        x;
+
+
+    /*
+    Boom.
+    */
+
+    const boomMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x858d8b,
+
+            roughness:
+                .4,
+
+            metalness:
+                .7
+
+        });
+
+
+    const boom =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                2.0,
+                .12,
+                .12
+            ),
+            boomMaterial
+        );
+
+
+    boom.position.x =
+        x > 0
+            ? -1
+            : 1;
+
+
+    panelGroup.add(
+        boom
+    );
+
+
+    /*
+    Solar panel.
+    */
+
+    const panelMaterial =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x163c73,
+
+            roughness:
+                .28,
+
+            metalness:
+                .25
+
+        });
+
+
+    const panel =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                2.9,
+                2.25,
+                .08
+            ),
+            panelMaterial
+        );
+
+
+    panel.position.x =
+        x > 0
+            ? 1.65
+            : -1.65;
+
+
+    panelGroup.add(
+        panel
+    );
+
+
+    /*
+    Grid lines.
+    */
+
+    const lineMaterial =
+        new THREE.LineBasicMaterial({
+
+            color:
+                0xa9bfd0,
+
+            transparent:
+                true,
+
+            opacity:
+                .55
+
+        });
+
+
+    /*
+    Vertical grid.
+    */
+
+    for (
+        let i = -1;
+        i <= 1;
+        i++
+    ) {
+
+        const points = [
+
+            new THREE.Vector3(
+                panel.position.x +
+                i * .7,
+                -1.05,
+                .06
+            ),
+
+            new THREE.Vector3(
+                panel.position.x +
+                i * .7,
+                1.05,
+                .06
+            )
+
+        ];
+
+
+        const geometry =
+            new THREE.BufferGeometry()
+                .setFromPoints(
+                    points
+                );
+
+
+        panelGroup.add(
+            new THREE.Line(
+                geometry,
+                lineMaterial
+            )
+        );
+
+    }
+
+
+    /*
+    Horizontal grid.
+    */
+
+    for (
+        let i = -1;
+        i <= 1;
+        i++
+    ) {
+
+        const points = [
+
+            new THREE.Vector3(
+                panel.position.x -
+                1.35,
+                i * .56,
+                .06
+            ),
+
+            new THREE.Vector3(
+                panel.position.x +
+                1.35,
+                i * .56,
+                .06
+            )
+
+        ];
+
+
+        const geometry =
+            new THREE.BufferGeometry()
+                .setFromPoints(
+                    points
+                );
+
+
+        panelGroup.add(
+            new THREE.Line(
+                geometry,
+                lineMaterial
+            )
+        );
+
+    }
+
+
+    parent.add(
+        panelGroup
+    );
+
+}
+
+
+/* =====================================================
+   COMMUNICATION DISH
+===================================================== */
+
+function createDish(
+    parent
+) {
+
+    const group =
+        new THREE.Group();
+
+
+    group.position.set(
+        0,
+        1.65,
+        .1
+    );
+
+
+    /*
+    Dish bowl.
+
+    Using a hemisphere-like sphere
+    with a clipped-looking scale.
+    */
+
+    const geometry =
+        new THREE.SphereGeometry(
+            .9,
+            32,
+            16,
+            0,
+            Math.PI * 2,
+            0,
+            Math.PI / 2
+        );
+
+
+    const material =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0xb8beb9,
+
+            roughness:
+                .58,
+
+            metalness:
+                .4,
+
+            side:
+                THREE.DoubleSide
+
+        });
+
+
+    const dish =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    dish.rotation.x =
+        Math.PI;
+
+
+    group.add(
+        dish
+    );
+
+
+    /*
+    Feed horn.
+    */
+
+    const feed =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .12,
+                .12,
+                .75,
+                16
+            ),
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x5d6564,
+
+                roughness:
+                    .4,
+
+                metalness:
+                    .7
+
+            })
+        );
+
+
+    feed.position.y =
+        -.5;
+
+
+    group.add(
+        feed
+    );
+
+
+    parent.add(
+        group
+    );
+
+}
+
+
+/* =====================================================
+   SENSOR
+===================================================== */
+
+function createSensor(
+    parent
+) {
+
+    const housing =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .85,
+                .7,
+                .8
+            ),
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x323b3b,
+
+                roughness:
+                    .42,
+
+                metalness:
+                    .65
+
+            })
+        );
+
+
+    housing.position.set(
+        .2,
+        -1.45,
+        .2
+    );
+
+
+    parent.add(
+        housing
+    );
+
+
+    /*
+    Optical lens.
+    */
+
+    const lens =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .28,
+                .28,
+                .18,
+                32
+            ),
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0x182b38,
+
+                roughness:
+                    .1,
+
+                metalness:
+                    .3,
+
+                emissive:
+                    0x102a3c,
+
+                emissiveIntensity:
+                    .35
+
+            })
+        );
+
+
+    lens.rotation.x =
+        Math.PI / 2;
+
+
+    lens.position.set(
+        .2,
+        -1.45,
+        .62
+    );
+
+
+    parent.add(
+        lens
+    );
+
+
+    /*
+    Lens ring.
+    */
+
+    const ring =
+        new THREE.Mesh(
+            new THREE.TorusGeometry(
+                .31,
+                .035,
+                12,
+                32
+            ),
+            new THREE.MeshStandardMaterial({
+
+                color:
+                    0xb4bbb7,
+
+                metalness:
+                    .75,
+
+                roughness:
+                    .3
+
+            })
+        );
+
+
+    ring.position.set(
+        .2,
+        -1.45,
+        .71
+    );
+
+
+    parent.add(
+        ring
+    );
+
+}
+
+
+/* =====================================================
+   ANTENNAS
+===================================================== */
+
+function createAntennas(
+    parent
+) {
+
+    const material =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x9ca4a2,
+
+            roughness:
+                .3,
+
+            metalness:
+                .75
+
+        });
+
+
+    /*
+    Main mast.
+    */
+
+    const mast =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .045,
+                .045,
+                2.5,
+                12
+            ),
+            material
+        );
+
+
+    mast.position.y =
+        2.5;
+
+
+    parent.add(
+        mast
+    );
+
+
+    /*
+    Small side booms.
+    */
+
+    for (
+        const x of [-1.25, 1.25]
+    ) {
+
+        const antenna =
+            new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    .035,
+                    .035,
+                    1.4,
+                    10
+                ),
+                material
+            );
+
+
+        antenna.position.set(
+            x,
+            1.25,
+            .4
+        );
+
+
+        antenna.rotation.z =
+            x > 0
+                ? -.55
+                : .55;
+
+
+        parent.add(
+            antenna
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   THERMAL PANELS
+===================================================== */
+
+function createThermalPanels(
+    parent
+) {
+
+    const gold =
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0xc1a05c,
+
+            roughness:
+                .62,
+
+            metalness:
+                .4
+
+        });
+
+
+    for (
+        let i = -1;
+        i <= 1;
+        i++
+    ) {
+
+        const panel =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .68,
+                    .03,
+                    1.7
+                ),
+                gold
+            );
+
+
+        panel.position.x =
+            i * .72;
+
+
+        panel.position.z =
+            -1.17;
+
+
+        parent.add(
+            panel
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   THREE ANIMATION
+===================================================== */
+
+function animateThree() {
+
+    requestAnimationFrame(
+        animateThree
+    );
+
 
     if (
-        !satellite ||
-        state.transitioning
+        !state.renderer ||
+        !state.scene ||
+        !state.camera
     ) {
 
         return;
@@ -521,8 +1550,90 @@ function updateSatellite() {
     }
 
 
+    const elapsed =
+        state.clock.getElapsedTime();
+
+
     /*
-    Smooth mouse movement.
+    Satellite orbit.
+
+    Large slow elliptical movement.
+    */
+
+    if (
+        state.satelliteGroup
+    ) {
+
+        const orbitX =
+            Math.sin(
+                elapsed * .17
+            ) * 4.5;
+
+
+        const orbitY =
+            Math.sin(
+                elapsed * .34
+            ) * 1.8;
+
+
+        const orbitZ =
+            Math.cos(
+                elapsed * .17
+            ) * 2;
+
+
+        /*
+        Mouse influence.
+        */
+
+        const mouseX =
+            state.currentX * 1.4;
+
+
+        const mouseY =
+            state.currentY * .8;
+
+
+        state.satelliteGroup.position.x =
+            orbitX +
+            mouseX;
+
+
+        state.satelliteGroup.position.y =
+            orbitY +
+            mouseY;
+
+
+        state.satelliteGroup.position.z =
+            orbitZ;
+
+
+        /*
+        Natural spacecraft rotation.
+        */
+
+        state.satelliteGroup.rotation.y =
+            elapsed * .07 +
+            state.currentX * .12;
+
+
+        state.satelliteGroup.rotation.x =
+            Math.sin(
+                elapsed * .11
+            ) * .08 +
+            state.currentY * .08;
+
+
+        state.satelliteGroup.rotation.z =
+            Math.sin(
+                elapsed * .08
+            ) * .045;
+
+    }
+
+
+    /*
+    Smooth mouse.
     */
 
     state.currentX +=
@@ -540,57 +1651,21 @@ function updateSatellite() {
 
 
     /*
-    Subtle additional orbital
-    movement controlled by JS.
-
-    CSS is responsible for the
-    large orbital path.
+    Telemetry.
     */
 
-
-    const mouseInfluenceX =
-        state.currentX * 45;
-
-
-    const mouseInfluenceY =
-        state.currentY * 30;
-
-
-    const rotation =
-        state.currentX * 7;
-
-
-    satellite.style.marginLeft =
-        `${mouseInfluenceX}px`;
-
-
-    satellite.style.marginTop =
-        `${mouseInfluenceY}px`;
-
-
-    satellite.style.transform =
-        `
-        translate(-50%, -50%)
-        rotate(${rotation}deg)
-        `;
-
-
-    /*
-    Telemetry coordinates
-    */
-
-    if (targetCoordinates) {
+    if (
+        targetCoordinates
+    ) {
 
         const lat =
             39.8283 +
-            state.currentY *
-            8;
+            state.currentY * 8;
 
 
         const lon =
             -98.5795 +
-            state.currentX *
-            20;
+            state.currentX * 20;
 
 
         targetCoordinates.textContent =
@@ -604,27 +1679,48 @@ function updateSatellite() {
 
     }
 
-}
 
-
-/* =====================================================
-   MAIN ANIMATION LOOP
-===================================================== */
-
-function animationLoop() {
-
-    updateSatellite();
-
-    drawSpace();
-
-    requestAnimationFrame(
-        animationLoop
+    state.renderer.render(
+        state.scene,
+        state.camera
     );
 
 }
 
 
-animationLoop();
+/* =====================================================
+   THREE RESIZE
+===================================================== */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (
+            !state.camera ||
+            !state.renderer
+        ) {
+
+            return;
+
+        }
+
+
+        state.camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+
+        state.camera.updateProjectionMatrix();
+
+
+        state.renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+);
 
 
 /* =====================================================
@@ -634,6 +1730,15 @@ animationLoop();
 window.addEventListener(
     "pointermove",
     event => {
+
+        if (
+            state.transitioning
+        ) {
+
+            return;
+
+        }
+
 
         state.targetX =
             (
@@ -658,54 +1763,44 @@ window.addEventListener(
    GALAXY CURSOR
 ===================================================== */
 
-const cursorCanvas =
-    document.createElement(
-        "canvas"
+function initializeCursor() {
+
+    if (
+        !cursorCanvas
+    ) {
+
+        return;
+
+    }
+
+
+    resizeCursor();
+
+
+    window.addEventListener(
+        "resize",
+        resizeCursor
     );
 
 
-cursorCanvas.id =
-    "cursorGalaxy";
-
-
-document.body.appendChild(
-    cursorCanvas
-);
-
-
-const cursorContext =
-    cursorCanvas.getContext(
-        "2d"
+    window.addEventListener(
+        "pointermove",
+        createCursorParticles
     );
 
 
-const cursorParticles = [];
+    drawCursor();
+
+}
 
 
-let cursorX =
-    window.innerWidth / 2;
-
-
-let cursorY =
-    window.innerHeight / 2;
-
-
-let lastCursorX =
-    cursorX;
-
-
-let lastCursorY =
-    cursorY;
-
-
-/* =====================================================
-   CURSOR CANVAS SIZE
-===================================================== */
-
-function resizeCursorCanvas() {
+function resizeCursor() {
 
     const ratio =
-        window.devicePixelRatio || 1;
+        Math.min(
+            window.devicePixelRatio,
+            2
+        );
 
 
     cursorCanvas.width =
@@ -725,195 +1820,125 @@ function resizeCursorCanvas() {
     cursorCanvas.style.height =
         `${window.innerHeight}px`;
 
-
-    cursorContext.setTransform(
-        ratio,
-        0,
-        0,
-        ratio,
-        0,
-        0
-    );
-
 }
 
 
-resizeCursorCanvas();
-
-
-window.addEventListener(
-    "resize",
-    resizeCursorCanvas
-);
-
-
 /* =====================================================
-   CREATE STAR
+   CURSOR PARTICLES
 ===================================================== */
 
-function createGalaxyParticle(
-    x,
-    y,
-    velocityX,
-    velocityY
+function createCursorParticles(
+    event
 ) {
 
-    const angle =
-        Math.random() *
-        Math.PI *
-        2;
+    if (
+        state.transitioning
+    ) {
+
+        return;
+
+    }
 
 
-    const distance =
+    const amount =
         2 +
-        Math.random() *
-        12;
+        Math.floor(
+            Math.random() * 4
+        );
 
 
-    cursorParticles.push({
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
 
-        x:
-            x +
-            Math.cos(angle) *
-            distance,
+        state.cursorParticles.push({
 
+            x:
+                event.clientX,
 
-        y:
-            y +
-            Math.sin(angle) *
-            distance,
+            y:
+                event.clientY,
 
+            vx:
+                (
+                    Math.random() -
+                    .5
+                ) * 1.2,
 
-        vx:
-            velocityX *
-            .05 +
-            (
-                Math.random() -
-                .5
-            ) *
-            .35,
+            vy:
+                (
+                    Math.random() -
+                    .5
+                ) * 1.2,
 
+            size:
+                .6 +
+                Math.random() * 1.8,
 
-        vy:
-            velocityY *
-            .05 +
-            (
-                Math.random() -
-                .5
-            ) *
-            .35,
+            life:
+                1,
 
+            decay:
+                .015 +
+                Math.random() * .025,
 
-        size:
-            .5 +
-            Math.random() *
-            1.7,
+            hue:
+                190 +
+                Math.random() * 90
 
+        });
 
-        life:
-            1,
-
-
-        decay:
-            .008 +
-            Math.random() *
-            .025,
+    }
 
 
-        hue:
-            190 +
-            Math.random() *
-            70
+    /*
+    Prevent runaway particle count.
+    */
 
-    });
+    if (
+        state.cursorParticles.length >
+        500
+    ) {
+
+        state.cursorParticles.splice(
+            0,
+            100
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   POINTER STAR TRAIL
+   DRAW CURSOR
 ===================================================== */
 
-window.addEventListener(
-    "pointermove",
-    event => {
+function drawCursor() {
 
-        cursorX =
-            event.clientX;
-
-
-        cursorY =
-            event.clientY;
+    requestAnimationFrame(
+        drawCursor
+    );
 
 
-        const velocityX =
-            cursorX -
-            lastCursorX;
+    if (
+        !cursorCanvas
+    ) {
 
-
-        const velocityY =
-            cursorY -
-            lastCursorY;
-
-
-        const movement =
-            Math.sqrt(
-                velocityX *
-                velocityX +
-                velocityY *
-                velocityY
-            );
-
-
-        if (
-            movement > 1
-        ) {
-
-            const amount =
-                Math.min(
-                    7,
-                    Math.floor(
-                        movement / 3
-                    )
-                );
-
-
-            for (
-                let i = 0;
-                i < amount;
-                i++
-            ) {
-
-                createGalaxyParticle(
-                    cursorX,
-                    cursorY,
-                    velocityX,
-                    velocityY
-                );
-
-            }
-
-        }
-
-
-        lastCursorX =
-            cursorX;
-
-
-        lastCursorY =
-            cursorY;
+        return;
 
     }
-);
 
 
-/* =====================================================
-   DRAW GALAXY
-===================================================== */
+    const context =
+        cursorCanvas.getContext(
+            "2d"
+        );
 
-function drawCursorGalaxy() {
 
-    cursorContext.clearRect(
+    context.clearRect(
         0,
         0,
         window.innerWidth,
@@ -921,28 +1946,9 @@ function drawCursorGalaxy() {
     );
 
 
-    /*
-    Small amount of ambient
-    dust around cursor.
-    */
-
-    if (
-        Math.random() < .18
-    ) {
-
-        createGalaxyParticle(
-            cursorX,
-            cursorY,
-            0,
-            0
-        );
-
-    }
-
-
     for (
         let i =
-            cursorParticles.length - 1;
+            state.cursorParticles.length - 1;
 
         i >= 0;
 
@@ -950,7 +1956,7 @@ function drawCursorGalaxy() {
     ) {
 
         const particle =
-            cursorParticles[i];
+            state.cursorParticles[i];
 
 
         particle.x +=
@@ -974,14 +1980,14 @@ function drawCursorGalaxy() {
 
 
         particle.size *=
-            .992;
+            .993;
 
 
         if (
             particle.life <= 0
         ) {
 
-            cursorParticles.splice(
+            state.cursorParticles.splice(
                 i,
                 1
             );
@@ -992,41 +1998,41 @@ function drawCursorGalaxy() {
 
 
         /*
-        Glow
+        Soft halo.
         */
 
-        cursorContext.beginPath();
+        context.beginPath();
 
 
-        cursorContext.arc(
+        context.arc(
             particle.x,
             particle.y,
-            particle.size * 3,
+            particle.size * 4,
             0,
             Math.PI * 2
         );
 
 
-        cursorContext.fillStyle =
+        context.fillStyle =
             `hsla(
                 ${particle.hue},
-                45%,
-                78%,
-                ${particle.life * .12}
+                50%,
+                80%,
+                ${particle.life * .08}
             )`;
 
 
-        cursorContext.fill();
+        context.fill();
 
 
         /*
-        Star
+        Star.
         */
 
-        cursorContext.beginPath();
+        context.beginPath();
 
 
-        cursorContext.arc(
+        context.arc(
             particle.x,
             particle.y,
             particle.size,
@@ -1035,92 +2041,84 @@ function drawCursorGalaxy() {
         );
 
 
-        cursorContext.fillStyle =
+        context.fillStyle =
             `hsla(
                 ${particle.hue},
-                30%,
-                94%,
+                35%,
+                95%,
                 ${particle.life}
             )`;
 
 
-        cursorContext.fill();
+        context.fill();
 
 
         /*
-        Star cross
+        Cross sparkle.
         */
 
         if (
             particle.size > 1
         ) {
 
-            cursorContext.strokeStyle =
+            context.strokeStyle =
                 `rgba(
-                    235,
-                    242,
-                    242,
-                    ${particle.life * .35}
+                    240,
+                    245,
+                    245,
+                    ${particle.life * .4}
                 )`;
 
 
-            cursorContext.lineWidth =
+            context.lineWidth =
                 .5;
 
 
-            cursorContext.beginPath();
+            context.beginPath();
 
 
-            cursorContext.moveTo(
+            context.moveTo(
                 particle.x -
-                    particle.size * 3,
+                particle.size * 3,
                 particle.y
             );
 
 
-            cursorContext.lineTo(
+            context.lineTo(
                 particle.x +
-                    particle.size * 3,
+                particle.size * 3,
                 particle.y
             );
 
 
-            cursorContext.moveTo(
+            context.moveTo(
                 particle.x,
                 particle.y -
-                    particle.size * 3
+                particle.size * 3
             );
 
 
-            cursorContext.lineTo(
+            context.lineTo(
                 particle.x,
                 particle.y +
-                    particle.size * 3
+                particle.size * 3
             );
 
 
-            cursorContext.stroke();
+            context.stroke();
 
         }
 
     }
 
-
-    requestAnimationFrame(
-        drawCursorGalaxy
-    );
-
 }
-
-
-drawCursorGalaxy();
 
 
 /* =====================================================
    TRANSITION
 ===================================================== */
 
-function launchToAgriculture() {
+function launchTransition() {
 
     if (
         state.transitioning
@@ -1135,10 +2133,57 @@ function launchToAgriculture() {
         true;
 
 
+    /*
+    Remove cursor effect
+    immediately.
+
+    This means the galaxy
+    effect ONLY exists on
+    the first screen.
+    */
+
+    if (
+        cursorCanvas
+    ) {
+
+        cursorCanvas.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    document.body.style.cursor =
+        "default";
+
+
+    /*
+    Start spectral effect.
+    */
+
     missionScreen.classList.add(
-        "bursting"
+        "transitioning"
     );
 
+
+    /*
+    Slightly accelerate satellite.
+    */
+
+    if (
+        state.satelliteGroup
+    ) {
+
+        state.satelliteGroup.scale.multiplyScalar(
+            1.08
+        );
+
+    }
+
+
+    /*
+    Fade mission screen.
+    */
 
     setTimeout(
         () => {
@@ -1148,9 +2193,13 @@ function launchToAgriculture() {
             );
 
         },
-        450
+        900
     );
 
+
+    /*
+    Reveal application.
+    */
 
     setTimeout(
         () => {
@@ -1167,6 +2216,16 @@ function launchToAgriculture() {
             initializeMap();
 
 
+            document.body.style.cursor =
+                "default";
+
+
+            /*
+            Chat bubble appears
+            after user has explored
+            the second screen.
+            */
+
             setTimeout(
                 () => {
 
@@ -1175,19 +2234,18 @@ function launchToAgriculture() {
                     );
 
                 },
-                4500
+                5000
             );
 
-
         },
-        1050
+        1550
     );
 
 }
 
 
 /* =====================================================
-   SCROLL TRANSITION
+   SCROLL
 ===================================================== */
 
 window.addEventListener(
@@ -1195,10 +2253,11 @@ window.addEventListener(
     event => {
 
         if (
+            !state.transitioning &&
             Math.abs(event.deltaY) > 3
         ) {
 
-            launchToAgriculture();
+            launchTransition();
 
         }
 
@@ -1210,7 +2269,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   KEYBOARD TRANSITION
+   KEYBOARD
 ===================================================== */
 
 window.addEventListener(
@@ -1218,12 +2277,21 @@ window.addEventListener(
     event => {
 
         if (
+            state.transitioning
+        ) {
+
+            return;
+
+        }
+
+
+        if (
             event.key === "ArrowDown" ||
             event.key === "PageDown" ||
             event.key === " "
         ) {
 
-            launchToAgriculture();
+            launchTransition();
 
         }
 
@@ -1256,7 +2324,8 @@ function initializeMap() {
 
 
     if (
-        typeof L === "undefined"
+        typeof L ===
+        "undefined"
     ) {
 
         console.error(
@@ -1299,10 +2368,6 @@ function initializeMap() {
         );
 
 
-    /*
-    Global Earth.
-    */
-
     state.map.setView(
         [
             20,
@@ -1314,19 +2379,26 @@ function initializeMap() {
 
     /*
     Satellite imagery.
+
+    This is the visual
+    world imagery layer.
     */
 
     const satelliteImagery =
         L.tileLayer(
+
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
             {
 
-                maxZoom: 19,
+                maxZoom:
+                    19,
 
                 attribution:
                     "Satellite imagery © Esri"
 
             }
+
         );
 
 
@@ -1380,7 +2452,7 @@ if (
 
 
 /* =====================================================
-   DRAG / DROP
+   DRAG AND DROP
 ===================================================== */
 
 if (
@@ -1392,6 +2464,7 @@ if (
         event => {
 
             event.preventDefault();
+
 
             uploadBox.classList.add(
                 "dragging"
@@ -1418,6 +2491,7 @@ if (
         event => {
 
             event.preventDefault();
+
 
             uploadBox.classList.remove(
                 "dragging"
@@ -1448,7 +2522,9 @@ if (
    READ GEOJSON
 ===================================================== */
 
-function readGeoJSON(file) {
+function readGeoJSON(
+    file
+) {
 
     const extension =
         file.name
@@ -1493,7 +2569,9 @@ function readGeoJSON(file) {
 
             }
 
-            catch (error) {
+            catch (
+                error
+            ) {
 
                 console.error(
                     error
@@ -1592,7 +2670,7 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid field boundary."
+                "Invalid boundary."
             );
 
         }
@@ -1635,7 +2713,7 @@ function loadField(
             bounds.getCenter();
 
 
-        const cleanFilename =
+        const cleanName =
             filename
                 .replace(
                     /\.(geojson|json)$/i,
@@ -1649,8 +2727,8 @@ function loadField(
 
 
         const formattedName =
-            cleanFilename
-                ? cleanFilename.replace(
+            cleanName
+                ? cleanName.replace(
                     /\b\w/g,
                     letter =>
                         letter.toUpperCase()
@@ -1680,6 +2758,11 @@ function loadField(
             `${center.lng.toFixed(4)}°`;
 
 
+        /*
+        Actual NDVI isn't calculated
+        from geometry alone.
+        */
+
         ndviValue.textContent =
             "—";
 
@@ -1696,9 +2779,17 @@ function loadField(
             "hidden"
         );
 
+
+        initializeAnalysisMap(
+            data,
+            bounds
+        );
+
     }
 
-    catch (error) {
+    catch (
+        error
+    ) {
 
         console.error(
             error
@@ -1715,7 +2806,105 @@ function loadField(
 
 
 /* =====================================================
-   AREA CALCULATION
+   ANALYSIS MAP
+===================================================== */
+
+function initializeAnalysisMap(
+    data,
+    bounds
+) {
+
+    if (
+        state.analysisMap
+    ) {
+
+        state.analysisMap.remove();
+
+    }
+
+
+    state.analysisMap =
+        L.map(
+            analysisMapPreview,
+            {
+
+                zoomControl:
+                    true,
+
+                attributionControl:
+                    false
+
+            }
+        );
+
+
+    L.tileLayer(
+
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
+        {
+
+            maxZoom:
+                19
+
+        }
+
+    ).addTo(
+        state.analysisMap
+    );
+
+
+    L.geoJSON(
+        data,
+        {
+
+            style: {
+
+                color:
+                    "#f1f5f2",
+
+                weight:
+                    3,
+
+                fillColor:
+                    "#9bbba5",
+
+                fillOpacity:
+                    .22
+
+            }
+
+        }
+    ).addTo(
+        state.analysisMap
+    );
+
+
+    state.analysisMap.fitBounds(
+        bounds,
+        {
+
+            padding:
+                [35,35]
+
+        }
+    );
+
+
+    setTimeout(
+        () => {
+
+            state.analysisMap.invalidateSize();
+
+        },
+        200
+    );
+
+}
+
+
+/* =====================================================
+   AREA
 ===================================================== */
 
 function calculateArea(
@@ -1808,7 +2997,7 @@ function calculateArea(
     }
 
 
-    function processGeometry(
+    function geometryArea(
         geometry
     ) {
 
@@ -1865,11 +3054,12 @@ function calculateArea(
         "Feature"
     ) {
 
-        processGeometry(
+        geometryArea(
             geojson.geometry
         );
 
     }
+
 
     else if (
         geojson.type ===
@@ -1879,7 +3069,7 @@ function calculateArea(
         geojson.features.forEach(
             feature => {
 
-                processGeometry(
+                geometryArea(
                     feature.geometry
                 );
 
@@ -1888,9 +3078,10 @@ function calculateArea(
 
     }
 
+
     else {
 
-        processGeometry(
+        geometryArea(
             geojson
         );
 
@@ -2009,7 +3200,7 @@ function calculatePerimeter(
     }
 
 
-    function processGeometry(
+    function geometryLength(
         geometry
     ) {
 
@@ -2057,11 +3248,12 @@ function calculatePerimeter(
         "Feature"
     ) {
 
-        processGeometry(
+        geometryLength(
             geojson.geometry
         );
 
     }
+
 
     else if (
         geojson.type ===
@@ -2071,7 +3263,7 @@ function calculatePerimeter(
         geojson.features.forEach(
             feature => {
 
-                processGeometry(
+                geometryLength(
                     feature.geometry
                 );
 
@@ -2080,9 +3272,10 @@ function calculatePerimeter(
 
     }
 
+
     else {
 
-        processGeometry(
+        geometryLength(
             geojson
         );
 
@@ -2138,7 +3331,7 @@ if (
 
 
                     alert(
-                        "Field geometry has been processed. Connect a satellite remote-sensing data source to calculate actual NDVI and crop-stress measurements."
+                        "Field geometry processed successfully. Connect a satellite remote-sensing data source to calculate actual NDVI, vegetation health, and crop-stress measurements."
                     );
 
                 },
@@ -2164,37 +3357,19 @@ if (
         () => {
 
             if (
-                !state.map
-            ) {
-
-                return;
-
-            }
-
-
-            if (
+                state.analysisMap &&
                 state.fieldLayer
             ) {
 
-                state.map.flyToBounds(
-                    state.fieldLayer.getBounds(),
-                    {
-
-                        padding:
-                            [70,70],
-
-                        maxZoom:
-                            17,
-
-                        duration:
-                            1.2
-
-                    }
+                state.analysisMap.fitBounds(
+                    state.fieldLayer.getBounds()
                 );
 
             }
 
-            else {
+            else if (
+                state.map
+            ) {
 
                 state.map.flyTo(
                     [
@@ -2219,7 +3394,7 @@ if (
 
 
 /* =====================================================
-   CLOSE INFO
+   CLOSE INFO BUBBLE
 ===================================================== */
 
 if (
