@@ -26,12 +26,20 @@
     >
 
 
-    <!-- Main stylesheet -->
+    <!-- Application CSS -->
 
     <link
         rel="stylesheet"
         href="./style.css"
     >
+
+
+    <!-- Three.js -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"
+        defer
+    ></script>
 
 
     <!-- Leaflet -->
@@ -56,7 +64,7 @@
 
 
 <!-- =====================================================
-     FIRST SCREEN
+     FIRST SCREEN — ORBITAL MISSION
 ===================================================== -->
 
 <section
@@ -65,19 +73,40 @@
 >
 
 
-    <!-- STAR BACKGROUND -->
+    <!-- THREE.JS SPACE -->
+
+    <div
+        id="threeContainer"
+        class="three-container"
+    ></div>
+
+
+    <!-- CURSOR GALAXY -->
 
     <canvas
-        id="spaceCanvas"
+        id="cursorGalaxy"
+        class="cursor-galaxy"
     ></canvas>
 
 
+    <!-- ATMOSPHERIC OVERLAY -->
+
+    <div class="mission-atmosphere"></div>
+
+
+    <!-- TECHNICAL GRID -->
+
     <div class="mission-grid"></div>
+
+
+    <!-- VIGNETTE -->
 
     <div class="mission-vignette"></div>
 
 
-    <!-- TOP LEFT -->
+    <!-- =================================================
+         HEADER
+    ================================================= -->
 
     <div class="mission-identification">
 
@@ -100,8 +129,6 @@
     </div>
 
 
-    <!-- TOP RIGHT -->
-
     <div class="mission-status">
 
         <div>
@@ -120,11 +147,11 @@
         <div>
 
             <span>
-                SENSOR
+                ORBIT
             </span>
 
             <strong>
-                ACTIVE
+                LEO
             </strong>
 
         </div>
@@ -145,7 +172,9 @@
     </div>
 
 
-    <!-- MAIN TITLE -->
+    <!-- =================================================
+         TITLE
+    ================================================= -->
 
     <div class="mission-title">
 
@@ -175,167 +204,13 @@
 
 
     <!-- =================================================
-         SATELLITE
+         TELEMETRY
     ================================================= -->
-
-    <div
-        id="satellite"
-        class="satellite"
-    >
-
-        <div class="satellite-rotation">
-
-
-            <!-- LEFT SOLAR ARRAY -->
-
-            <div class="solar-array solar-left">
-
-                <div class="solar-frame">
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                </div>
-
-            </div>
-
-
-            <!-- SPACECRAFT -->
-
-            <div class="spacecraft">
-
-
-                <div class="spacecraft-body">
-
-                    <div class="body-panel panel-one"></div>
-
-                    <div class="body-panel panel-two"></div>
-
-                    <div class="body-panel panel-three"></div>
-
-                    <div class="body-panel panel-four"></div>
-
-                    <div class="body-highlight"></div>
-
-                </div>
-
-
-                <!-- TOP ANTENNA -->
-
-                <div class="antenna-mast"></div>
-
-                <div class="antenna-tip"></div>
-
-
-                <!-- COMMUNICATION DISH -->
-
-                <div class="dish-arm">
-
-                    <div class="dish">
-
-                        <div class="dish-center"></div>
-
-                        <div class="dish-spoke spoke-one"></div>
-
-                        <div class="dish-spoke spoke-two"></div>
-
-                        <div class="dish-spoke spoke-three"></div>
-
-                        <div class="dish-spoke spoke-four"></div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- SENSOR -->
-
-                <div class="satellite-sensor">
-
-                    <div class="sensor-glass"></div>
-
-                    <div class="sensor-ring"></div>
-
-                </div>
-
-
-                <!-- ANTENNAS -->
-
-                <div class="small-antenna antenna-one"></div>
-
-                <div class="small-antenna antenna-two"></div>
-
-            </div>
-
-
-            <!-- RIGHT SOLAR ARRAY -->
-
-            <div class="solar-array solar-right">
-
-                <div class="solar-frame">
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-                    <div class="solar-cell"></div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ORBITAL GLOW -->
-
-        <div class="satellite-glow"></div>
-
-        <div class="orbital-ring"></div>
-
-    </div>
-
-
-    <!-- TELEMETRY -->
 
     <div class="telemetry-card">
 
         <div class="telemetry-heading">
-            LIVE TELEMETRY
-        </div>
-
-
-        <div class="telemetry-row">
-
-            <span>
-                ORBIT
-            </span>
-
-            <strong>
-                LOW EARTH ORBIT
-            </strong>
-
+            SATELLITE TELEMETRY
         </div>
 
 
@@ -381,6 +256,19 @@
         <div class="telemetry-row">
 
             <span>
+                SCAN
+            </span>
+
+            <strong>
+                NDVI
+            </strong>
+
+        </div>
+
+
+        <div class="telemetry-row">
+
+            <span>
                 TARGET
             </span>
 
@@ -393,7 +281,9 @@
     </div>
 
 
-    <!-- INSTRUCTIONS -->
+    <!-- =================================================
+         MISSION INSTRUCTIONS
+    ================================================= -->
 
     <div class="mission-instructions">
 
@@ -405,7 +295,7 @@
 
 
         <strong>
-            SCROLL TO BEGIN
+            SCROLL TO ENTER EARTH OBSERVATION
         </strong>
 
 
@@ -429,19 +319,29 @@
     </div>
 
 
-    <!-- COSMIC BURST -->
+    <!-- =================================================
+         SPECTRAL TRANSITION
+    ================================================= -->
 
     <div
-        id="spectralBurst"
-        class="spectral-burst"
-    ></div>
+        id="spectralTransition"
+        class="spectral-transition"
+    >
+
+        <div class="spectral-rays"></div>
+
+        <div class="spectral-core"></div>
+
+        <div class="spectral-noise"></div>
+
+    </div>
 
 </section>
 
 
 
 <!-- =====================================================
-     AGRICULTURE APPLICATION
+     SECOND SCREEN — AGRICULTURAL EARTH
 ===================================================== -->
 
 <main
@@ -450,7 +350,9 @@
 >
 
 
-    <!-- HEADER -->
+    <!-- =================================================
+         APPLICATION HEADER
+    ================================================= -->
 
     <header class="app-header">
 
@@ -490,13 +392,11 @@
 
 
     <!-- =================================================
-         WORLD
+         WORLD MAP
     ================================================= -->
 
     <section class="earth-interface">
 
-
-        <!-- MAP -->
 
         <div
             id="worldMap"
@@ -504,12 +404,10 @@
         ></div>
 
 
-        <!-- DARK MAP GRADIENT -->
-
         <div class="earth-overlay"></div>
 
 
-        <!-- HEADING -->
+        <!-- MAP TITLE -->
 
         <div class="earth-heading">
 
@@ -530,7 +428,7 @@
             <p>
 
                 Explore the Earth's agricultural
-                landscape through satellite observation.
+                landscape through satellite imagery.
 
             </p>
 
@@ -582,7 +480,9 @@
         </div>
 
 
-        <!-- UPLOAD -->
+        <!-- =================================================
+             UPLOAD PANEL
+        ================================================= -->
 
         <div
             id="uploadPanel"
@@ -611,9 +511,8 @@
 
                 <p>
 
-                    Upload a GeoJSON boundary
-                    to identify and analyze
-                    an agricultural field.
+                    Upload a GeoJSON field boundary
+                    to begin exploring your field.
 
                 </p>
 
@@ -640,12 +539,7 @@
 
                     <span class="privacy-dot"></span>
 
-                    <span>
-
-                        LOCAL PROCESSING ·
-                        IMPORTED FILES ARE NOT SAVED
-
-                    </span>
+                    IMPORTED FILES ARE NOT SAVED
 
                 </div>
 
@@ -754,7 +648,7 @@
                     <div class="map-toolbar">
 
                         <span>
-                            SATELLITE IMAGERY
+                            SATELLITE FIELD VIEW
                         </span>
 
 
@@ -770,13 +664,10 @@
                     </div>
 
 
-                    <div class="analysis-map-preview">
-
-                        FIELD BOUNDARY
-                        <br>
-                        ACTIVE
-
-                    </div>
+                    <div
+                        id="analysisMapPreview"
+                        class="analysis-map-preview"
+                    ></div>
 
                 </section>
 
@@ -855,9 +746,9 @@
 
                     <p class="analysis-note">
 
-                        Satellite-derived vegetation
-                        measurements will appear here
-                        when a remote-sensing data source
+                        Actual vegetation and crop-stress
+                        measurements will appear when
+                        a remote-sensing data source
                         is connected.
 
                     </p>
@@ -904,16 +795,16 @@
 
                 Satellite Agriculture Monitor uses
                 geospatial and satellite-observation
-                technologies to help visualize and analyze
-                agricultural fields. It is designed to give
-                producers, agronomists, conservation
-                professionals, and anyone working in
-                agriculture a practical way to explore
-                field information and support better-informed
-                decisions. This project is open source and
-                is being developed to make agricultural
-                technology more accessible to producers and
-                the agricultural community.
+                technology to help visualize and analyze
+                agricultural fields. It is designed to
+                help producers, agronomists, conservation
+                professionals, and others in agriculture
+                explore field information and support
+                better-informed decisions. The project
+                is open source and is being developed
+                to make agricultural technology more
+                accessible to producers and the
+                agricultural community.
 
             </p>
 
