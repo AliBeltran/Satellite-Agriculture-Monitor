@@ -2,10 +2,14 @@
     box-sizing: border-box;
 }
 
+
 html,
 body {
+
     margin: 0;
+
     width: 100%;
+
     min-height: 100%;
 
     background: #050708;
@@ -18,23 +22,31 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
 }
 
+
 body {
+
     overflow-x: hidden;
+
 }
+
 
 button,
 input {
+
     font: inherit;
+
 }
 
 
 /* =====================================================
-   MISSION SCREEN
+   FIRST SCREEN
 ===================================================== */
 
 .mission-screen {
+
     position: fixed;
 
     inset: 0;
@@ -45,55 +57,66 @@ input {
 
     background:
         radial-gradient(
-            circle at 67% 45%,
-            #1a272a 0%,
-            #091012 42%,
-            #020405 100%
+            circle at 68% 44%,
+            #202c30 0%,
+            #0b1113 42%,
+            #020304 100%
         );
 
     transition:
-        opacity .7s ease,
-        transform .9s cubic-bezier(.2,.8,.2,1);
+        opacity .8s ease,
+        transform 1s cubic-bezier(.2,.8,.2,1);
+
 }
 
+
 .mission-screen.departing {
+
     opacity: 0;
 
     transform:
-        scale(1.12);
+        scale(1.15);
 
     pointer-events: none;
+
 }
 
+
 #spaceCanvas {
+
     position: absolute;
 
     inset: 0;
 
     width: 100%;
+
     height: 100%;
+
 }
 
+
 .mission-grid {
+
     position: absolute;
 
     inset: 0;
 
-    opacity: .12;
+    opacity: .09;
 
     background-image:
+
         linear-gradient(
-            rgba(180,200,205,.08) 1px,
+            rgba(180,200,205,.1) 1px,
             transparent 1px
         ),
+
         linear-gradient(
             90deg,
-            rgba(180,200,205,.08) 1px,
+            rgba(180,200,205,.1) 1px,
             transparent 1px
         );
 
-    background-size:
-        80px 80px;
+    background-size: 80px 80px;
 
     mask-image:
         radial-gradient(
@@ -101,9 +124,12 @@ input {
             black,
             transparent 80%
         );
+
 }
 
+
 .mission-vignette {
+
     position: absolute;
 
     inset: 0;
@@ -111,24 +137,30 @@ input {
     pointer-events: none;
 
     background:
+
         radial-gradient(
             ellipse at center,
             transparent 25%,
-            rgba(0,0,0,.3) 60%,
+            rgba(0,0,0,.25) 60%,
             rgba(0,0,0,.9) 100%
         );
+
 }
 
 
 /* =====================================================
-   MISSION IDENTIFICATION
+   TOP LEFT
 ===================================================== */
 
 .mission-identification {
+
     position: absolute;
 
     top: 34px;
+
     left: 40px;
+
+    z-index: 10;
 
     display: flex;
 
@@ -136,11 +168,13 @@ input {
 
     gap: 14px;
 
-    z-index: 10;
 }
 
+
 .mission-symbol {
+
     width: 32px;
+
     height: 32px;
 
     display: grid;
@@ -152,10 +186,11 @@ input {
 
     color: #d7dddd;
 
-    font-size: 14px;
 }
 
+
 .mission-identification strong {
+
     display: block;
 
     color: #dce2e3;
@@ -165,9 +200,12 @@ input {
     font-weight: 500;
 
     letter-spacing: .16em;
+
 }
 
+
 .mission-identification span {
+
     display: block;
 
     margin-top: 5px;
@@ -177,24 +215,27 @@ input {
     font-size: 8px;
 
     letter-spacing: .13em;
+
 }
 
 
 /* =====================================================
-   MISSION STATUS
+   STATUS
 ===================================================== */
 
 .mission-status {
+
     position: absolute;
 
     top: 34px;
+
     right: 40px;
+
+    z-index: 10;
 
     display: flex;
 
     gap: 25px;
-
-    z-index: 10;
 
     color: #687477;
 
@@ -206,40 +247,50 @@ input {
     font-size: 8px;
 
     letter-spacing: .1em;
+
 }
 
+
 .mission-status div {
+
     display: flex;
 
     flex-direction: column;
 
     gap: 5px;
+
 }
 
+
 .mission-status strong {
+
     color: #d5dcdd;
 
     font-weight: 500;
+
 }
 
 
 /* =====================================================
-   MISSION TITLE
+   TITLE
 ===================================================== */
 
 .mission-title {
+
     position: absolute;
 
     left: 5vw;
+
     top: 22vh;
 
     z-index: 10;
 
     pointer-events: none;
+
 }
 
-.mission-title span {
-    display: block;
+
+.mission-title > div {
 
     color: #e5e9e9;
 
@@ -257,13 +308,19 @@ input {
     line-height: .84;
 
     letter-spacing: -.055em;
+
 }
 
-.mission-title span:nth-child(2) {
+
+.mission-title > div:nth-child(2) {
+
     color: #aab6b2;
+
 }
+
 
 .mission-title p {
+
     margin-top: 25px;
 
     color: #687477;
@@ -278,193 +335,774 @@ input {
     line-height: 1.8;
 
     letter-spacing: .14em;
+
 }
 
 
 /* =====================================================
-   SATELLITE
+   3D SATELLITE
 ===================================================== */
 
 .satellite {
+
     position: absolute;
 
-    left: 66%;
-    top: 48%;
+    left: 68%;
 
-    width: 260px;
-    height: 160px;
+    top: 45%;
 
-    z-index: 12;
+    width: 620px;
+
+    height: 380px;
+
+    z-index: 20;
 
     pointer-events: none;
 
-    transform:
-        translate(-50%, -50%)
-        rotate(-5deg);
+    perspective: 1400px;
 
-    transition:
-        transform .18s cubic-bezier(.2,.7,.2,1);
+    transform:
+        translate(-50%, -50%);
+
 }
 
-.satellite-body {
+
+.satellite-rotation {
+
     position: absolute;
 
     inset: 0;
 
-    display: flex;
+    transform-style: preserve-3d;
 
-    align-items: center;
+    animation:
+        satelliteOrbit
+        24s
+        cubic-bezier(.45,0,.55,1)
+        infinite;
 
-    justify-content: center;
 }
 
-.satellite-core {
-    position: relative;
 
-    width: 74px;
-    height: 58px;
+@keyframes satelliteOrbit {
+
+    0% {
+
+        transform:
+            translate3d(-180px, 40px, 0)
+            rotateX(-8deg)
+            rotateY(-25deg)
+            rotateZ(-5deg);
+
+    }
+
+    15% {
+
+        transform:
+            translate3d(-80px, -20px, 80px)
+            rotateX(-4deg)
+            rotateY(-10deg)
+            rotateZ(-2deg);
+
+    }
+
+    30% {
+
+        transform:
+            translate3d(20px, -60px, 120px)
+            rotateX(4deg)
+            rotateY(8deg)
+            rotateZ(3deg);
+
+    }
+
+    45% {
+
+        transform:
+            translate3d(150px, -25px, 60px)
+            rotateX(8deg)
+            rotateY(22deg)
+            rotateZ(6deg);
+
+    }
+
+    60% {
+
+        transform:
+            translate3d(210px, 50px, -20px)
+            rotateX(2deg)
+            rotateY(30deg)
+            rotateZ(2deg);
+
+    }
+
+    75% {
+
+        transform:
+            translate3d(80px, 90px, -60px)
+            rotateX(-6deg)
+            rotateY(12deg)
+            rotateZ(-4deg);
+
+    }
+
+    90% {
+
+        transform:
+            translate3d(-80px, 65px, 20px)
+            rotateX(-10deg)
+            rotateY(-12deg)
+            rotateZ(-6deg);
+
+    }
+
+    100% {
+
+        transform:
+            translate3d(-180px, 40px, 0)
+            rotateX(-8deg)
+            rotateY(-25deg)
+            rotateZ(-5deg);
+
+    }
+
+}
+
+
+/* =====================================================
+   ORBIT RING
+===================================================== */
+
+.orbital-ring {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 700px;
+
+    height: 300px;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-12deg);
 
     border:
-        1px solid #b4bdbe;
+        1px solid
+        rgba(190,215,225,.08);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 80px
+        rgba(150,190,220,.035);
+
+}
+
+
+.satellite-glow {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 520px;
+
+    height: 520px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(180,210,230,.09),
+            transparent 68%
+        );
+
+    filter:
+        blur(8px);
+
+}
+
+
+/* =====================================================
+   SOLAR PANELS
+===================================================== */
+
+.solar-array {
+
+    position: absolute;
+
+    top: 115px;
+
+    width: 190px;
+
+    height: 105px;
+
+    transform-style: preserve-3d;
+
+    filter:
+        drop-shadow(
+            0 18px 20px
+            rgba(0,0,0,.45)
+        );
+
+}
+
+
+.solar-left {
+
+    left: 0;
+
+    transform:
+        rotateY(8deg);
+
+}
+
+
+.solar-right {
+
+    right: 0;
+
+    transform:
+        rotateY(-8deg);
+
+}
+
+
+.solar-frame {
+
+    width: 100%;
+
+    height: 100%;
+
+    padding: 4px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    grid-template-rows:
+        repeat(3,1fr);
+
+    gap: 2px;
+
+    border:
+        2px solid
+        rgba(180,195,205,.75);
 
     background:
         linear-gradient(
             135deg,
-            #e1e4e2,
-            #737d7f 48%,
-            #343b3d
+            #17366f,
+            #0d2450
         );
 
     box-shadow:
-        8px 12px 25px rgba(0,0,0,.5);
+
+        inset 0 0 25px
+        rgba(90,160,255,.25),
+
+        0 0 18px
+        rgba(50,90,150,.18);
+
 }
 
-.satellite-band {
-    position: absolute;
 
-    top: 10px;
-    bottom: 10px;
+.solar-cell {
 
-    left: 20px;
-    right: 20px;
+    position: relative;
 
-    border-top:
-        1px solid rgba(20,25,27,.5);
-
-    border-bottom:
-        1px solid rgba(20,25,27,.5);
-}
-
-.sensor {
-    position: absolute;
-
-    bottom: -15px;
-    left: 28px;
-
-    width: 18px;
-    height: 18px;
-
-    display: grid;
-
-    place-items: center;
-
-    border-radius: 50%;
-
-    background: #161b1d;
+    overflow: hidden;
 
     border:
-        2px solid #899496;
+        1px solid
+        rgba(180,210,235,.4);
 
-    color: #aeb9b9;
+    background:
+        linear-gradient(
+            135deg,
+            #244b94,
+            #101f46 55%,
+            #315eac
+        );
 
-    font-size: 6px;
 }
 
-.antenna {
-    position: absolute;
 
-    top: -28px;
-    left: 35px;
+.solar-cell::before {
 
-    width: 1px;
-    height: 28px;
-
-    background: #aeb8b9;
-}
-
-.antenna::after {
     content: "";
 
     position: absolute;
 
-    top: -3px;
-    left: -3px;
-
-    width: 7px;
-    height: 7px;
-
-    border:
-        1px solid #aeb8b9;
-
-    border-radius: 50%;
-}
-
-.satellite-panel {
-    width: 82px;
-    height: 42px;
-
-    display: flex;
-
-    border:
-        1px solid #748184;
+    inset: 0;
 
     background:
-        repeating-linear-gradient(
-            90deg,
-            #273538 0,
-            #273538 19px,
-            #11191b 20px,
-            #11191b 21px
+        linear-gradient(
+            105deg,
+            transparent 30%,
+            rgba(255,255,255,.22) 48%,
+            transparent 62%
         );
+
 }
 
-.left-panel {
-    margin-right: 7px;
-}
 
-.right-panel {
-    margin-left: 7px;
-}
+/* =====================================================
+   SPACECRAFT BODY
+===================================================== */
 
-.satellite-panel i {
-    flex: 1;
+.spacecraft {
 
-    border-right:
-        1px solid rgba(190,205,205,.18);
-}
-
-.sensor-beam {
     position: absolute;
 
-    width: 1px;
-    height: 330px;
-
     left: 50%;
-    top: 70px;
+
+    top: 50%;
+
+    width: 170px;
+
+    height: 125px;
 
     transform:
-        rotate(18deg);
+        translate(-50%,-50%)
+        translateZ(40px);
+
+    transform-style: preserve-3d;
+
+}
+
+
+.spacecraft-body {
+
+    position: absolute;
+
+    left: 20px;
+
+    top: 22px;
+
+    width: 130px;
+
+    height: 90px;
+
+    transform:
+        skewY(-5deg)
+        rotateY(-8deg);
+
+    border:
+        1px solid
+        rgba(210,215,210,.7);
+
+    background:
+        linear-gradient(
+            145deg,
+            #e5e7e2 0%,
+            #b9beb9 25%,
+            #747c79 55%,
+            #3c4342 100%
+        );
+
+    box-shadow:
+
+        inset 8px 5px 12px
+        rgba(255,255,255,.35),
+
+        inset -15px -10px 25px
+        rgba(0,0,0,.35),
+
+        0 25px 40px
+        rgba(0,0,0,.55);
+
+    transform-style: preserve-3d;
+
+}
+
+
+.body-panel {
+
+    position: absolute;
+
+    border:
+        1px solid
+        rgba(70,80,80,.5);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.3),
+            rgba(40,50,50,.15)
+        );
+
+}
+
+
+.panel-one {
+
+    left: 12px;
+    top: 12px;
+
+    width: 48px;
+    height: 25px;
+
+}
+
+
+.panel-two {
+
+    left: 70px;
+    top: 12px;
+
+    width: 42px;
+    height: 25px;
+
+}
+
+
+.panel-three {
+
+    left: 12px;
+    top: 48px;
+
+    width: 65px;
+    height: 28px;
+
+}
+
+
+.panel-four {
+
+    right: 10px;
+    top: 48px;
+
+    width: 35px;
+    height: 28px;
+
+}
+
+
+.body-highlight {
+
+    position: absolute;
+
+    left: 5px;
+    right: 5px;
+    top: 4px;
+
+    height: 2px;
+
+    background:
+        rgba(255,255,255,.55);
+
+}
+
+
+/* =====================================================
+   DISH
+===================================================== */
+
+.dish-arm {
+
+    position: absolute;
+
+    left: 64px;
+
+    top: -4px;
+
+    width: 45px;
+
+    height: 45px;
+
+    transform:
+        translateZ(35px);
+
+}
+
+
+.dish {
+
+    position: absolute;
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 50%;
+
+    border:
+        2px solid
+        rgba(220,225,220,.7);
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #f4f4ed,
+            #a9afaa 42%,
+            #4c5553 75%,
+            #252b2b
+        );
+
+    transform:
+        rotateX(62deg)
+        rotateZ(-12deg);
+
+    box-shadow:
+        0 15px 20px
+        rgba(0,0,0,.4);
+
+}
+
+
+.dish-center {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 8px;
+
+    height: 8px;
+
+    transform:
+        translate(-50%,-50%);
+
+    border-radius: 50%;
+
+    background:
+        #202728;
+
+}
+
+
+.dish-spoke {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 1px;
+
+    height: 24px;
 
     transform-origin:
-        top center;
+        center top;
+
+    background:
+        rgba(80,90,88,.65);
+
+}
+
+
+.spoke-one {
+
+    transform:
+        translate(-50%,0)
+        rotate(0deg);
+
+}
+
+
+.spoke-two {
+
+    transform:
+        translate(-50%,0)
+        rotate(45deg);
+
+}
+
+
+.spoke-three {
+
+    transform:
+        translate(-50%,0)
+        rotate(90deg);
+
+}
+
+
+.spoke-four {
+
+    transform:
+        translate(-50%,0)
+        rotate(135deg);
+
+}
+
+
+/* =====================================================
+   SENSOR
+===================================================== */
+
+.satellite-sensor {
+
+    position: absolute;
+
+    left: 77px;
+
+    bottom: -17px;
+
+    width: 38px;
+
+    height: 32px;
+
+    transform:
+        translateZ(50px);
+
+    border:
+        2px solid #707977;
+
+    background:
+        linear-gradient(
+            145deg,
+            #535d5c,
+            #161c1d
+        );
+
+}
+
+
+.sensor-glass {
+
+    position: absolute;
+
+    left: 7px;
+
+    top: 5px;
+
+    width: 20px;
+
+    height: 20px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #cceaff,
+            #496c88 35%,
+            #111b22 72%
+        );
+
+}
+
+
+.sensor-ring {
+
+    position: absolute;
+
+    left: 4px;
+
+    top: 2px;
+
+    width: 26px;
+
+    height: 26px;
+
+    border:
+        1px solid
+        rgba(220,230,230,.5);
+
+    border-radius: 50%;
+
+}
+
+
+/* =====================================================
+   ANTENNA
+===================================================== */
+
+.antenna-mast {
+
+    position: absolute;
+
+    left: 84px;
+
+    top: -45px;
+
+    width: 2px;
+
+    height: 48px;
 
     background:
         linear-gradient(
             to bottom,
-            rgba(210,235,225,.28),
-            rgba(130,180,160,.06),
-            transparent
+            #e1e4df,
+            #5e6664
         );
+
+}
+
+
+.antenna-tip {
+
+    position: absolute;
+
+    left: 80px;
+
+    top: -52px;
+
+    width: 10px;
+
+    height: 10px;
+
+    border:
+        1px solid #ccd4d0;
+
+    border-radius: 50%;
+
+    background:
+        #313a3a;
+
+}
+
+
+.small-antenna {
+
+    position: absolute;
+
+    width: 2px;
+
+    height: 30px;
+
+    background:
+        #8d9795;
+
+}
+
+
+.antenna-one {
+
+    left: 25px;
+
+    bottom: 2px;
+
+    transform:
+        rotate(20deg);
+
+}
+
+
+.antenna-two {
+
+    right: 22px;
+
+    bottom: 3px;
+
+    transform:
+        rotate(-18deg);
+
 }
 
 
@@ -473,9 +1111,11 @@ input {
 ===================================================== */
 
 .telemetry-card {
+
     position: absolute;
 
     left: 5vw;
+
     bottom: 13vh;
 
     width: 260px;
@@ -485,7 +1125,8 @@ input {
     z-index: 10;
 
     border:
-        1px solid rgba(150,165,167,.2);
+        1px solid
+        rgba(150,165,167,.2);
 
     background:
         rgba(5,9,11,.62);
@@ -497,24 +1138,31 @@ input {
         "SFMono-Regular",
         Consolas,
         monospace;
+
 }
 
+
 .telemetry-heading {
+
     padding-bottom: 12px;
 
     margin-bottom: 7px;
 
     border-bottom:
-        1px solid rgba(150,165,167,.15);
+        1px solid
+        rgba(150,165,167,.15);
 
     color: #9ba6a8;
 
     font-size: 8px;
 
     letter-spacing: .16em;
+
 }
 
+
 .telemetry-row {
+
     display: flex;
 
     justify-content: space-between;
@@ -526,25 +1174,31 @@ input {
     color: #657174;
 
     font-size: 8px;
+
 }
 
+
 .telemetry-row strong {
+
     color: #c1c9ca;
 
     font-weight: 500;
 
     text-align: right;
+
 }
 
 
 /* =====================================================
-   MISSION INSTRUCTIONS
+   INSTRUCTIONS
 ===================================================== */
 
 .mission-instructions {
+
     position: absolute;
 
     left: 50%;
+
     bottom: 7vh;
 
     transform:
@@ -558,10 +1212,11 @@ input {
 
     align-items: center;
 
-    text-align: center;
 }
 
+
 .mission-instructions strong {
+
     color: #c5cccd;
 
     font-size: 10px;
@@ -569,9 +1224,12 @@ input {
     font-weight: 500;
 
     letter-spacing: .18em;
+
 }
 
+
 .mission-instructions small {
+
     margin-top: 8px;
 
     color: #626d70;
@@ -584,10 +1242,14 @@ input {
     font-size: 7px;
 
     letter-spacing: .12em;
+
 }
 
+
 .scroll-indicator {
+
     width: 18px;
+
     height: 29px;
 
     margin-bottom: 13px;
@@ -597,17 +1259,18 @@ input {
 
     border-radius: 10px;
 
-    position: relative;
 }
 
-.scroll-indicator span {
-    position: absolute;
 
-    left: 7px;
-    top: 6px;
+.scroll-indicator span {
+
+    display: block;
 
     width: 3px;
+
     height: 7px;
+
+    margin: 6px auto;
 
     border-radius: 2px;
 
@@ -615,7 +1278,9 @@ input {
 
     animation:
         scrollPulse 1.6s infinite;
+
 }
+
 
 @keyframes scrollPulse {
 
@@ -641,9 +1306,11 @@ input {
 ===================================================== */
 
 .mission-credit {
+
     position: absolute;
 
     right: 40px;
+
     bottom: 32px;
 
     z-index: 10;
@@ -658,50 +1325,64 @@ input {
     font-size: 8px;
 
     letter-spacing: .15em;
+
 }
 
+
 .mission-credit strong {
+
     color: #c5cdce;
 
     font-weight: 500;
+
 }
 
 
 /* =====================================================
-   SPECTRAL BURST
+   COSMIC BURST
 ===================================================== */
 
 .spectral-burst {
+
     position: absolute;
 
     left: 50%;
+
     top: 50%;
 
     width: 0;
+
     height: 0;
 
     border-radius: 50%;
 
     pointer-events: none;
 
-    z-index: 50;
+    z-index: 100;
 
     opacity: 0;
 
-    transform:
-        translate(-50%, -50%);
 }
 
-.mission-screen.bursting .spectral-burst {
+
+.mission-screen.bursting
+.spectral-burst {
+
     animation:
-        cosmicBurst 1.25s cubic-bezier(.2,.7,.1,1) forwards;
+        cosmicBurst
+        1.25s
+        cubic-bezier(.2,.7,.1,1)
+        forwards;
+
 }
+
 
 @keyframes cosmicBurst {
 
     0% {
 
         width: 0;
+
         height: 0;
 
         opacity: 1;
@@ -718,66 +1399,78 @@ input {
                 #c9ff55 47%,
                 transparent 65%
             );
+
     }
+
 
     45% {
 
         width: 100vmax;
+
         height: 100vmax;
 
-        opacity: 1;
     }
+
 
     100% {
 
         width: 180vmax;
+
         height: 180vmax;
 
         opacity: 0;
 
-        background:
-            radial-gradient(
-                circle,
-                #ffffff,
-                #8be5ff 12%,
-                #c28aff 30%,
-                transparent 65%
-            );
     }
 
 }
 
 
 /* =====================================================
-   AGRICULTURE APPLICATION
+   AGRICULTURE APP
 ===================================================== */
 
 .agriculture-app {
+
     display: none;
 
     width: 100%;
+
     min-height: 100vh;
 
     background: #0a0f10;
+
 }
 
+
 .agriculture-app.visible {
+
     display: block;
 
     animation:
-        applicationEnter .8s ease;
+        applicationEnter
+        .8s ease;
+
 }
+
 
 @keyframes applicationEnter {
 
     from {
+
         opacity: 0;
-        transform: scale(.985);
+
+        transform:
+            scale(.985);
+
     }
 
     to {
+
         opacity: 1;
-        transform: scale(1);
+
+        transform:
+            scale(1);
+
     }
 
 }
@@ -788,6 +1481,7 @@ input {
 ===================================================== */
 
 .app-header {
+
     position: relative;
 
     z-index: 100;
@@ -800,26 +1494,33 @@ input {
 
     justify-content: space-between;
 
-    padding:
-        0 32px;
+    padding: 0 32px;
 
     border-bottom:
-        1px solid rgba(220,230,230,.15);
+        1px solid
+        rgba(220,230,230,.15);
 
     background:
         rgba(5,9,10,.94);
+
 }
 
+
 .app-brand {
+
     display: flex;
 
     align-items: center;
 
     gap: 13px;
+
 }
 
+
 .app-logo {
+
     width: 32px;
+
     height: 32px;
 
     display: grid;
@@ -829,12 +1530,11 @@ input {
     border:
         1px solid #677174;
 
-    color: #d7dddd;
-
-    font-size: 12px;
 }
 
+
 .app-brand strong {
+
     display: block;
 
     color: #dce1e2;
@@ -844,9 +1544,12 @@ input {
     font-weight: 500;
 
     letter-spacing: .13em;
+
 }
 
+
 .app-brand span {
+
     display: block;
 
     margin-top: 4px;
@@ -861,9 +1564,12 @@ input {
     font-size: 7px;
 
     letter-spacing: .12em;
+
 }
 
+
 .app-status {
+
     display: flex;
 
     align-items: center;
@@ -879,27 +1585,28 @@ input {
 
     font-size: 8px;
 
-    letter-spacing: .1em;
 }
 
+
 .app-status span {
+
     width: 6px;
+
     height: 6px;
 
     border-radius: 50%;
 
     background: #91b6a2;
 
-    box-shadow:
-        0 0 10px rgba(145,182,162,.5);
 }
 
 
 /* =====================================================
-   EARTH INTERFACE
+   MAP
 ===================================================== */
 
 .earth-interface {
+
     position: relative;
 
     width: 100%;
@@ -911,15 +1618,11 @@ input {
 
     overflow: hidden;
 
-    background: #182224;
 }
 
 
-/* =====================================================
-   WORLD MAP
-===================================================== */
-
 .world-map {
+
     position: absolute;
 
     inset: 0;
@@ -927,21 +1630,22 @@ input {
     z-index: 1;
 
     background: #182224;
+
 }
+
 
 .world-map .leaflet-tile {
+
     filter:
-        saturate(.84)
-        contrast(1.04)
-        brightness(.9);
+        saturate(.88)
+        contrast(1.03)
+        brightness(.92);
+
 }
 
 
-/* =====================================================
-   EARTH OVERLAY
-===================================================== */
-
 .earth-overlay {
+
     position: absolute;
 
     inset: 0;
@@ -951,28 +1655,24 @@ input {
     pointer-events: none;
 
     background:
+
         linear-gradient(
             180deg,
-            rgba(3,8,9,.78) 0%,
-            rgba(3,8,9,.20) 24%,
-            rgba(3,8,9,.02) 50%,
-            rgba(3,8,9,.18) 74%,
-            rgba(3,8,9,.88) 100%
+            rgba(3,8,9,.72) 0%,
+            rgba(3,8,9,.12) 30%,
+            rgba(3,8,9,.02) 55%,
+            rgba(3,8,9,.78) 100%
         );
 
-    box-shadow:
-        inset 0 0 180px rgba(0,0,0,.5);
 }
 
 
-/* =====================================================
-   EARTH HEADING
-===================================================== */
-
 .earth-heading {
+
     position: absolute;
 
     left: 42px;
+
     top: 48px;
 
     z-index: 10;
@@ -980,9 +1680,12 @@ input {
     max-width: 600px;
 
     pointer-events: none;
+
 }
 
+
 .section-label {
+
     color: #c0c9c7;
 
     font-family:
@@ -994,18 +1697,18 @@ input {
 
     letter-spacing: .18em;
 
-    text-shadow:
-        0 2px 10px rgba(0,0,0,.8);
 }
 
+
 .earth-heading h1 {
+
     margin:
         10px 0 15px;
 
     color: #eef2f1;
 
     font-size:
-        clamp(3rem, 6vw, 6rem);
+        clamp(3rem,6vw,6rem);
 
     line-height: .86;
 
@@ -1015,9 +1718,12 @@ input {
 
     text-shadow:
         0 4px 30px rgba(0,0,0,.55);
+
 }
 
+
 .earth-heading p {
+
     max-width: 430px;
 
     color: #e0e6e4;
@@ -1026,19 +1732,19 @@ input {
 
     line-height: 1.6;
 
-    text-shadow:
-        0 2px 15px rgba(0,0,0,.9);
 }
 
 
 /* =====================================================
-   EARTH STATUS
+   STATUS
 ===================================================== */
 
 .earth-status {
+
     position: absolute;
 
     top: 48px;
+
     right: 40px;
 
     z-index: 10;
@@ -1051,7 +1757,8 @@ input {
         13px 17px;
 
     border:
-        1px solid rgba(220,230,230,.25);
+        1px solid
+        rgba(220,230,230,.25);
 
     background:
         rgba(4,8,9,.68);
@@ -1059,59 +1766,63 @@ input {
     backdrop-filter:
         blur(12px);
 
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
 }
 
+
 .earth-status div {
+
     display: flex;
 
     flex-direction: column;
 
     gap: 5px;
+
 }
 
+
 .earth-status span {
+
     color: #9ba5a4;
 
     font-size: 7px;
 
-    letter-spacing: .14em;
 }
 
+
 .earth-status strong {
+
     color: #e0e6e5;
 
     font-size: 8px;
 
-    font-weight: 500;
-
-    letter-spacing: .08em;
 }
 
 
 /* =====================================================
-   FLOATING UPLOAD
+   UPLOAD
 ===================================================== */
 
 .floating-upload {
+
     position: absolute;
 
     left: 50%;
+
     top: 53%;
 
     z-index: 20;
 
     transform:
-        translate(-50%, -50%);
+        translate(-50%,-50%);
 
     width:
-        min(560px, 90%);
+        min(560px,90%);
+
 }
 
-.floating-upload .upload-box {
+
+.upload-box {
+
     width: 100%;
 
     padding:
@@ -1120,35 +1831,39 @@ input {
     text-align: center;
 
     border:
-        1px solid rgba(220,230,230,.42);
+        1px solid
+        rgba(220,230,230,.42);
 
     background:
-        rgba(6,11,12,.76);
+        rgba(6,11,12,.78);
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,.42);
+        0 30px 100px
+        rgba(0,0,0,.42);
 
     backdrop-filter:
         blur(20px);
 
     transition:
         transform .3s ease,
-        background .3s ease,
         border-color .3s ease;
+
 }
 
-.floating-upload .upload-box:hover {
+
+.upload-box:hover {
+
     border-color:
         rgba(235,242,240,.65);
 
-    background:
-        rgba(6,11,12,.84);
-
     transform:
         translateY(-3px);
+
 }
 
+
 .upload-box.dragging {
+
     border-color:
         #c4d4cc !important;
 
@@ -1157,17 +1872,21 @@ input {
 
     transform:
         scale(1.02);
+
 }
+
 
 .upload-symbol {
+
     margin-bottom: 15px;
 
-    color: #d7dfdd;
-
     font-size: 26px;
+
 }
 
+
 .upload-kicker {
+
     display: block;
 
     margin-bottom: 8px;
@@ -1182,9 +1901,12 @@ input {
     font-size: 8px;
 
     letter-spacing: .16em;
+
 }
 
-.floating-upload .upload-box h2 {
+
+.upload-box h2 {
+
     margin:
         8px 0;
 
@@ -1194,10 +1916,11 @@ input {
 
     font-weight: 500;
 
-    letter-spacing: -.02em;
 }
 
-.floating-upload .upload-box p {
+
+.upload-box p {
+
     margin:
         12px auto 20px;
 
@@ -1206,9 +1929,12 @@ input {
     line-height: 1.6;
 
     font-size: 13px;
+
 }
 
+
 .upload-button {
+
     display: inline-block;
 
     padding:
@@ -1230,24 +1956,21 @@ input {
 
     letter-spacing: .12em;
 
-    transition:
-        background .2s ease,
-        border-color .2s ease;
 }
 
+
 .upload-button:hover {
+
     border-color: #e1e8e6;
 
     background:
         rgba(220,230,225,.12);
+
 }
 
 
-/* =====================================================
-   PRIVACY
-===================================================== */
-
 .privacy-note {
+
     display: flex;
 
     justify-content: center;
@@ -1267,71 +1990,19 @@ input {
 
     font-size: 7px;
 
-    line-height: 1.5;
-
-    letter-spacing: .08em;
 }
 
-.privacy-dot {
-    width: 5px;
-    height: 5px;
 
-    flex-shrink: 0;
+.privacy-dot {
+
+    width: 5px;
+
+    height: 5px;
 
     border-radius: 50%;
 
     background: #9ab9a8;
 
-    box-shadow:
-        0 0 10px rgba(154,185,168,.55);
-}
-
-
-/* =====================================================
-   MAP INSTRUCTIONS
-===================================================== */
-
-.map-instructions {
-    position: absolute;
-
-    left: 50%;
-    bottom: 70px;
-
-    z-index: 15;
-
-    transform:
-        translateX(-50%);
-
-    display: flex;
-
-    gap: 25px;
-
-    padding:
-        9px 15px;
-
-    border:
-        1px solid rgba(220,230,230,.22);
-
-    background:
-        rgba(4,8,9,.7);
-
-    backdrop-filter:
-        blur(10px);
-
-    color: #c1cbca;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 7px;
-
-    letter-spacing: .1em;
-
-    pointer-events: none;
-
-    white-space: nowrap;
 }
 
 
@@ -1340,9 +2011,11 @@ input {
 ===================================================== */
 
 .tractor-track {
+
     position: absolute;
 
     left: 0;
+
     right: 0;
 
     bottom: 0;
@@ -1363,86 +2036,108 @@ input {
         );
 
     border-top:
-        1px solid rgba(230,240,235,.15);
+        1px solid
+        rgba(230,240,235,.15);
+
 }
 
+
 .tractor {
+
     position: absolute;
 
     left: -70px;
+
     bottom: 8px;
 
     width: 55px;
+
     height: 28px;
 
     animation:
-        tractorJourney 30s linear infinite;
+        tractorJourney
+        30s
+        linear
+        infinite;
+
 }
+
 
 @keyframes tractorJourney {
 
     from {
+
         left: -70px;
+
     }
 
     to {
-        left: calc(100% + 70px);
+
+        left:
+            calc(100% + 70px);
+
     }
 
 }
 
+
 .tractor-cabin {
+
     position: absolute;
 
     left: 18px;
+
     top: 0;
 
     width: 22px;
+
     height: 17px;
 
     border:
         1px solid #d0d7d3;
 
-    background:
-        #56625e;
+    background: #56625e;
 
-    transform:
-        skew(-8deg);
 }
 
+
 .tractor-window {
+
     position: absolute;
 
     left: 4px;
+
     top: 3px;
 
     width: 12px;
-    height: 8px;
 
-    border:
-        1px solid #aebbb7;
+    height: 8px;
 
     background:
         rgba(120,150,155,.55);
+
 }
 
+
 .tractor-body {
+
     position: absolute;
 
     left: 11px;
+
     top: 16px;
 
     width: 35px;
+
     height: 10px;
 
-    border:
-        1px solid #b8c1bd;
+    background: #6e7975;
 
-    background:
-        #6e7975;
 }
 
+
 .tractor-wheel {
+
     position: absolute;
 
     bottom: -5px;
@@ -1450,37 +2145,95 @@ input {
     border:
         2px solid #b4bfba;
 
-    background:
-        #111718;
+    background: #111718;
 
     border-radius: 50%;
+
 }
 
+
 .tractor-wheel.rear {
+
     left: 12px;
 
     width: 14px;
+
     height: 14px;
+
 }
 
+
 .tractor-wheel.front {
+
     right: 4px;
 
     width: 9px;
+
     height: 9px;
+
 }
 
+
 .tractor-exhaust {
+
     position: absolute;
 
     left: 7px;
+
     top: 7px;
 
     width: 3px;
+
     height: 10px;
 
+    background: #343d3d;
+
+}
+
+
+/* =====================================================
+   MAP INSTRUCTIONS
+===================================================== */
+
+.map-instructions {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 70px;
+
+    z-index: 15;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+
+    gap: 25px;
+
+    padding:
+        9px 15px;
+
+    border:
+        1px solid
+        rgba(220,230,230,.22);
+
     background:
-        #343d3d;
+        rgba(4,8,9,.7);
+
+    backdrop-filter:
+        blur(10px);
+
+    color: #c1cbca;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 7px;
+
 }
 
 
@@ -1489,6 +2242,7 @@ input {
 ===================================================== */
 
 .field-workspace {
+
     position: absolute;
 
     inset: 0;
@@ -1508,31 +2262,42 @@ input {
 
     animation:
         workspaceEnter .7s ease;
+
 }
+
+
+.hidden {
+
+    display: none !important;
+
+}
+
 
 @keyframes workspaceEnter {
 
     from {
+
         opacity: 0;
 
         transform:
             scale(1.02);
+
     }
 
     to {
+
         opacity: 1;
 
         transform:
             scale(1);
+
     }
 
 }
 
-.hidden {
-    display: none !important;
-}
 
 .field-header {
+
     display: flex;
 
     align-items: end;
@@ -1542,39 +2307,45 @@ input {
     gap: 30px;
 
     margin-bottom: 25px;
+
 }
 
+
 .field-header h2 {
+
     margin:
         8px 0;
 
     color: #e1e6e6;
 
     font-size:
-        clamp(2rem, 5vw, 4rem);
+        clamp(2rem,5vw,4rem);
 
     font-weight: 500;
 
-    letter-spacing: -.045em;
 }
 
+
 .field-header p {
+
     margin: 0;
 
     color: #879290;
 
     font-size: 12px;
+
 }
 
+
 .primary-button {
+
     padding:
         13px 18px;
 
     border:
         1px solid #788582;
 
-    background:
-        #101617;
+    background: #101617;
 
     color: #d7dddd;
 
@@ -1587,40 +2358,35 @@ input {
 
     font-size: 8px;
 
-    letter-spacing: .1em;
 }
 
-.primary-button:hover {
-    background: #182021;
-
-    border-color:
-        #c2ccca;
-}
-
-
-/* =====================================================
-   ANALYSIS
-===================================================== */
 
 .workspace-grid {
+
     display: grid;
 
     grid-template-columns:
-        minmax(0, 1fr)
+        minmax(0,1fr)
         310px;
 
     gap: 20px;
+
 }
+
 
 .map-card,
 .analysis-card {
+
     border:
         1px solid #2a3435;
 
     background: #0a0e0f;
+
 }
 
+
 .map-toolbar {
+
     height: 48px;
 
     display: flex;
@@ -1644,22 +2410,11 @@ input {
 
     font-size: 8px;
 
-    letter-spacing: .12em;
 }
 
-.map-toolbar button {
-    border: 0;
-
-    background: transparent;
-
-    color: #aab5b3;
-
-    cursor: pointer;
-
-    font-size: 8px;
-}
 
 .analysis-map-preview {
+
     height: 500px;
 
     display: grid;
@@ -1682,16 +2437,18 @@ input {
         Consolas,
         monospace;
 
-    font-size: 10px;
-
-    letter-spacing: .12em;
 }
+
 
 .analysis-card {
+
     padding: 20px;
+
 }
 
+
 .card-label {
+
     padding-bottom: 15px;
 
     border-bottom:
@@ -1706,26 +2463,26 @@ input {
 
     font-size: 8px;
 
-    letter-spacing: .14em;
 }
 
+
 .metric {
+
     display: flex;
 
-    align-items: center;
-
     justify-content: space-between;
-
-    gap: 15px;
 
     padding:
         18px 0;
 
     border-bottom:
         1px solid #20282a;
+
 }
 
+
 .metric span {
+
     color: #84908e;
 
     font-family:
@@ -1735,42 +2492,45 @@ input {
 
     font-size: 8px;
 
-    letter-spacing: .08em;
 }
 
+
 .metric strong {
+
     color: #d7dddd;
 
     font-size: 18px;
 
-    font-weight: 500;
-
-    text-align: right;
 }
 
+
 .analysis-note {
+
     color: #7c8986;
 
     font-size: 11px;
 
     line-height: 1.7;
+
 }
 
 
 /* =====================================================
-   INFORMATION BUBBLE
+   INFO BUBBLE
 ===================================================== */
 
 .info-bubble {
+
     position: absolute;
 
     right: 28px;
+
     bottom: 70px;
 
     z-index: 60;
 
     width:
-        min(370px, calc(100% - 40px));
+        min(370px,calc(100% - 40px));
 
     padding:
         20px 21px;
@@ -1782,7 +2542,8 @@ input {
         rgba(9,13,14,.96);
 
     box-shadow:
-        0 20px 60px rgba(0,0,0,.45);
+        0 20px 60px
+        rgba(0,0,0,.45);
 
     opacity: 0;
 
@@ -1794,25 +2555,29 @@ input {
     transition:
         opacity .5s ease,
         transform .5s ease;
+
 }
 
+
 .info-bubble.visible {
+
     opacity: 1;
 
     transform:
         translateY(0);
 
     pointer-events: auto;
+
 }
 
+
 .close-bubble {
+
     position: absolute;
 
     right: 10px;
-    top: 8px;
 
-    width: 28px;
-    height: 28px;
+    top: 8px;
 
     border: 0;
 
@@ -1823,23 +2588,23 @@ input {
     cursor: pointer;
 
     font-size: 20px;
+
 }
 
-.bubble-header {
-    display: flex;
 
-    align-items: center;
+.bubble-header {
+
+    display: flex;
 
     gap: 10px;
 
     margin-bottom: 13px;
+
 }
 
-.bubble-header span {
-    color: #c4cfcc;
-}
 
 .bubble-header strong {
+
     color: #d7dddd;
 
     font-family:
@@ -1849,12 +2614,11 @@ input {
 
     font-size: 8px;
 
-    font-weight: 500;
-
-    letter-spacing: .13em;
 }
 
+
 .info-bubble p {
+
     margin: 0;
 
     color: #aab5b2;
@@ -1862,6 +2626,7 @@ input {
     font-size: 12px;
 
     line-height: 1.7;
+
 }
 
 
@@ -1870,19 +2635,22 @@ input {
 ===================================================== */
 
 .leaflet-container {
+
     background: #182224;
+
 }
+
 
 .leaflet-control-zoom {
+
     border:
-        1px solid rgba(220,230,230,.3) !important;
+        1px solid
+        rgba(220,230,230,.3) !important;
+
 }
 
-.leaflet-control-zoom a {
-    width: 34px !important;
-    height: 34px !important;
 
-    line-height: 34px !important;
+.leaflet-control-zoom a {
 
     background:
         rgba(7,11,12,.9) !important;
@@ -1891,18 +2659,17 @@ input {
 
     border-color:
         rgba(220,230,230,.2) !important;
+
 }
 
-.leaflet-control-zoom a:hover {
-    background:
-        #1b2627 !important;
-}
 
 .leaflet-control-attribution {
+
     background:
         rgba(4,8,9,.8) !important;
 
     color: #aab3b2 !important;
+
 }
 
 
@@ -1913,28 +2680,34 @@ input {
 @media (max-width: 900px) {
 
     .mission-status {
+
         display: none;
+
     }
 
-    .earth-heading {
-        left: 22px;
-        top: 30px;
+
+    .satellite {
+
+        left: 72%;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.75);
+
     }
 
-    .earth-heading h1 {
-        font-size: 3.3rem;
-    }
 
     .earth-status {
+
         display: none;
+
     }
 
-    .floating-upload {
-        top: 55%;
-    }
 
     .workspace-grid {
+
         grid-template-columns: 1fr;
+
     }
 
 }
@@ -1942,45 +2715,59 @@ input {
 
 @media (max-width: 650px) {
 
-    .mission-identification {
-        left: 20px;
-        top: 20px;
-    }
-
-    .mission-credit {
-        right: 20px;
-    }
-
     .mission-title {
+
         left: 25px;
+
+        top: 20vh;
+
     }
 
-    .mission-title span {
-        font-size: 3.3rem;
+
+    .mission-title > div {
+
+        font-size: 3.2rem;
+
     }
+
+
+    .satellite {
+
+        left: 58%;
+
+        top: 48%;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.55);
+
+    }
+
 
     .telemetry-card {
+
         display: none;
+
     }
 
-    .earth-heading h1 {
-        font-size: 2.7rem;
-    }
-
-    .earth-heading p {
-        font-size: 11px;
-    }
 
     .floating-upload {
+
         width: 92%;
+
     }
 
-    .floating-upload .upload-box {
+
+    .upload-box {
+
         padding:
             30px 22px;
+
     }
 
+
     .map-instructions {
+
         width: 90%;
 
         justify-content: center;
@@ -1990,18 +2777,7 @@ input {
         white-space: normal;
 
         text-align: center;
-    }
 
-    .privacy-note {
-        font-size: 6px;
-    }
-
-    .field-header {
-        display: block;
-    }
-
-    .primary-button {
-        margin-top: 20px;
     }
 
 }
