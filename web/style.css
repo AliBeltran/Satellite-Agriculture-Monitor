@@ -1,6 +1,6 @@
 /* =========================================================
    SATELLITE AGRICULTURE MONITOR
-   AGRICULTURAL EARTH OBSERVATION UI
+   COMPLETE CSS
 ========================================================= */
 
 * {
@@ -9,21 +9,24 @@
 
 html,
 body {
+    width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
 
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
 
-    overflow-x: hidden;
+    background: #07100a;
 
-    background: #07100b;
-
-    color: #e8eee7;
+    color: #e8eee5;
 
     font-family:
         "Courier New",
         monospace;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -33,41 +36,46 @@ input {
 
 
 /* =========================================================
-   LANDING PAGE
+   PAGE 1
 ========================================================= */
 
 #missionScreen {
 
-    position: relative;
+    position: fixed;
+
+    inset: 0;
 
     width: 100vw;
     height: 100vh;
 
-    min-height: 650px;
-
     overflow: hidden;
 
     background:
-
         radial-gradient(
-            circle at 72% 48%,
-            rgba(73, 111, 72, 0.18),
-            transparent 32%
+            circle at 72% 45%,
+            rgba(75, 119, 72, 0.22),
+            transparent 34%
         ),
-
+        radial-gradient(
+            circle at 30% 100%,
+            rgba(73, 104, 57, 0.12),
+            transparent 40%
+        ),
         linear-gradient(
             135deg,
-            #07100b 0%,
-            #0b1710 45%,
-            #111c13 100%
+            #040a06,
+            #09140b 48%,
+            #101d12
         );
 
+    z-index: 1;
+
+    transition:
+        opacity 0.9s ease,
+        transform 1.2s ease,
+        filter 1.2s ease;
 }
 
-
-/* =========================================================
-   AGRICULTURAL GRID
-========================================================= */
 
 #missionScreen::before {
 
@@ -81,36 +89,37 @@ input {
 
     pointer-events: none;
 
-    opacity: 0.18;
+    opacity: 0.17;
 
     background-image:
-
         linear-gradient(
-            rgba(130, 160, 118, 0.12) 1px,
+            rgba(147, 174, 130, 0.12) 1px,
             transparent 1px
         ),
-
         linear-gradient(
             90deg,
-            rgba(130, 160, 118, 0.12) 1px,
+            rgba(147, 174, 130, 0.12) 1px,
             transparent 1px
         );
 
-    background-size:
-        70px 70px;
+    background-size: 70px 70px;
+}
 
-    mask-image:
-        linear-gradient(
-            to right,
-            black,
-            transparent 85%
-        );
 
+#missionScreen.transitioning {
+
+    opacity: 0;
+
+    transform: scale(1.12);
+
+    filter:
+        brightness(1.7)
+        saturate(1.5);
 }
 
 
 /* =========================================================
-   THREE.JS EARTH
+   THREE EARTH
 ========================================================= */
 
 #threeContainer {
@@ -125,7 +134,6 @@ input {
     z-index: 1;
 
     pointer-events: none;
-
 }
 
 
@@ -135,12 +143,11 @@ input {
 
     width: 100% !important;
     height: 100% !important;
-
 }
 
 
 /* =========================================================
-   HEADER
+   LANDING HEADER
 ========================================================= */
 
 .mission-header {
@@ -158,7 +165,6 @@ input {
     align-items: flex-start;
 
     justify-content: space-between;
-
 }
 
 
@@ -169,7 +175,6 @@ input {
     align-items: center;
 
     gap: 13px;
-
 }
 
 
@@ -185,23 +190,23 @@ input {
 
     border:
         1px solid
-        rgba(177, 202, 166, 0.45);
+        rgba(181, 207, 168, 0.45);
 
-    color: #aeca9e;
+    color: #b5ccaa;
 
+    font-size: 15px;
 }
 
 
 .brand-title {
 
-    color: #dfe8dc;
+    color: #e0e8dc;
 
     font-size: 11px;
 
     font-weight: 700;
 
     letter-spacing: 3px;
-
 }
 
 
@@ -209,12 +214,11 @@ input {
 
     margin-top: 6px;
 
-    color: #71806d;
+    color: #71816b;
 
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -223,7 +227,6 @@ input {
     display: flex;
 
     gap: 28px;
-
 }
 
 
@@ -234,32 +237,29 @@ input {
     flex-direction: column;
 
     gap: 4px;
-
 }
 
 
 .mission-status span {
 
-    color: #596955;
+    color: #566451;
 
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
 .mission-status strong {
 
-    color: #b7c9ae;
+    color: #b8c9af;
 
     font-size: 8px;
-
 }
 
 
 /* =========================================================
-   HERO
+   LANDING HERO
 ========================================================= */
 
 .hero-content {
@@ -268,9 +268,9 @@ input {
 
     z-index: 20;
 
-    top: 19%;
-    left: 5%;
+    top: 18%;
 
+    left: 5%;
 }
 
 
@@ -278,12 +278,11 @@ input {
 
     margin-bottom: 20px;
 
-    color: #82977a;
+    color: #849a79;
 
     font-size: 8px;
 
     letter-spacing: 3px;
-
 }
 
 
@@ -302,7 +301,7 @@ input {
         clamp(
             60px,
             7vw,
-            115px
+            112px
         );
 
     line-height: 0.86;
@@ -310,14 +309,12 @@ input {
     letter-spacing: -6px;
 
     font-weight: 600;
-
 }
 
 
 .hero-content h1 span {
 
-    color: #a9bd9e;
-
+    color: #a7bd9b;
 }
 
 
@@ -325,14 +322,13 @@ input {
 
     margin-top: 30px;
 
-    color: #71816c;
+    color: #70816c;
 
     font-size: 8px;
 
     line-height: 1.8;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -347,22 +343,22 @@ input {
     z-index: 20;
 
     left: 5%;
+
     bottom: 13%;
 
     width: 270px;
 
     padding: 20px;
 
+    background:
+        rgba(5, 15, 8, 0.72);
+
     border:
         1px solid
-        rgba(140, 170, 128, 0.25);
-
-    background:
-        rgba(6, 15, 9, 0.72);
+        rgba(143, 174, 131, 0.25);
 
     backdrop-filter:
         blur(14px);
-
 }
 
 
@@ -370,12 +366,11 @@ input {
 
     margin-bottom: 13px;
 
-    color: #82947b;
+    color: #82937a;
 
     font-size: 8px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -390,7 +385,6 @@ input {
     border-top:
         1px solid
         rgba(140, 170, 128, 0.10);
-
 }
 
 
@@ -401,16 +395,14 @@ input {
     font-size: 7px;
 
     letter-spacing: 1px;
-
 }
 
 
 .telemetry-row strong {
 
-    color: #c0d0ba;
+    color: #c2d1bc;
 
     font-size: 8px;
-
 }
 
 
@@ -425,14 +417,14 @@ input {
     z-index: 20;
 
     right: 5%;
+
     bottom: 14%;
 
-    color: #84957d;
+    color: #84967d;
 
     font-size: 8px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -447,6 +439,7 @@ input {
     z-index: 30;
 
     left: 50%;
+
     bottom: 5%;
 
     transform:
@@ -459,7 +452,6 @@ input {
     align-items: center;
 
     gap: 7px;
-
 }
 
 
@@ -480,7 +472,6 @@ input {
     border-radius: 50%;
 
     color: #afc49f;
-
 }
 
 
@@ -491,7 +482,6 @@ input {
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -502,7 +492,6 @@ input {
     font-size: 6px;
 
     letter-spacing: 1px;
-
 }
 
 
@@ -514,25 +503,30 @@ input {
 
     position: absolute;
 
-    z-index: 25;
-
     left: 0;
     right: 0;
 
-    bottom: 13px;
+    bottom: 10px;
 
-    height: 45px;
+    height: 50px;
 
     overflow: hidden;
 
     pointer-events: none;
-
 }
 
 
-/*
-30 SECOND CROSSING
-*/
+.landing-tractor {
+
+    z-index: 35;
+}
+
+
+.map-tractor {
+
+    z-index: 200;
+}
+
 
 .tractor {
 
@@ -543,7 +537,6 @@ input {
     bottom: 0;
 
     width: 82px;
-
     height: 42px;
 
     animation:
@@ -551,11 +544,8 @@ input {
         30s
         linear
         infinite;
-
 }
 
-
-/* tractor body */
 
 .tractor-body {
 
@@ -576,11 +566,8 @@ input {
 
     border-radius:
         3px 5px 3px 3px;
-
 }
 
-
-/* hood */
 
 .tractor-hood {
 
@@ -601,11 +588,8 @@ input {
 
     border-radius:
         2px 4px 2px 2px;
-
 }
 
-
-/* cabin */
 
 .tractor-cab {
 
@@ -623,11 +607,8 @@ input {
 
     background:
         rgba(24, 42, 26, 0.95);
-
 }
 
-
-/* windows */
 
 .tractor-window {
 
@@ -649,11 +630,8 @@ input {
     border:
         1px solid
         #8ca78a;
-
 }
 
-
-/* wheels */
 
 .tractor-wheel {
 
@@ -661,13 +639,11 @@ input {
 
     border-radius: 50%;
 
-    background:
-        #202620;
+    background: #202620;
 
     border:
         3px solid
         #111611;
-
 }
 
 
@@ -678,7 +654,6 @@ input {
 
     left: 18px;
     bottom: 0;
-
 }
 
 
@@ -689,7 +664,6 @@ input {
 
     left: 57px;
     bottom: 1px;
-
 }
 
 
@@ -704,20 +678,13 @@ input {
     top: 50%;
 
     transform:
-        translate(
-            -50%,
-            -50%
-        );
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
-    background:
-        #78856f;
-
+    background: #78856f;
 }
 
-
-/* exhaust */
 
 .tractor-exhaust {
 
@@ -729,9 +696,7 @@ input {
     width: 3px;
     height: 12px;
 
-    background:
-        #30392f;
-
+    background: #30392f;
 }
 
 
@@ -747,13 +712,11 @@ input {
 
     border-radius: 50%;
 
-    background:
-        #d7c56d;
+    background: #d7c56d;
 
     box-shadow:
         0 0 7px
         rgba(215, 197, 109, 0.55);
-
 }
 
 
@@ -766,7 +729,6 @@ input {
     to {
         left: calc(100vw + 100px);
     }
-
 }
 
 
@@ -781,6 +743,7 @@ input {
     z-index: 30;
 
     right: 38px;
+
     bottom: 25px;
 
     color: #536250;
@@ -788,120 +751,53 @@ input {
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
 .designer strong {
 
     color: #899b80;
-
 }
 
 
 /* =========================================================
-   LANDING TRANSITION
+   PAGE 2
 ========================================================= */
 
-#missionScreen.transitioning {
+#agricultureApp {
 
-    animation:
-        agriculturalTransition
-        1.6s
-        cubic-bezier(
-            0.7,
-            0,
-            0.15,
-            1
-        )
-        forwards;
+    position: fixed;
 
-}
-
-
-@keyframes agriculturalTransition {
-
-    0% {
-
-        opacity: 1;
-
-        transform:
-            scale(1);
-
-        filter:
-            brightness(1)
-            saturate(1);
-
-    }
-
-    40% {
-
-        filter:
-            brightness(1.35)
-            saturate(1.25);
-
-    }
-
-    70% {
-
-        filter:
-            brightness(1.9)
-            saturate(1.45);
-
-    }
-
-    100% {
-
-        opacity: 0;
-
-        transform:
-            scale(1.12);
-
-        filter:
-            brightness(2.3)
-            saturate(1.7);
-
-    }
-
-}
-
-
-/* =========================================================
-   SECOND PAGE
-========================================================= */
-
-.agriculture-app {
-
-    position: relative;
+    inset: 0;
 
     width: 100vw;
     height: 100vh;
 
     overflow: hidden;
 
-    background: #101a12;
+    background: #0d180f;
+
+    z-index: 2;
 
     opacity: 0;
 
     visibility: hidden;
 
     transition:
-        opacity 0.7s ease;
-
+        opacity 0.8s ease;
 }
 
 
-.agriculture-app.visible {
+#agricultureApp.visible {
 
     opacity: 1;
 
     visibility: visible;
-
 }
 
 
 /* =========================================================
-   FULL-SCREEN MAP
+   WORLD MAP
 ========================================================= */
 
 .world-section {
@@ -913,10 +809,11 @@ input {
     width: 100%;
     height: 100%;
 
+    z-index: 1;
 }
 
 
-.world-map {
+#worldMap {
 
     position: absolute;
 
@@ -925,15 +822,9 @@ input {
     width: 100%;
     height: 100%;
 
-    background: #162019;
-
+    background: #182219;
 }
 
-
-/*
-Dark agricultural overlay over
-the satellite imagery.
-*/
 
 .world-section::after {
 
@@ -948,21 +839,109 @@ the satellite imagery.
     pointer-events: none;
 
     background:
-
         linear-gradient(
             90deg,
-            rgba(5, 15, 8, 0.86),
-            rgba(5, 15, 8, 0.18) 55%,
-            rgba(5, 15, 8, 0.40)
+            rgba(5, 15, 8, 0.78),
+            rgba(5, 15, 8, 0.10) 60%,
+            rgba(5, 15, 8, 0.30)
         ),
 
         linear-gradient(
             0deg,
             rgba(5, 15, 8, 0.68),
-            transparent 35%,
-            rgba(5, 15, 8, 0.28)
+            transparent 40%,
+            rgba(5, 15, 8, 0.18)
         );
+}
 
+
+/* =========================================================
+   MAP LABELS
+========================================================= */
+
+.map-overlay-top {
+
+    position: absolute;
+
+    z-index: 100;
+
+    top: 100px;
+
+    left: 34px;
+    right: 34px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    pointer-events: none;
+}
+
+
+.map-label {
+
+    padding:
+        10px 14px;
+
+    background:
+        rgba(5, 15, 8, 0.82);
+
+    border:
+        1px solid
+        rgba(185, 210, 170, 0.25);
+
+    color: #d0dbc9;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+}
+
+
+.map-coordinates {
+
+    padding:
+        10px 14px;
+
+    background:
+        rgba(5, 15, 8, 0.82);
+
+    color: #93a18b;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+}
+
+
+.map-overlay-bottom {
+
+    position: absolute;
+
+    z-index: 100;
+
+    right: 34px;
+    bottom: 72px;
+
+    display: flex;
+
+    gap: 22px;
+
+    padding:
+        10px 14px;
+
+    background:
+        rgba(5, 15, 8, 0.75);
+
+    border:
+        1px solid
+        rgba(170, 200, 155, 0.18);
+
+    color: #8b9a84;
+
+    font-size: 6px;
+
+    letter-spacing: 1.5px;
 }
 
 
@@ -974,7 +953,7 @@ the satellite imagery.
 
     position: absolute;
 
-    z-index: 30;
+    z-index: 120;
 
     top: 0;
     left: 0;
@@ -991,16 +970,15 @@ the satellite imagery.
 
     justify-content: space-between;
 
+    background:
+        rgba(5, 15, 8, 0.90);
+
     border-bottom:
         1px solid
-        rgba(180, 205, 165, 0.20);
-
-    background:
-        rgba(5, 15, 8, 0.76);
+        rgba(180, 205, 165, 0.25);
 
     backdrop-filter:
-        blur(14px);
-
+        blur(15px);
 }
 
 
@@ -1009,7 +987,6 @@ the satellite imagery.
     display: flex;
 
     gap: 5px;
-
 }
 
 
@@ -1020,8 +997,7 @@ the satellite imagery.
 
     border: 0;
 
-    background:
-        transparent;
+    background: transparent;
 
     color: #82907a;
 
@@ -1029,6 +1005,7 @@ the satellite imagery.
 
     letter-spacing: 1.5px;
 
+    cursor: pointer;
 }
 
 
@@ -1038,7 +1015,15 @@ the satellite imagery.
         rgba(126, 161, 105, 0.18);
 
     color: #d6e1cf;
+}
 
+
+.nav-button:hover {
+
+    background:
+        rgba(126, 161, 105, 0.10);
+
+    color: #d0ddca;
 }
 
 
@@ -1055,7 +1040,6 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 1.5px;
-
 }
 
 
@@ -1071,109 +1055,52 @@ the satellite imagery.
     box-shadow:
         0 0 9px
         rgba(148, 189, 131, 0.65);
-
 }
 
 
 /* =========================================================
-   MAP LABEL
-========================================================= */
-
-.map-overlay-top {
-
-    position: absolute;
-
-    z-index: 20;
-
-    top: 105px;
-    left: 34px;
-    right: 34px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    pointer-events: none;
-
-}
-
-
-.map-label {
-
-    padding:
-        10px 14px;
-
-    background:
-        rgba(5, 15, 8, 0.78);
-
-    border:
-        1px solid
-        rgba(185, 210, 170, 0.22);
-
-    color: #d0dbc9;
-
-    font-size: 8px;
-
-    letter-spacing: 2px;
-
-}
-
-
-.map-coordinates {
-
-    padding:
-        10px 14px;
-
-    background:
-        rgba(5, 15, 8, 0.78);
-
-    color: #93a18b;
-
-    font-size: 7px;
-
-    letter-spacing: 1px;
-
-}
-
-
-/* =========================================================
-   WORKSPACE OVER MAP
+   WORKSPACE
 ========================================================= */
 
 .workspace {
 
     position: absolute;
 
-    z-index: 20;
+    z-index: 110;
 
-    left: 5%;
-    top: 18%;
+    left: 5vw;
 
-    width: 650px;
+    top: 16vh;
+
+    width: 620px;
+
+    max-width: 90vw;
 
     padding: 28px;
 
     background:
-        rgba(5, 14, 8, 0.82);
+        rgba(7, 18, 10, 0.92);
 
     border:
         1px solid
-        rgba(175, 200, 162, 0.25);
-
-    backdrop-filter:
-        blur(16px);
+        rgba(174, 204, 158, 0.38);
 
     box-shadow:
         0 25px 80px
-        rgba(0,0,0,0.35);
+        rgba(0, 0, 0, 0.55);
 
+    backdrop-filter:
+        blur(18px);
 }
 
+
+/* =========================================================
+   WORKSPACE INTRO
+========================================================= */
 
 .workspace-intro {
 
     margin-bottom: 25px;
-
 }
 
 
@@ -1184,14 +1111,13 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 2.5px;
-
 }
 
 
 .workspace-intro h2 {
 
     margin:
-        12px 0 12px;
+        12px 0;
 
     color: #edf2e9;
 
@@ -1206,6 +1132,7 @@ the satellite imagery.
 
     letter-spacing: -3px;
 
+    font-weight: 600;
 }
 
 
@@ -1221,12 +1148,11 @@ the satellite imagery.
         sans-serif;
 
     font-size: 12px;
-
 }
 
 
 /* =========================================================
-   PRIVACY NOTE
+   PRIVACY
 ========================================================= */
 
 .privacy-note {
@@ -1241,8 +1167,7 @@ the satellite imagery.
 
     border-top:
         1px solid
-        rgba(160,190,145,0.14);
-
+        rgba(160, 190, 145, 0.18);
 }
 
 
@@ -1250,6 +1175,7 @@ the satellite imagery.
 
     color: #9bb58d;
 
+    font-size: 14px;
 }
 
 
@@ -1260,7 +1186,6 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 1.5px;
-
 }
 
 
@@ -1279,7 +1204,6 @@ the satellite imagery.
     font-size: 9px;
 
     line-height: 1.4;
-
 }
 
 
@@ -1291,10 +1215,6 @@ the satellite imagery.
 
     min-height: 210px;
 
-    border:
-        1px dashed
-        rgba(170, 200, 155, 0.30);
-
     display: flex;
 
     flex-direction: column;
@@ -1305,10 +1225,16 @@ the satellite imagery.
 
     text-align: center;
 
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
+    border:
+        1px dashed
+        rgba(170, 200, 155, 0.40);
 
+    background:
+        rgba(5, 15, 8, 0.30);
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease;
 }
 
 
@@ -1316,11 +1242,10 @@ the satellite imagery.
 .upload-box.dragging {
 
     background:
-        rgba(100, 140, 85, 0.08);
+        rgba(100, 140, 85, 0.10);
 
     border-color:
-        rgba(180, 215, 160, 0.65);
-
+        rgba(180, 215, 160, 0.70);
 }
 
 
@@ -1329,7 +1254,6 @@ the satellite imagery.
     color: #a5bd99;
 
     font-size: 27px;
-
 }
 
 
@@ -1348,7 +1272,6 @@ the satellite imagery.
     font-size: 18px;
 
     font-weight: 500;
-
 }
 
 
@@ -1369,11 +1292,12 @@ the satellite imagery.
     font-size: 10px;
 
     line-height: 1.5;
-
 }
 
 
 .upload-button {
+
+    display: inline-block;
 
     padding:
         11px 18px;
@@ -1389,15 +1313,16 @@ the satellite imagery.
     letter-spacing: 1.5px;
 
     cursor: pointer;
-
 }
 
 
 .upload-button:hover {
 
     background:
-        rgba(130,160,110,0.12);
+        rgba(130, 160, 110, 0.12);
 
+    border-color:
+        rgba(190, 215, 175, 0.70);
 }
 
 
@@ -1410,25 +1335,16 @@ the satellite imagery.
     font-size: 6px;
 
     letter-spacing: 2px;
-
 }
 
 
 /* =========================================================
-   FIELD WORKSPACE
+   FIELD RESULTS
 ========================================================= */
-
-.field-workspace {
-
-    display: block;
-
-}
-
 
 .field-workspace.hidden {
 
     display: none;
-
 }
 
 
@@ -1441,7 +1357,6 @@ the satellite imagery.
     justify-content: space-between;
 
     margin-bottom: 20px;
-
 }
 
 
@@ -1452,7 +1367,6 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -1471,7 +1385,6 @@ the satellite imagery.
     font-size: 28px;
 
     font-weight: 500;
-
 }
 
 
@@ -1482,7 +1395,6 @@ the satellite imagery.
     color: #71806d;
 
     font-size: 7px;
-
 }
 
 
@@ -1493,10 +1405,10 @@ the satellite imagery.
 
     border:
         1px solid
-        rgba(180,205,165,0.35);
+        rgba(180, 205, 165, 0.35);
 
     background:
-        rgba(120,160,100,0.08);
+        rgba(120, 160, 100, 0.08);
 
     color: #d3dfce;
 
@@ -1505,7 +1417,13 @@ the satellite imagery.
     letter-spacing: 1px;
 
     cursor: pointer;
+}
 
+
+.scan-button:hover {
+
+    background:
+        rgba(120, 160, 100, 0.16);
 }
 
 
@@ -1517,7 +1435,6 @@ the satellite imagery.
         1fr 1fr;
 
     gap: 10px;
-
 }
 
 
@@ -1527,11 +1444,10 @@ the satellite imagery.
 
     border:
         1px solid
-        rgba(160,190,145,0.15);
+        rgba(160, 190, 145, 0.15);
 
     background:
-        rgba(255,255,255,0.025);
-
+        rgba(255, 255, 255, 0.025);
 }
 
 
@@ -1544,7 +1460,6 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 1.5px;
-
 }
 
 
@@ -1559,8 +1474,7 @@ the satellite imagery.
 
     border-top:
         1px solid
-        rgba(160,190,145,0.10);
-
+        rgba(160, 190, 145, 0.10);
 }
 
 
@@ -1569,7 +1483,6 @@ the satellite imagery.
     color: #66735f;
 
     font-size: 7px;
-
 }
 
 
@@ -1578,7 +1491,6 @@ the satellite imagery.
     color: #c5d4bd;
 
     font-size: 10px;
-
 }
 
 
@@ -1589,38 +1501,32 @@ the satellite imagery.
     font-size: 8px;
 
     line-height: 1.4;
-
 }
 
 
 /* =========================================================
-   ANALYSIS MAP
+   FIELD MAP
 ========================================================= */
 
 .analysis-preview {
 
     position: absolute;
 
-    left: 700px;
-
-    top: 18%;
+    left: 650px;
+    top: 0;
 
     width: 340px;
-
     height: 390px;
-
-    z-index: 20;
 
     overflow: hidden;
 
     border:
         1px solid
-        rgba(175,200,160,0.25);
+        rgba(175, 200, 160, 0.25);
 
     box-shadow:
         0 20px 70px
-        rgba(0,0,0,0.35);
-
+        rgba(0, 0, 0, 0.45);
 }
 
 
@@ -1630,6 +1536,8 @@ the satellite imagery.
 
     inset: 0;
 
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -1647,17 +1555,16 @@ the satellite imagery.
 
     border:
         1px solid
-        rgba(190,210,180,0.25);
+        rgba(190, 210, 180, 0.25);
 
     background:
-        rgba(5,15,8,0.85);
+        rgba(5, 15, 8, 0.85);
 
     color: #cad5c5;
 
     font-size: 6px;
 
     cursor: pointer;
-
 }
 
 
@@ -1669,9 +1576,10 @@ the satellite imagery.
 
     position: absolute;
 
-    z-index: 40;
+    z-index: 150;
 
     right: 30px;
+
     bottom: 70px;
 
     width: 330px;
@@ -1679,11 +1587,11 @@ the satellite imagery.
     padding: 22px;
 
     background:
-        rgba(5,15,8,0.93);
+        rgba(5, 15, 8, 0.96);
 
     border:
         1px solid
-        rgba(175,200,160,0.25);
+        rgba(175, 200, 160, 0.35);
 
     backdrop-filter:
         blur(18px);
@@ -1698,7 +1606,6 @@ the satellite imagery.
     transition:
         opacity 0.5s ease,
         transform 0.5s ease;
-
 }
 
 
@@ -1710,7 +1617,6 @@ the satellite imagery.
         translateY(0);
 
     pointer-events: auto;
-
 }
 
 
@@ -1730,7 +1636,6 @@ the satellite imagery.
     font-size: 18px;
 
     cursor: pointer;
-
 }
 
 
@@ -1741,7 +1646,6 @@ the satellite imagery.
     font-size: 7px;
 
     letter-spacing: 2px;
-
 }
 
 
@@ -1760,7 +1664,6 @@ the satellite imagery.
     font-size: 17px;
 
     font-weight: 500;
-
 }
 
 
@@ -1776,22 +1679,6 @@ the satellite imagery.
     font-size: 10px;
 
     line-height: 1.5;
-
-}
-
-
-/* =========================================================
-   TRACTOR ON PAGE 2
-========================================================= */
-
-.agriculture-app .tractor-track {
-
-    position: absolute;
-
-    z-index: 45;
-
-    bottom: 10px;
-
 }
 
 
@@ -1803,12 +1690,12 @@ the satellite imagery.
 
     position: absolute;
 
-    z-index: 30;
-
-    bottom: 18px;
+    z-index: 120;
 
     left: 34px;
     right: 34px;
+
+    bottom: 18px;
 
     display: flex;
 
@@ -1819,7 +1706,6 @@ the satellite imagery.
     font-size: 6px;
 
     letter-spacing: 1.5px;
-
 }
 
 
@@ -1829,37 +1715,53 @@ the satellite imagery.
 
 .leaflet-container {
 
+    width: 100%;
+    height: 100%;
+
     background: #182219;
 
     font-family:
         "Courier New",
         monospace;
+}
 
+
+.leaflet-control-zoom {
+
+    z-index: 30 !important;
 }
 
 
 .leaflet-control-zoom a {
 
     background:
-        rgba(5,15,8,0.88) !important;
+        rgba(5, 15, 8, 0.90) !important;
 
     color:
         #d2ddcd !important;
 
     border-color:
-        rgba(180,205,165,0.20) !important;
+        rgba(180, 205, 165, 0.20) !important;
+}
 
+
+.leaflet-control-zoom a:hover {
+
+    background:
+        rgba(35, 60, 36, 0.95) !important;
+
+    color:
+        #ffffff !important;
 }
 
 
 .leaflet-control-attribution {
 
     background:
-        rgba(5,15,8,0.7) !important;
+        rgba(5, 15, 8, 0.72) !important;
 
     color:
         #94a08e !important;
-
 }
 
 
@@ -1867,85 +1769,274 @@ the satellite imagery.
 
     color:
         #aabd9e !important;
-
 }
 
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE
 ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .analysis-preview {
+        display: none;
+    }
+
+}
+
 
 @media (max-width: 900px) {
 
-    #missionScreen {
-
-        min-height: 650px;
-
-    }
-
-
     .mission-status {
-
         display: none;
-
     }
 
 
     .hero-content h1 {
-
         font-size: 54px;
-
         letter-spacing: -4px;
-
-    }
-
-
-    .telemetry-panel {
-
-        width: 230px;
-
     }
 
 
     .coordinates {
-
         display: none;
-
     }
 
 
     .workspace {
 
-        left: 3%;
+        left: 3vw;
 
-        width: 94%;
+        top: 13vh;
 
-        top: 15%;
+        width: 94vw;
 
+        max-width: none;
+
+        padding: 20px;
     }
 
 
-    .analysis-preview {
+    .workspace-intro h2 {
+        font-size: 38px;
+    }
 
+
+    .app-header nav {
         display: none;
-
     }
 
 
     .info-bubble {
 
         left: 20px;
+
         right: 20px;
 
-        width: auto;
+        bottom: 65px;
 
+        width: auto;
     }
 
 
-    .app-header nav {
-
+    .map-overlay-bottom {
         display: none;
+    }
 
+
+    .app-footer {
+
+        left: 20px;
+        right: 20px;
+    }
+
+
+    .app-footer span:nth-child(2) {
+        display: none;
+    }
+
+
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .mission-header {
+
+        left: 20px;
+        right: 20px;
+
+        top: 20px;
+    }
+
+
+    .brand-title {
+
+        font-size: 9px;
+
+        letter-spacing: 2px;
+    }
+
+
+    .hero-content {
+
+        left: 25px;
+
+        top: 20%;
+    }
+
+
+    .hero-content h1 {
+
+        font-size: 46px;
+
+        letter-spacing: -3px;
+    }
+
+
+    .telemetry-panel {
+
+        left: 25px;
+
+        bottom: 15%;
+
+        width: 210px;
+
+        padding: 14px;
+    }
+
+
+    .scroll-prompt {
+        display: none;
+    }
+
+
+    .workspace-intro h2 {
+        font-size: 32px;
+    }
+
+
+    .workspace-intro > p {
+        font-size: 10px;
+    }
+
+
+    .upload-box {
+        min-height: 180px;
+    }
+
+
+    .app-header {
+
+        height: 65px;
+
+        padding: 0 18px;
+    }
+
+
+    .app-header .brand-subtitle {
+        display: none;
+    }
+
+
+    .app-header .brand-mark {
+
+        width: 30px;
+        height: 30px;
+    }
+
+
+    .system-online {
+        font-size: 6px;
+    }
+
+
+    .map-overlay-top {
+
+        top: 82px;
+
+        left: 15px;
+        right: 15px;
+    }
+
+
+    .map-coordinates {
+        display: none;
+    }
+
+
+    .workspace {
+
+        top: 12vh;
+
+        left: 15px;
+
+        width:
+            calc(100vw - 30px);
+
+        padding: 16px;
+    }
+
+
+    .privacy-note p {
+        font-size: 8px;
+    }
+
+
+    .field-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+
+    .app-footer span:nth-child(3) {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+button:focus-visible,
+label:focus-visible {
+
+    outline:
+        2px solid
+        #a9c39a;
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
     }
 
 }
