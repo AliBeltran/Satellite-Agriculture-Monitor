@@ -1,8 +1,16 @@
 "use strict";
 
+/*
+===========================================================
+ SATELLITE AGRICULTURE MONITOR
+ Interactive Agricultural + Space Landing System
+ Designed by Ali Beltran
+===========================================================
+*/
+
 
 /* =========================================================
-   AGRICULTURAL SPACE LANDING SYSTEM
+   DOM
 ========================================================= */
 
 const canvas =
@@ -17,46 +25,99 @@ const missionScreen =
 const startMission =
     document.getElementById("startMission");
 
-const latitude =
+const mainInterface =
+    document.getElementById("mainInterface");
+
+const geojsonInput =
+    document.getElementById("geojsonInput");
+
+const mapUpload =
+    document.getElementById("mapUpload");
+
+const fieldState =
+    document.getElementById("fieldState");
+
+const fieldName =
+    document.getElementById("fieldName");
+
+const fieldMeta =
+    document.getElementById("fieldMeta");
+
+const fieldMap =
+    document.getElementById("fieldMap");
+
+const scanButton =
+    document.getElementById("scanButton");
+
+const appMessage =
+    document.getElementById("appMessage");
+
+const timelineSlider =
+    document.getElementById("timelineSlider");
+
+const timelineDate =
+    document.getElementById("timelineDate");
+
+const liveLatitude =
     document.getElementById("liveLatitude");
 
-const longitude =
+const liveLongitude =
     document.getElementById("liveLongitude");
 
 
-let width = 0;
-let height = 0;
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
 
-let mouseX = 0;
-let mouseY = 0;
+const state = {
 
-let targetMouseX = 0;
-let targetMouseY = 0;
+    map: null,
 
-let time = 0;
+    fieldLayer: null,
 
-let scanPosition = -1;
+    fieldLoaded: false,
 
-let stars = [];
+    fieldName: "",
 
-let particles = [];
+    areaAcres: 0,
+
+    perimeterMiles: 0,
+
+    center: null,
+
+    mouseX: 0.5,
+
+    mouseY: 0.5,
+
+    targetMouseX: 0.5,
+
+    targetMouseY: 0.5,
+
+    time: 0,
+
+    scan: 0,
+
+    stars: [],
+
+    particles: []
+
+};
 
 
 /* =========================================================
-   RESIZE
+   CANVAS
 ========================================================= */
 
 function resizeCanvas() {
 
-    width =
-        canvas.width =
-            window.innerWidth *
-            devicePixelRatio;
+    const ratio =
+        window.devicePixelRatio || 1;
 
-    height =
-        canvas.height =
-            window.innerHeight *
-            devicePixelRatio;
+    canvas.width =
+        window.innerWidth * ratio;
+
+    canvas.height =
+        window.innerHeight * ratio;
 
     canvas.style.width =
         window.innerWidth + "px";
@@ -65,63 +126,54 @@ function resizeCanvas() {
         window.innerHeight + "px";
 
     ctx.setTransform(
-        devicePixelRatio,
+        ratio,
         0,
         0,
-        devicePixelRatio,
+        ratio,
         0,
         0
     );
 
-    width =
-        window.innerWidth;
-
-    height =
-        window.innerHeight;
-
 }
 
+
+resizeCanvas();
 
 window.addEventListener(
     "resize",
     resizeCanvas
 );
 
-resizeCanvas();
-
 
 /* =========================================================
-   STAR FIELD
+   CREATE STARS
 ========================================================= */
 
 function createStars() {
 
-    stars = [];
+    state.stars = [];
 
     for (
         let i = 0;
-        i < 700;
+        i < 650;
         i++
     ) {
 
-        stars.push({
+        state.stars.push({
 
             x:
-                Math.random() *
-                width,
-
-            y:
-                Math.random() *
-                height,
-
-            size:
-                Math.random() *
-                1.5,
-
-            brightness:
                 Math.random(),
 
+            y:
+                Math.random(),
+
+            size:
+                Math.random() * 1.6,
+
             depth:
+                Math.random(),
+
+            brightness:
                 Math.random()
 
         });
@@ -130,24 +182,25 @@ function createStars() {
 
 }
 
+
 createStars();
 
 
 /* =========================================================
-   AGRICULTURAL PARTICLES
+   CREATE PARTICLES
 ========================================================= */
 
 function createParticles() {
 
-    particles = [];
+    state.particles = [];
 
     for (
         let i = 0;
-        i < 800;
+        i < 700;
         i++
     ) {
 
-        particles.push({
+        state.particles.push({
 
             x:
                 Math.random(),
@@ -155,14 +208,12 @@ function createParticles() {
             y:
                 Math.random(),
 
-            speed:
-                .0002 +
-                Math.random() *
-                .0008,
-
             size:
-                Math.random() *
-                2,
+                Math.random() * 2,
+
+            speed:
+                0.00015 +
+                Math.random() * 0.0008,
 
             phase:
                 Math.random() *
@@ -173,6 +224,7 @@ function createParticles() {
     }
 
 }
+
 
 createParticles();
 
@@ -185,11 +237,11 @@ window.addEventListener(
     "pointermove",
     event => {
 
-        targetMouseX =
+        state.targetMouseX =
             event.clientX /
             window.innerWidth;
 
-        targetMouseY =
+        state.targetMouseY =
             event.clientY /
             window.innerHeight;
 
@@ -198,50 +250,46 @@ window.addEventListener(
 
 
 /* =========================================================
-   DRAW STARS
+   STARS
 ========================================================= */
 
 function drawStars() {
 
     for (
         const star
-        of stars
+        of state.stars
     ) {
 
         const parallax =
-            star.depth *
-            20;
+            star.depth * 30;
 
         const x =
-            star.x +
+            star.x *
+            window.innerWidth +
             (
-                mouseX -
-                .5
+                state.mouseX -
+                0.5
             ) *
             parallax;
 
         const y =
-            star.y +
+            star.y *
+            window.innerHeight +
             (
-                mouseY -
-                .5
+                state.mouseY -
+                0.5
             ) *
             parallax;
 
 
-        const brightness =
-            .2 +
+        const alpha =
+            0.15 +
             star.brightness *
-            .8;
+            0.7;
 
 
         ctx.fillStyle =
-            `rgba(
-                180,
-                255,
-                150,
-                ${brightness}
-            )`;
+            `rgba(180,255,130,${alpha})`;
 
 
         ctx.fillRect(
@@ -257,236 +305,260 @@ function drawStars() {
 
 
 /* =========================================================
-   FIELD TERRAIN
+   TERRAIN
 ========================================================= */
 
 function drawTerrain() {
 
-    const centerX =
-        width * .66;
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
 
     const horizon =
-        height * .39;
+        height * 0.40;
+
+    const centerX =
+        width * 0.68;
+
 
     /*
-    Perspective field
+    Atmospheric glow
+    */
+
+    const glow =
+        ctx.createRadialGradient(
+            centerX,
+            height * 0.55,
+            0,
+            centerX,
+            height * 0.55,
+            width * 0.7
+        );
+
+
+    glow.addColorStop(
+        0,
+        "rgba(130,255,35,.20)"
+    );
+
+
+    glow.addColorStop(
+        0.5,
+        "rgba(20,110,30,.08)"
+    );
+
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+
+    ctx.fillStyle =
+        glow;
+
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+    Agricultural contour rows
     */
 
     for (
         let row = 0;
-        row < 65;
+        row < 75;
         row++
     ) {
 
         const progress =
-            row / 65;
+            row / 75;
 
-        const y =
+        const baseY =
             horizon +
             Math.pow(
                 progress,
                 1.75
             ) *
             height *
-            .75;
+            0.72;
 
 
-        const perspective =
-            .12 +
-            progress *
-            1.8;
+        ctx.beginPath();
 
 
-        /*
-        NDVI gradient
-        */
+        for (
+            let step = 0;
+            step <= 1;
+            step += 0.025
+        ) {
 
-        const gradient =
-            ctx.createLinearGradient(
-                0,
-                y,
-                width,
-                y
-            );
-
-
-        gradient.addColorStop(
-            0,
-            "rgba(7,25,10,.1)"
-        );
+            const y =
+                horizon +
+                step *
+                (
+                    baseY -
+                    horizon
+                );
 
 
-        gradient.addColorStop(
-            .25,
-            "rgba(20,75,20,.45)"
-        );
+            const wave =
+                Math.sin(
+                    step * 8 +
+                    state.time * 0.0008 +
+                    row * 0.2
+                ) *
+                (
+                    15 +
+                    progress * 35
+                );
 
 
-        gradient.addColorStop(
-            .5,
-            "rgba(130,220,30,.5)"
-        );
+            const mouseDistortion =
+                (
+                    state.mouseX -
+                    0.5
+                ) *
+                80 *
+                progress;
 
 
-        gradient.addColorStop(
-            .7,
-            "rgba(190,220,20,.35)"
-        );
+            const x =
+                centerX +
+                (
+                    step -
+                    0.5
+                ) *
+                width *
+                (
+                    0.4 +
+                    progress * 1.5
+                ) +
+                wave +
+                mouseDistortion;
 
 
-        gradient.addColorStop(
-            1,
-            "rgba(30,70,15,.15)"
-        );
+            if (
+                step === 0
+            ) {
+
+                ctx.moveTo(
+                    x,
+                    y
+                );
+
+            }
+
+            else {
+
+                ctx.lineTo(
+                    x,
+                    y
+                );
+
+            }
+
+        }
+
+
+        const hue =
+            80 +
+            Math.sin(
+                row * 0.4 +
+                state.time * 0.0004
+            ) *
+            25;
 
 
         ctx.strokeStyle =
-            gradient;
+            `hsla(${hue},90%,55%,${0.08 + progress * 0.16})`;
+
 
         ctx.lineWidth =
             1;
 
 
-        /*
-        Curved agricultural rows
-        */
-
-        for (
-            let column = -25;
-            column < 30;
-            column++
-        ) {
-
-            const baseX =
-                centerX +
-                column *
-                75 *
-                perspective;
-
-
-            ctx.beginPath();
-
-
-            for (
-                let step = 0;
-                step <= 1;
-                step += .025
-            ) {
-
-                const yy =
-                    horizon +
-                    step *
-                    (
-                        y -
-                        horizon
-                    );
-
-
-                const wave =
-                    Math.sin(
-                        step * 8 +
-                        time * .0007 +
-                        column
-                    ) *
-                    22 *
-                    progress;
-
-
-                const distortion =
-                    Math.sin(
-                        time * .001 +
-                        column * .6
-                    ) *
-                    mouseX *
-                    15;
-
-
-                const xx =
-                    baseX +
-                    wave +
-                    distortion;
-
-
-                if (
-                    step === 0
-                ) {
-
-                    ctx.moveTo(
-                        xx,
-                        yy
-                    );
-
-                }
-
-                else {
-
-                    ctx.lineTo(
-                        xx,
-                        yy
-                    );
-
-                }
-
-            }
-
-
-            ctx.stroke();
-
-        }
+        ctx.stroke();
 
     }
 
 
     /*
-    ---------------------------------------------------------
     Field parcels
-    ---------------------------------------------------------
     */
 
     for (
         let i = 0;
-        i < 80;
+        i < 130;
         i++
     ) {
 
         const x =
             width *
-            (.42 +
-            Math.random() *
-            .55);
+            (
+                0.38 +
+                Math.random() *
+                0.6
+            );
 
         const y =
             horizon +
             Math.random() *
             height *
-            .48;
+            0.48;
 
 
         const w =
-            20 +
-            Math.random() *
-            70;
-
+            10 +
+            Math.random() * 65;
 
         const h =
-            5 +
-            Math.random() *
-            30;
+            4 +
+            Math.random() * 25;
 
 
-        const intensity =
-            .2 +
-            Math.random() *
-            .7;
+        const health =
+            Math.random();
+
+
+        let color;
+
+
+        if (
+            health > 0.72
+        ) {
+
+            color =
+                "rgba(160,240,35,.13)";
+
+        }
+
+        else if (
+            health > 0.4
+        ) {
+
+            color =
+                "rgba(230,190,30,.12)";
+
+        }
+
+        else {
+
+            color =
+                "rgba(220,55,30,.10)";
+
+        }
 
 
         ctx.fillStyle =
-            `rgba(
-                ${100 + intensity * 100},
-                ${170 + intensity * 80},
-                25,
-                .12
-            )`;
+            color;
 
 
         ctx.fillRect(
@@ -502,18 +574,26 @@ function drawTerrain() {
 
 
 /* =========================================================
-   SPECTRAL PARTICLES
+   PARTICLES
 ========================================================= */
 
 function drawParticles() {
 
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
+
+
     for (
         const particle
-        of particles
+        of state.particles
     ) {
 
         particle.y -=
             particle.speed;
+
 
         if (
             particle.y < 0
@@ -532,38 +612,30 @@ function drawParticles() {
         const y =
             height *
             (
-                .3 +
-                particle.y *
-                .65
+                0.2 +
+                particle.y * 0.75
             );
 
 
         const wave =
             Math.sin(
-                particle.y *
-                30 +
-                time *
-                .001
+                particle.y * 30 +
+                state.time * 0.002
             ) *
             20;
 
 
         const alpha =
-            .15 +
+            0.08 +
             Math.sin(
-                time * .002 +
+                state.time * 0.002 +
                 particle.phase
             ) *
-            .1;
+            0.08;
 
 
         ctx.fillStyle =
-            `rgba(
-                160,
-                255,
-                40,
-                ${alpha}
-            )`;
+            `rgba(170,255,50,${alpha})`;
 
 
         ctx.fillRect(
@@ -584,59 +656,43 @@ function drawParticles() {
 
 function drawSatellite() {
 
-    const orbitTime =
-        time *
-        .00015;
+    const width =
+        window.innerWidth;
+
+    const height =
+        window.innerHeight;
 
 
-    const satelliteX =
+    const orbit =
+        state.time * 0.00012;
+
+
+    const x =
         width *
         (
-            .62 +
-            Math.sin(
-                orbitTime
-            ) *
-            .25
+            0.68 +
+            Math.sin(orbit) * 0.22
         );
 
 
-    const satelliteY =
+    const y =
         height *
         (
-            .16 +
-            Math.cos(
-                orbitTime
-            ) *
-            .05
+            0.15 +
+            Math.cos(orbit) * 0.055
         );
 
-
-    /*
-    Satellite body
-    */
 
     ctx.save();
 
     ctx.translate(
-        satelliteX,
-        satelliteY
+        x,
+        y
     );
 
 
     ctx.rotate(
-        -.15
-    );
-
-
-    ctx.fillStyle =
-        "#b7d7b0";
-
-
-    ctx.fillRect(
-        -15,
-        -6,
-        30,
-        12
+        -0.18
     );
 
 
@@ -645,40 +701,57 @@ function drawSatellite() {
     */
 
     ctx.fillStyle =
-        "#173b30";
-
-
-    ctx.fillRect(
-        -65,
-        -4,
-        43,
-        8
-    );
-
-
-    ctx.fillRect(
-        22,
-        -4,
-        43,
-        8
-    );
-
+        "#17382b";
 
     ctx.strokeStyle =
-        "#a8ff28";
+        "#7fdc53";
 
-    ctx.strokeRect(
-        -65,
-        -4,
-        43,
-        8
+
+    ctx.fillRect(
+        -70,
+        -5,
+        45,
+        10
     );
 
+
     ctx.strokeRect(
-        22,
-        -4,
-        43,
-        8
+        -70,
+        -5,
+        45,
+        10
+    );
+
+
+    ctx.fillRect(
+        25,
+        -5,
+        45,
+        10
+    );
+
+
+    ctx.strokeRect(
+        25,
+        -5,
+        45,
+        10
+    );
+
+
+    /*
+    Body
+    */
+
+    ctx.fillStyle =
+        "#cbdac6";
+
+
+    ctx.fillRect(
+        -15,
+        -8,
+        30,
+        16
     );
 
 
@@ -689,11 +762,12 @@ function drawSatellite() {
     ctx.fillStyle =
         "#a8ff28";
 
+
     ctx.beginPath();
 
     ctx.arc(
         0,
-        10,
+        12,
         5,
         0,
         Math.PI * 2
@@ -711,10 +785,10 @@ function drawSatellite() {
 
     const beam =
         ctx.createLinearGradient(
-            satelliteX,
-            satelliteY,
-            satelliteX - 200,
-            height * .72
+            x,
+            y,
+            x - 200,
+            height * 0.72
         );
 
 
@@ -737,18 +811,18 @@ function drawSatellite() {
     ctx.beginPath();
 
     ctx.moveTo(
-        satelliteX - 5,
-        satelliteY + 12
+        x - 6,
+        y + 12
     );
 
     ctx.lineTo(
-        satelliteX - 240,
-        height * .72
+        x - 230,
+        height * 0.72
     );
 
     ctx.lineTo(
-        satelliteX + 30,
-        height * .72
+        x + 35,
+        height * 0.72
     );
 
     ctx.closePath();
@@ -764,21 +838,22 @@ function drawSatellite() {
 
 function drawScanLine() {
 
-    scanPosition += .002;
+    state.scan += 0.003;
+
 
     if (
-        scanPosition > 1
+        state.scan > 1.2
     ) {
 
-        scanPosition =
-            -1;
+        state.scan =
+            -0.2;
 
     }
 
 
     const y =
-        height *
-        scanPosition;
+        window.innerHeight *
+        state.scan;
 
 
     const gradient =
@@ -797,8 +872,8 @@ function drawScanLine() {
 
 
     gradient.addColorStop(
-        .5,
-        "rgba(160,255,40,.12)"
+        0.5,
+        "rgba(160,255,40,.10)"
     );
 
 
@@ -815,19 +890,19 @@ function drawScanLine() {
     ctx.fillRect(
         0,
         y - 80,
-        width,
+        window.innerWidth,
         160
     );
 
 
     ctx.fillStyle =
-        "rgba(180,255,80,.35)";
+        "rgba(180,255,80,.25)";
 
 
     ctx.fillRect(
         0,
         y,
-        width,
+        window.innerWidth,
         1
     );
 
@@ -835,127 +910,60 @@ function drawScanLine() {
 
 
 /* =========================================================
-   GRID
-========================================================= */
-
-function drawGrid() {
-
-    ctx.strokeStyle =
-        "rgba(140,255,70,.06)";
-
-    ctx.lineWidth =
-        1;
-
-
-    for (
-        let x = 0;
-        x < width;
-        x += 80
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x,
-            0
-        );
-
-        ctx.lineTo(
-            x,
-            height
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    for (
-        let y = 0;
-        y < height;
-        y += 80
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            0,
-            y
-        );
-
-        ctx.lineTo(
-            width,
-            y
-        );
-
-        ctx.stroke();
-
-    }
-
-}
-
-
-/* =========================================================
-   MAIN LOOP
+   MAIN ANIMATION
 ========================================================= */
 
 function animate() {
 
-    time++;
+    state.time++;
 
 
-    /*
-    Smooth mouse
-    */
-
-    mouseX +=
+    state.mouseX +=
         (
-            targetMouseX -
-            mouseX
-        ) *
-        .04;
+            state.targetMouseX -
+            state.mouseX
+        ) * 0.045;
 
 
-    mouseY +=
+    state.mouseY +=
         (
-            targetMouseY -
-            mouseY
-        ) *
-        .04;
+            state.targetMouseY -
+            state.mouseY
+        ) * 0.045;
 
 
     ctx.clearRect(
         0,
         0,
-        width,
-        height
+        window.innerWidth,
+        window.innerHeight
     );
 
 
     /*
-    Space background
+    Background
     */
 
     const background =
         ctx.createRadialGradient(
-            width * .65,
-            height * .5,
+            window.innerWidth * 0.65,
+            window.innerHeight * 0.55,
             0,
-            width * .65,
-            height * .5,
-            width
+            window.innerWidth * 0.65,
+            window.innerHeight * 0.55,
+            window.innerWidth
         );
 
 
     background.addColorStop(
         0,
-        "#071408"
+        "#0a1a0b"
     );
 
 
     background.addColorStop(
-        .45,
-        "#020803"
+        0.5,
+        "#020903"
     );
 
 
@@ -972,14 +980,12 @@ function animate() {
     ctx.fillRect(
         0,
         0,
-        width,
-        height
+        window.innerWidth,
+        window.innerHeight
     );
 
 
     drawStars();
-
-    drawGrid();
 
     drawTerrain();
 
@@ -1001,96 +1007,1116 @@ animate();
 
 
 /* =========================================================
-   LIVE TELEMETRY
+   TELEMETRY
 ========================================================= */
 
-function updateTelemetry() {
-
-    if (!latitude) {
-        return;
-    }
-
-
-    const lat =
-        37.8062 +
-        (
-            mouseY -
-            .5
-        ) *
-        1.8;
-
-
-    const lon =
-        -96.7911 +
-        (
-            mouseX -
-            .5
-        ) *
-        3.2;
-
-
-    latitude.textContent =
-        `${lat.toFixed(4)}° N`;
-
-
-    longitude.textContent =
-        `${Math.abs(lon).toFixed(4)}° W`;
-
-}
-
-
 setInterval(
-    updateTelemetry,
+    () => {
+
+        const lat =
+            37.8062 +
+            (
+                state.mouseY -
+                0.5
+            ) *
+            1.5;
+
+
+        const lon =
+            96.7911 +
+            (
+                state.mouseX -
+                0.5
+            ) *
+            3;
+
+
+        liveLatitude.textContent =
+            `${lat.toFixed(4)}° N`;
+
+
+        liveLongitude.textContent =
+            `${lon.toFixed(4)}° W`;
+
+    },
     80
 );
 
 
 /* =========================================================
-   ENTER FIELD
+   ENTER APPLICATION
 ========================================================= */
 
-if (startMission) {
+startMission.addEventListener(
+    "click",
+    () => {
 
-    startMission.addEventListener(
-        "click",
+        startMission.disabled =
+            true;
+
+        missionScreen.classList.add(
+            "launching"
+        );
+
+
+        setTimeout(
+            () => {
+
+                missionScreen.style.display =
+                    "none";
+
+                mainInterface.classList.add(
+                    "interface-ready"
+                );
+
+
+                initializeMap();
+
+            },
+            900
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+    message
+) {
+
+    appMessage.textContent =
+        message;
+
+    appMessage.classList.add(
+        "visible"
+    );
+
+
+    clearTimeout(
+        showMessage.timer
+    );
+
+
+    showMessage.timer =
+        setTimeout(
+            () => {
+
+                appMessage.classList.remove(
+                    "visible"
+                );
+
+            },
+            3000
+        );
+
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+function initializeMap() {
+
+    if (
+        state.map ||
+        !window.L
+    ) {
+
+        return;
+
+    }
+
+
+    state.map =
+        L.map(
+            fieldMap,
+            {
+
+                zoomControl: true,
+
+                minZoom: 2,
+
+                maxZoom: 19
+
+            }
+        );
+
+
+    state.map.setView(
+        [
+            39.8283,
+            -98.5795
+        ],
+        4
+    );
+
+
+    L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+
+            maxZoom: 19,
+
+            attribution:
+                "Tiles © Esri"
+
+        }
+    ).addTo(
+        state.map
+    );
+
+
+    setTimeout(
         () => {
 
-            missionScreen.classList.add(
-                "launching"
+            state.map.invalidateSize();
+
+        },
+        300
+    );
+
+}
+
+
+/* =========================================================
+   GEOJSON UPLOAD
+========================================================= */
+
+geojsonInput.addEventListener(
+    "change",
+    event => {
+
+        const file =
+            event.target.files[0];
+
+
+        if (
+            file
+        ) {
+
+            readGeoJSON(
+                file
             );
 
+        }
 
-            setTimeout(
-                () => {
-
-                    missionScreen.style.display =
-                        "none";
+    }
+);
 
 
-                    /*
-                    Your existing application
-                    becomes visible here.
-                    */
+/* =========================================================
+   DRAG AND DROP
+========================================================= */
 
-                    const mainInterface =
-                        document.getElementById(
-                            "mainInterface"
-                        );
+mapUpload.addEventListener(
+    "dragover",
+    event => {
+
+        event.preventDefault();
+
+        mapUpload.classList.add(
+            "drag-active"
+        );
+
+    }
+);
 
 
-                    if (mainInterface) {
+mapUpload.addEventListener(
+    "dragleave",
+    () => {
 
-                        mainInterface.classList.add(
-                            "interface-ready"
-                        );
+        mapUpload.classList.remove(
+            "drag-active"
+        );
+
+    }
+);
+
+
+mapUpload.addEventListener(
+    "drop",
+    event => {
+
+        event.preventDefault();
+
+        mapUpload.classList.remove(
+            "drag-active"
+        );
+
+
+        const file =
+            event.dataTransfer.files[0];
+
+
+        if (
+            file
+        ) {
+
+            readGeoJSON(
+                file
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   READ GEOJSON
+========================================================= */
+
+function readGeoJSON(
+    file
+) {
+
+    const name =
+        file.name.toLowerCase();
+
+
+    if (
+        !name.endsWith(".geojson") &&
+        !name.endsWith(".json")
+    ) {
+
+        showMessage(
+            "Please upload a GeoJSON file."
+        );
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        event => {
+
+            try {
+
+                const data =
+                    JSON.parse(
+                        event.target.result
+                    );
+
+
+                loadField(
+                    data,
+                    file.name
+                );
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    error
+                );
+
+                showMessage(
+                    "The GeoJSON file could not be read."
+                );
+
+            }
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
+
+}
+
+
+/* =========================================================
+   LOAD FIELD
+========================================================= */
+
+function loadField(
+    data,
+    filename
+) {
+
+    initializeMap();
+
+
+    if (
+        !state.map
+    ) {
+
+        showMessage(
+            "Map is not ready yet."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        state.fieldLayer
+    ) {
+
+        state.map.removeLayer(
+            state.fieldLayer
+        );
+
+    }
+
+
+    try {
+
+        state.fieldLayer =
+            L.geoJSON(
+                data,
+                {
+
+                    style: {
+
+                        color:
+                            "#a8ff28",
+
+                        weight:
+                            3,
+
+                        opacity:
+                            1,
+
+                        fillColor:
+                            "#74c947",
+
+                        fillOpacity:
+                            .22
 
                     }
 
-                },
-                900
+                }
+            );
+
+
+        state.fieldLayer.addTo(
+            state.map
+        );
+
+
+        const bounds =
+            state.fieldLayer.getBounds();
+
+
+        if (
+            !bounds.isValid()
+        ) {
+
+            throw new Error(
+                "Invalid geometry"
+            );
+
+        }
+
+
+        state.map.fitBounds(
+            bounds,
+            {
+
+                padding:
+                    [80, 80],
+
+                maxZoom:
+                    17
+
+            }
+        );
+
+
+        state.fieldLoaded =
+            true;
+
+
+        state.fieldName =
+            cleanName(
+                filename
+            );
+
+
+        state.areaAcres =
+            calculateArea(
+                data
+            );
+
+
+        state.perimeterMiles =
+            calculatePerimeter(
+                data
+            );
+
+
+        state.center =
+            bounds.getCenter();
+
+
+        fieldName.textContent =
+            state.fieldName;
+
+
+        fieldMeta.textContent =
+            `${state.areaAcres.toFixed(2)} ACRES · ` +
+            `${state.perimeterMiles.toFixed(2)} MI PERIMETER · ` +
+            `${state.center.lat.toFixed(5)}° N / ` +
+            `${Math.abs(state.center.lng).toFixed(5)}° W`;
+
+
+        fieldState.classList.remove(
+            "hidden"
+        );
+
+
+        document
+            .getElementById(
+                "uploadPanel"
+            )
+            .style.display =
+            "none";
+
+
+        showMessage(
+            "Field boundary loaded successfully."
+        );
+
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+        showMessage(
+            "Invalid field geometry."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FIELD NAME
+========================================================= */
+
+function cleanName(
+    filename
+) {
+
+    return filename
+
+        .replace(
+            /\.(geojson|json)$/i,
+            ""
+        )
+
+        .replace(
+            /[-_]+/g,
+            " "
+        )
+
+        .replace(
+            /\s+/g,
+            " "
+        )
+
+        .trim()
+
+        .replace(
+            /\b\w/g,
+            letter =>
+                letter.toUpperCase()
+        );
+
+}
+
+
+/* =========================================================
+   AREA
+========================================================= */
+
+function calculateArea(
+    geojson
+) {
+
+    let area =
+        0;
+
+
+    function polygonArea(
+        coordinates
+    ) {
+
+        const radius =
+            6378137;
+
+
+        let result =
+            0;
+
+
+        const ring =
+            coordinates[0];
+
+
+        if (
+            !ring
+        ) {
+
+            return 0;
+
+        }
+
+
+        for (
+            let i = 0;
+            i < ring.length - 1;
+            i++
+        ) {
+
+            const a =
+                ring[i];
+
+            const b =
+                ring[i + 1];
+
+
+            const lon1 =
+                a[0] *
+                Math.PI /
+                180;
+
+            const lat1 =
+                a[1] *
+                Math.PI /
+                180;
+
+            const lon2 =
+                b[0] *
+                Math.PI /
+                180;
+
+            const lat2 =
+                b[1] *
+                Math.PI /
+                180;
+
+
+            result +=
+                (
+                    lon2 -
+                    lon1
+                ) *
+                (
+                    2 +
+                    Math.sin(lat1) +
+                    Math.sin(lat2)
+                );
+
+        }
+
+
+        return Math.abs(
+            result *
+            radius *
+            radius /
+            2
+        );
+
+    }
+
+
+    function geometryArea(
+        geometry
+    ) {
+
+        if (
+            !geometry
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            geometry.type ===
+            "Polygon"
+        ) {
+
+            area +=
+                polygonArea(
+                    geometry.coordinates
+                );
+
+        }
+
+
+        if (
+            geometry.type ===
+            "MultiPolygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                polygon => {
+
+                    area +=
+                        polygonArea(
+                            polygon
+                        );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    if (
+        geojson.type ===
+        "Feature"
+    ) {
+
+        geometryArea(
+            geojson.geometry
+        );
+
+    }
+
+    else if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        geojson.features.forEach(
+            feature => {
+
+                geometryArea(
+                    feature.geometry
+                );
+
+            }
+        );
+
+    }
+
+    else {
+
+        geometryArea(
+            geojson
+        );
+
+    }
+
+
+    return (
+        area /
+        4046.8564224
+    );
+
+}
+
+
+/* =========================================================
+   PERIMETER
+========================================================= */
+
+function calculatePerimeter(
+    geojson
+) {
+
+    let meters =
+        0;
+
+
+    function distance(
+        a,
+        b
+    ) {
+
+        const R =
+            6371000;
+
+
+        const lat1 =
+            a[1] *
+            Math.PI /
+            180;
+
+        const lat2 =
+            b[1] *
+            Math.PI /
+            180;
+
+
+        const dLat =
+            (
+                b[1] -
+                a[1]
+            ) *
+            Math.PI /
+            180;
+
+
+        const dLon =
+            (
+                b[0] -
+                a[0]
+            ) *
+            Math.PI /
+            180;
+
+
+        const value =
+            Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1) *
+            Math.cos(lat2) *
+            Math.sin(dLon / 2) ** 2;
+
+
+        return (
+            2 *
+            R *
+            Math.atan2(
+                Math.sqrt(value),
+                Math.sqrt(1 - value)
+            )
+        );
+
+    }
+
+
+    function ringLength(
+        ring
+    ) {
+
+        for (
+            let i = 0;
+            i < ring.length - 1;
+            i++
+        ) {
+
+            meters +=
+                distance(
+                    ring[i],
+                    ring[i + 1]
+                );
+
+        }
+
+    }
+
+
+    function geometryLength(
+        geometry
+    ) {
+
+        if (
+            !geometry
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            geometry.type ===
+            "Polygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                ringLength
+            );
+
+        }
+
+
+        if (
+            geometry.type ===
+            "MultiPolygon"
+        ) {
+
+            geometry.coordinates.forEach(
+                polygon => {
+
+                    polygon.forEach(
+                        ringLength
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    if (
+        geojson.type ===
+        "Feature"
+    ) {
+
+        geometryLength(
+            geojson.geometry
+        );
+
+    }
+
+    else if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        geojson.features.forEach(
+            feature => {
+
+                geometryLength(
+                    feature.geometry
+                );
+
+            }
+        );
+
+    }
+
+    else {
+
+        geometryLength(
+            geojson
+        );
+
+    }
+
+
+    return (
+        meters /
+        1609.344
+    );
+
+}
+
+
+/* =========================================================
+   SCAN
+========================================================= */
+
+scanButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            !state.fieldLoaded
+        ) {
+
+            showMessage(
+                "Upload a field first."
+            );
+
+            return;
+
+        }
+
+
+        scanButton.disabled =
+            true;
+
+
+        scanButton.textContent =
+            "◈ SCANNING FIELD...";
+
+
+        showMessage(
+            "Satellite field scan initiated."
+        );
+
+
+        setTimeout(
+            () => {
+
+                document
+                    .getElementById(
+                        "healthValue"
+                    )
+                    .textContent =
+                    "ANALYZING";
+
+
+                document
+                    .getElementById(
+                        "ndviValue"
+                    )
+                    .textContent =
+                    "PROCESSING";
+
+
+            },
+            700
+        );
+
+
+        setTimeout(
+            () => {
+
+                document
+                    .getElementById(
+                        "healthValue"
+                    )
+                    .textContent =
+                    "--";
+
+
+                document
+                    .getElementById(
+                        "ndviValue"
+                    )
+                    .textContent =
+                    "--";
+
+
+                scanButton.disabled =
+                    false;
+
+
+                scanButton.textContent =
+                    "◈ RUN FIELD SCAN";
+
+
+                showMessage(
+                    "Scan complete. Connect satellite imagery for analysis."
+                );
+
+            },
+            2500
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MAP RESET
+========================================================= */
+
+document
+    .getElementById("resetMap")
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                state.fieldLayer &&
+                state.map
+            ) {
+
+                state.map.fitBounds(
+                    state.fieldLayer.getBounds(),
+                    {
+                        padding:
+                            [80, 80],
+
+                        maxZoom:
+                            17
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   LAYERS
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".layer-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".layer-button"
+                        )
+                        .forEach(
+                            item => {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    showMessage(
+                        `${button.textContent.trim()} layer selected.`
+                    );
+
+                }
             );
 
         }
     );
 
-}
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+const timelineDates = [
+
+    "APR 2026",
+    "MAY 2026",
+    "JUN 2026",
+    "JUL 2026",
+    "AUG 2026"
+
+];
+
+
+timelineSlider.addEventListener(
+    "input",
+    () => {
+
+        timelineDate.textContent =
+            timelineDates[
+                Number(
+                    timelineSlider.value
+                )
+            ];
+
+    }
+);
