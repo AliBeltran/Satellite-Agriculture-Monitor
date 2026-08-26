@@ -1,109 +1,137 @@
 "use strict";
 
+
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
- Earth Observation Interface
  Designed by Ali Beltran
 ===========================================================
 */
 
 
 /* =====================================================
-   DOM
+   ELEMENTS
 ===================================================== */
 
 const missionScreen =
-    document.getElementById("missionScreen");
+    document.getElementById(
+        "missionScreen"
+    );
+
 
 const agricultureApp =
-    document.getElementById("agricultureApp");
+    document.getElementById(
+        "agricultureApp"
+    );
+
 
 const satellite =
-    document.getElementById("satellite");
+    document.getElementById(
+        "satellite"
+    );
+
 
 const canvas =
-    document.getElementById("spaceCanvas");
+    document.getElementById(
+        "spaceCanvas"
+    );
+
 
 const ctx =
     canvas
         ? canvas.getContext("2d")
         : null;
 
+
 const targetCoordinates =
     document.getElementById(
         "targetCoordinates"
     );
+
 
 const uploadBox =
     document.getElementById(
         "uploadBox"
     );
 
+
 const uploadPanel =
     document.getElementById(
         "uploadPanel"
     );
 
-const fieldWorkspace =
-    document.getElementById(
-        "fieldWorkspace"
-    );
 
 const geojsonInput =
     document.getElementById(
         "geojsonInput"
     );
 
+
+const fieldWorkspace =
+    document.getElementById(
+        "fieldWorkspace"
+    );
+
+
 const fieldName =
     document.getElementById(
         "fieldName"
     );
+
 
 const fieldMeta =
     document.getElementById(
         "fieldMeta"
     );
 
+
 const areaValue =
     document.getElementById(
         "areaValue"
     );
+
 
 const perimeterValue =
     document.getElementById(
         "perimeterValue"
     );
 
+
 const centerValue =
     document.getElementById(
         "centerValue"
     );
+
 
 const ndviValue =
     document.getElementById(
         "ndviValue"
     );
 
+
 const stressValue =
     document.getElementById(
         "stressValue"
     );
+
 
 const scanButton =
     document.getElementById(
         "scanButton"
     );
 
+
 const infoBubble =
     document.getElementById(
         "infoBubble"
     );
 
+
 const closeBubble =
     document.getElementById(
         "closeBubble"
     );
+
 
 const resetMap =
     document.getElementById(
@@ -117,23 +145,23 @@ const resetMap =
 
 const state = {
 
-    mouseX: .68,
+    targetX: 0,
 
-    mouseY: .48,
+    targetY: 0,
 
-    targetX: .68,
+    currentX: 0,
 
-    targetY: .48,
+    currentY: 0,
+
+    satelliteOrbitX: 0,
+
+    satelliteOrbitY: 0,
 
     transitioning: false,
 
     map: null,
 
     fieldLayer: null,
-
-    imageryLayer: null,
-
-    referenceLayer: null,
 
     fieldLoaded: false,
 
@@ -155,23 +183,33 @@ const reducedMotion =
 function resizeCanvas() {
 
     if (!canvas || !ctx) {
+
         return;
+
     }
+
 
     const ratio =
         window.devicePixelRatio || 1;
 
+
     canvas.width =
-        window.innerWidth * ratio;
+        window.innerWidth *
+        ratio;
+
 
     canvas.height =
-        window.innerHeight * ratio;
+        window.innerHeight *
+        ratio;
+
 
     canvas.style.width =
         `${window.innerWidth}px`;
 
+
     canvas.style.height =
         `${window.innerHeight}px`;
+
 
     ctx.setTransform(
         ratio,
@@ -202,10 +240,12 @@ function createStars() {
 
     state.stars = [];
 
+
     const amount =
         reducedMotion
-            ? 180
+            ? 150
             : 450;
+
 
     for (
         let i = 0;
@@ -215,16 +255,19 @@ function createStars() {
 
         state.stars.push({
 
-            x: Math.random(),
+            x:
+                Math.random(),
 
-            y: Math.random(),
+            y:
+                Math.random(),
 
             size:
+                .4 +
                 Math.random() * 1.4,
 
             opacity:
                 .2 +
-                Math.random() * .7,
+                Math.random() * .75,
 
             depth:
                 Math.random()
@@ -240,17 +283,21 @@ createStars();
 
 
 /* =====================================================
-   SPACE BACKGROUND
+   SPACE
 ===================================================== */
 
 function drawSpace() {
 
-    if (!canvas || !ctx) {
+    if (!ctx) {
+
         return;
+
     }
+
 
     const width =
         window.innerWidth;
+
 
     const height =
         window.innerHeight;
@@ -264,35 +311,42 @@ function drawSpace() {
     );
 
 
+    /*
+    Background
+    */
+
     const background =
         ctx.createRadialGradient(
             width * .68,
-            height * .48,
+            height * .45,
             0,
             width * .68,
-            height * .48,
+            height * .45,
             width
         );
 
 
     background.addColorStop(
         0,
-        "#1a2528"
+        "#1b292d"
     );
+
 
     background.addColorStop(
         .4,
         "#0a1113"
     );
 
+
     background.addColorStop(
         1,
-        "#020405"
+        "#010203"
     );
 
 
     ctx.fillStyle =
         background;
+
 
     ctx.fillRect(
         0,
@@ -311,30 +365,28 @@ function drawSpace() {
     ) {
 
         const parallax =
-            star.depth * 25;
+            star.depth * 22;
 
 
         const x =
-            star.x * width +
-            (
-                state.mouseX -
-                .5
-            ) * parallax;
+            star.x *
+            width +
+            state.targetX *
+            parallax;
 
 
         const y =
-            star.y * height +
-            (
-                state.mouseY -
-                .5
-            ) * parallax;
+            star.y *
+            height +
+            state.targetY *
+            parallax;
 
 
         ctx.fillStyle =
             `rgba(
-                210,
                 220,
-                220,
+                230,
+                230,
                 ${star.opacity}
             )`;
 
@@ -350,14 +402,16 @@ function drawSpace() {
 
 
     /*
-    Earth
+    Earth horizon
     */
 
     const earthX =
-        width * .73;
+        width * .72;
+
 
     const earthY =
-        height * 1.12;
+        height * 1.15;
+
 
     const earthRadius =
         Math.min(
@@ -381,18 +435,21 @@ function drawSpace() {
 
     earth.addColorStop(
         0,
-        "#33484a"
+        "#3c5659"
     );
 
+
     earth.addColorStop(
-        .55,
-        "#182628"
+        .5,
+        "#1a2c30"
     );
+
 
     earth.addColorStop(
         .9,
         "#071012"
     );
+
 
     earth.addColorStop(
         1,
@@ -403,7 +460,9 @@ function drawSpace() {
     ctx.fillStyle =
         earth;
 
+
     ctx.beginPath();
+
 
     ctx.arc(
         earthX,
@@ -413,142 +472,163 @@ function drawSpace() {
         Math.PI * 2
     );
 
+
     ctx.fill();
 
 
     /*
-    Atmosphere
+    Atmospheric rim
     */
 
     ctx.beginPath();
+
 
     ctx.arc(
         earthX,
         earthY,
-        earthRadius * .99,
+        earthRadius * .985,
         Math.PI * 1.02,
         Math.PI * 1.95
     );
 
+
     ctx.strokeStyle =
-        "rgba(160,205,210,.2)";
+        "rgba(165,215,225,.22)";
+
 
     ctx.lineWidth = 3;
 
-    ctx.stroke();
-
-
-    /*
-    Orbit
-    */
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        width * .65,
-        height * .48,
-        width * .4,
-        height * .12,
-        -.12,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        "rgba(180,195,195,.12)";
-
-    ctx.lineWidth = 1;
 
     ctx.stroke();
+
 
 }
 
 
 /* =====================================================
-   SATELLITE ANIMATION
+   SATELLITE MOVEMENT
 ===================================================== */
 
-function animate() {
+function updateSatellite() {
 
-    if (!state.transitioning) {
+    if (
+        !satellite ||
+        state.transitioning
+    ) {
 
-        state.mouseX +=
-            (
-                state.targetX -
-                state.mouseX
-            ) * .07;
-
-
-        state.mouseY +=
-            (
-                state.targetY -
-                state.mouseY
-            ) * .07;
-
-
-        if (satellite) {
-
-            const satelliteX =
-                62 +
-                state.mouseX * 13;
-
-            const satelliteY =
-                30 +
-                state.mouseY * 35;
-
-
-            satellite.style.left =
-                `${satelliteX}%`;
-
-            satellite.style.top =
-                `${satelliteY}%`;
-
-
-            satellite.style.transform =
-                `
-                translate(-50%, -50%)
-                rotate(${(
-                    state.mouseX -
-                    .5
-                ) * 8}deg)
-                `;
-
-        }
-
-
-        if (targetCoordinates) {
-
-            const lat =
-                39.8283 +
-                (
-                    state.mouseY -
-                    .5
-                ) * 12;
-
-
-            targetCoordinates.textContent =
-                `${lat.toFixed(3)}° N`;
-
-        }
-
-
-        drawSpace();
+        return;
 
     }
 
 
+    /*
+    Smooth mouse movement.
+    */
+
+    state.currentX +=
+        (
+            state.targetX -
+            state.currentX
+        ) * .025;
+
+
+    state.currentY +=
+        (
+            state.targetY -
+            state.currentY
+        ) * .025;
+
+
+    /*
+    Subtle additional orbital
+    movement controlled by JS.
+
+    CSS is responsible for the
+    large orbital path.
+    */
+
+
+    const mouseInfluenceX =
+        state.currentX * 45;
+
+
+    const mouseInfluenceY =
+        state.currentY * 30;
+
+
+    const rotation =
+        state.currentX * 7;
+
+
+    satellite.style.marginLeft =
+        `${mouseInfluenceX}px`;
+
+
+    satellite.style.marginTop =
+        `${mouseInfluenceY}px`;
+
+
+    satellite.style.transform =
+        `
+        translate(-50%, -50%)
+        rotate(${rotation}deg)
+        `;
+
+
+    /*
+    Telemetry coordinates
+    */
+
+    if (targetCoordinates) {
+
+        const lat =
+            39.8283 +
+            state.currentY *
+            8;
+
+
+        const lon =
+            -98.5795 +
+            state.currentX *
+            20;
+
+
+        targetCoordinates.textContent =
+            `${Math.abs(lat).toFixed(3)}° ${
+                lat >= 0 ? "N" : "S"
+            } / ${
+                Math.abs(lon).toFixed(3)
+            }° ${
+                lon >= 0 ? "E" : "W"
+            }`;
+
+    }
+
+}
+
+
+/* =====================================================
+   MAIN ANIMATION LOOP
+===================================================== */
+
+function animationLoop() {
+
+    updateSatellite();
+
+    drawSpace();
+
     requestAnimationFrame(
-        animate
+        animationLoop
     );
 
 }
 
 
-animate();
+animationLoop();
 
 
 /* =====================================================
-   MOUSE CONTROL
+   MOUSE
 ===================================================== */
 
 window.addEventListener(
@@ -556,19 +636,488 @@ window.addEventListener(
     event => {
 
         state.targetX =
-            event.clientX /
-            window.innerWidth;
+            (
+                event.clientX /
+                window.innerWidth -
+                .5
+            ) * 2;
+
 
         state.targetY =
-            event.clientY /
-            window.innerHeight;
+            (
+                event.clientY /
+                window.innerHeight -
+                .5
+            ) * 2;
 
     }
 );
 
 
 /* =====================================================
-   MISSION TRANSITION
+   GALAXY CURSOR
+===================================================== */
+
+const cursorCanvas =
+    document.createElement(
+        "canvas"
+    );
+
+
+cursorCanvas.id =
+    "cursorGalaxy";
+
+
+document.body.appendChild(
+    cursorCanvas
+);
+
+
+const cursorContext =
+    cursorCanvas.getContext(
+        "2d"
+    );
+
+
+const cursorParticles = [];
+
+
+let cursorX =
+    window.innerWidth / 2;
+
+
+let cursorY =
+    window.innerHeight / 2;
+
+
+let lastCursorX =
+    cursorX;
+
+
+let lastCursorY =
+    cursorY;
+
+
+/* =====================================================
+   CURSOR CANVAS SIZE
+===================================================== */
+
+function resizeCursorCanvas() {
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+
+    cursorCanvas.width =
+        window.innerWidth *
+        ratio;
+
+
+    cursorCanvas.height =
+        window.innerHeight *
+        ratio;
+
+
+    cursorCanvas.style.width =
+        `${window.innerWidth}px`;
+
+
+    cursorCanvas.style.height =
+        `${window.innerHeight}px`;
+
+
+    cursorContext.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
+
+}
+
+
+resizeCursorCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCursorCanvas
+);
+
+
+/* =====================================================
+   CREATE STAR
+===================================================== */
+
+function createGalaxyParticle(
+    x,
+    y,
+    velocityX,
+    velocityY
+) {
+
+    const angle =
+        Math.random() *
+        Math.PI *
+        2;
+
+
+    const distance =
+        2 +
+        Math.random() *
+        12;
+
+
+    cursorParticles.push({
+
+        x:
+            x +
+            Math.cos(angle) *
+            distance,
+
+
+        y:
+            y +
+            Math.sin(angle) *
+            distance,
+
+
+        vx:
+            velocityX *
+            .05 +
+            (
+                Math.random() -
+                .5
+            ) *
+            .35,
+
+
+        vy:
+            velocityY *
+            .05 +
+            (
+                Math.random() -
+                .5
+            ) *
+            .35,
+
+
+        size:
+            .5 +
+            Math.random() *
+            1.7,
+
+
+        life:
+            1,
+
+
+        decay:
+            .008 +
+            Math.random() *
+            .025,
+
+
+        hue:
+            190 +
+            Math.random() *
+            70
+
+    });
+
+}
+
+
+/* =====================================================
+   POINTER STAR TRAIL
+===================================================== */
+
+window.addEventListener(
+    "pointermove",
+    event => {
+
+        cursorX =
+            event.clientX;
+
+
+        cursorY =
+            event.clientY;
+
+
+        const velocityX =
+            cursorX -
+            lastCursorX;
+
+
+        const velocityY =
+            cursorY -
+            lastCursorY;
+
+
+        const movement =
+            Math.sqrt(
+                velocityX *
+                velocityX +
+                velocityY *
+                velocityY
+            );
+
+
+        if (
+            movement > 1
+        ) {
+
+            const amount =
+                Math.min(
+                    7,
+                    Math.floor(
+                        movement / 3
+                    )
+                );
+
+
+            for (
+                let i = 0;
+                i < amount;
+                i++
+            ) {
+
+                createGalaxyParticle(
+                    cursorX,
+                    cursorY,
+                    velocityX,
+                    velocityY
+                );
+
+            }
+
+        }
+
+
+        lastCursorX =
+            cursorX;
+
+
+        lastCursorY =
+            cursorY;
+
+    }
+);
+
+
+/* =====================================================
+   DRAW GALAXY
+===================================================== */
+
+function drawCursorGalaxy() {
+
+    cursorContext.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+
+    /*
+    Small amount of ambient
+    dust around cursor.
+    */
+
+    if (
+        Math.random() < .18
+    ) {
+
+        createGalaxyParticle(
+            cursorX,
+            cursorY,
+            0,
+            0
+        );
+
+    }
+
+
+    for (
+        let i =
+            cursorParticles.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const particle =
+            cursorParticles[i];
+
+
+        particle.x +=
+            particle.vx;
+
+
+        particle.y +=
+            particle.vy;
+
+
+        particle.vx *=
+            .985;
+
+
+        particle.vy *=
+            .985;
+
+
+        particle.life -=
+            particle.decay;
+
+
+        particle.size *=
+            .992;
+
+
+        if (
+            particle.life <= 0
+        ) {
+
+            cursorParticles.splice(
+                i,
+                1
+            );
+
+            continue;
+
+        }
+
+
+        /*
+        Glow
+        */
+
+        cursorContext.beginPath();
+
+
+        cursorContext.arc(
+            particle.x,
+            particle.y,
+            particle.size * 3,
+            0,
+            Math.PI * 2
+        );
+
+
+        cursorContext.fillStyle =
+            `hsla(
+                ${particle.hue},
+                45%,
+                78%,
+                ${particle.life * .12}
+            )`;
+
+
+        cursorContext.fill();
+
+
+        /*
+        Star
+        */
+
+        cursorContext.beginPath();
+
+
+        cursorContext.arc(
+            particle.x,
+            particle.y,
+            particle.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        cursorContext.fillStyle =
+            `hsla(
+                ${particle.hue},
+                30%,
+                94%,
+                ${particle.life}
+            )`;
+
+
+        cursorContext.fill();
+
+
+        /*
+        Star cross
+        */
+
+        if (
+            particle.size > 1
+        ) {
+
+            cursorContext.strokeStyle =
+                `rgba(
+                    235,
+                    242,
+                    242,
+                    ${particle.life * .35}
+                )`;
+
+
+            cursorContext.lineWidth =
+                .5;
+
+
+            cursorContext.beginPath();
+
+
+            cursorContext.moveTo(
+                particle.x -
+                    particle.size * 3,
+                particle.y
+            );
+
+
+            cursorContext.lineTo(
+                particle.x +
+                    particle.size * 3,
+                particle.y
+            );
+
+
+            cursorContext.moveTo(
+                particle.x,
+                particle.y -
+                    particle.size * 3
+            );
+
+
+            cursorContext.lineTo(
+                particle.x,
+                particle.y +
+                    particle.size * 3
+            );
+
+
+            cursorContext.stroke();
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        drawCursorGalaxy
+    );
+
+}
+
+
+drawCursorGalaxy();
+
+
+/* =====================================================
+   TRANSITION
 ===================================================== */
 
 function launchToAgriculture() {
@@ -578,6 +1127,7 @@ function launchToAgriculture() {
     ) {
 
         return;
+
     }
 
 
@@ -585,37 +1135,17 @@ function launchToAgriculture() {
         true;
 
 
-    if (missionScreen) {
-
-        missionScreen.classList.add(
-            "bursting"
-        );
-
-    }
-
-
-    if (satellite) {
-
-        satellite.style.transform =
-            `
-            translate(-50%, -50%)
-            scale(1.8)
-            rotate(18deg)
-            `;
-
-    }
+    missionScreen.classList.add(
+        "bursting"
+    );
 
 
     setTimeout(
         () => {
 
-            if (missionScreen) {
-
-                missionScreen.classList.add(
-                    "departing"
-                );
-
-            }
+            missionScreen.classList.add(
+                "departing"
+            );
 
         },
         450
@@ -625,49 +1155,29 @@ function launchToAgriculture() {
     setTimeout(
         () => {
 
-            if (missionScreen) {
-
-                missionScreen.style.display =
-                    "none";
-
-            }
+            missionScreen.style.display =
+                "none";
 
 
-            if (agricultureApp) {
+            agricultureApp.classList.add(
+                "visible"
+            );
 
-                agricultureApp.classList.add(
-                    "visible"
-                );
-
-            }
-
-
-            /*
-            Immediately create
-            the world map.
-            */
 
             initializeMap();
 
 
-            /*
-            Information bubble.
-            */
-
             setTimeout(
                 () => {
 
-                    if (infoBubble) {
-
-                        infoBubble.classList.add(
-                            "visible"
-                        );
-
-                    }
+                    infoBubble.classList.add(
+                        "visible"
+                    );
 
                 },
                 4500
             );
+
 
         },
         1050
@@ -677,7 +1187,7 @@ function launchToAgriculture() {
 
 
 /* =====================================================
-   SCROLL
+   SCROLL TRANSITION
 ===================================================== */
 
 window.addEventListener(
@@ -685,17 +1195,7 @@ window.addEventListener(
     event => {
 
         if (
-            state.transitioning
-        ) {
-
-            return;
-        }
-
-
-        if (
-            Math.abs(
-                event.deltaY
-            ) > 3
+            Math.abs(event.deltaY) > 3
         ) {
 
             launchToAgriculture();
@@ -710,7 +1210,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   KEYBOARD
+   KEYBOARD TRANSITION
 ===================================================== */
 
 window.addEventListener(
@@ -732,36 +1232,14 @@ window.addEventListener(
 
 
 /* =====================================================
-   INFORMATION BUBBLE
-===================================================== */
-
-if (closeBubble) {
-
-    closeBubble.addEventListener(
-        "click",
-        () => {
-
-            if (infoBubble) {
-
-                infoBubble.classList.remove(
-                    "visible"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   WORLD MAP
+   MAP
 ===================================================== */
 
 function initializeMap() {
 
-    if (state.map) {
+    if (
+        state.map
+    ) {
 
         setTimeout(
             () => {
@@ -769,10 +1247,11 @@ function initializeMap() {
                 state.map.invalidateSize();
 
             },
-            200
+            300
         );
 
         return;
+
     }
 
 
@@ -781,10 +1260,11 @@ function initializeMap() {
     ) {
 
         console.error(
-            "Leaflet did not load."
+            "Leaflet failed to load."
         );
 
         return;
+
     }
 
 
@@ -794,64 +1274,33 @@ function initializeMap() {
         );
 
 
-    if (!worldMap) {
-
-        console.error(
-            "World map container not found."
-        );
-
-        return;
-    }
-
-
-    /*
-    GLOBAL MAP
-    */
-
     state.map =
         L.map(
             worldMap,
             {
 
-                zoomControl:
-                    true,
+                minZoom: 2,
 
-                attributionControl:
-                    true,
+                maxZoom: 19,
 
-                minZoom:
-                    2,
+                worldCopyJump: true,
 
-                maxZoom:
-                    19,
+                scrollWheelZoom: true,
 
-                worldCopyJump:
-                    true,
+                dragging: true,
 
-                scrollWheelZoom:
-                    true,
+                doubleClickZoom: true,
 
-                dragging:
-                    true,
+                touchZoom: true,
 
-                doubleClickZoom:
-                    true,
-
-                touchZoom:
-                    true,
-
-                boxZoom:
-                    true,
-
-                keyboard:
-                    true
+                keyboard: true
 
             }
         );
 
 
     /*
-    Start globally.
+    Global Earth.
     */
 
     state.map.setView(
@@ -864,16 +1313,15 @@ function initializeMap() {
 
 
     /*
-    SATELLITE IMAGERY
+    Satellite imagery.
     */
 
-    state.imageryLayer =
+    const satelliteImagery =
         L.tileLayer(
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             {
 
-                maxZoom:
-                    19,
+                maxZoom: 19,
 
                 attribution:
                     "Satellite imagery © Esri"
@@ -882,24 +1330,8 @@ function initializeMap() {
         );
 
 
-    state.imageryLayer.addTo(
+    satelliteImagery.addTo(
         state.map
-    );
-
-
-    /*
-    Map movement.
-    */
-
-    state.map.on(
-        "move",
-        updateMapPosition
-    );
-
-
-    state.map.on(
-        "zoom",
-        updateMapPosition
     );
 
 
@@ -909,52 +1341,19 @@ function initializeMap() {
             state.map.invalidateSize();
 
         },
-        400
+        500
     );
 
 }
 
 
 /* =====================================================
-   MAP POSITION
+   GEOJSON INPUT
 ===================================================== */
 
-function updateMapPosition() {
-
-    if (!state.map) {
-        return;
-    }
-
-
-    const center =
-        state.map.getCenter();
-
-    const zoom =
-        state.map.getZoom();
-
-
-    /*
-    This is intentionally
-    kept available for future
-    telemetry UI.
-    */
-
-    console.debug(
-        "Map:",
-        center.lat.toFixed(4),
-        center.lng.toFixed(4),
-        "Zoom:",
-        zoom.toFixed(1)
-    );
-
-}
-
-
-/* =====================================================
-   FILE INPUT
-===================================================== */
-
-if (geojsonInput) {
+if (
+    geojsonInput
+) {
 
     geojsonInput.addEventListener(
         "change",
@@ -964,7 +1363,9 @@ if (geojsonInput) {
                 event.target.files[0];
 
 
-            if (file) {
+            if (
+                file
+            ) {
 
                 readGeoJSON(
                     file
@@ -979,10 +1380,12 @@ if (geojsonInput) {
 
 
 /* =====================================================
-   DRAG AND DROP
+   DRAG / DROP
 ===================================================== */
 
-if (uploadBox) {
+if (
+    uploadBox
+) {
 
     uploadBox.addEventListener(
         "dragover",
@@ -1025,7 +1428,9 @@ if (uploadBox) {
                 event.dataTransfer.files[0];
 
 
-            if (file) {
+            if (
+                file
+            ) {
 
                 readGeoJSON(
                     file
@@ -1062,6 +1467,7 @@ function readGeoJSON(file) {
         );
 
         return;
+
     }
 
 
@@ -1093,6 +1499,7 @@ function readGeoJSON(file) {
                     error
                 );
 
+
                 alert(
                     "The GeoJSON file could not be read."
                 );
@@ -1121,16 +1528,18 @@ function loadField(
     initializeMap();
 
 
-    if (!state.map) {
+    if (
+        !state.map
+    ) {
+
         return;
+
     }
 
 
-    /*
-    Remove previous field.
-    */
-
-    if (state.fieldLayer) {
+    if (
+        state.fieldLayer
+    ) {
 
         state.map.removeLayer(
             state.fieldLayer
@@ -1189,25 +1598,18 @@ function loadField(
         }
 
 
-        /*
-        Fly from the world
-        to the actual field.
-        */
-
         state.map.flyToBounds(
             bounds,
             {
 
                 padding:
-                    [70, 70],
+                    [70,70],
 
                 maxZoom:
                     17,
 
                 duration:
-                    reducedMotion
-                        ? 0
-                        : 2
+                    2
 
             }
         );
@@ -1217,27 +1619,21 @@ function loadField(
             true;
 
 
-        /*
-        Geometry information.
-        */
-
         const area =
             calculateArea(
                 data
             );
+
 
         const perimeter =
             calculatePerimeter(
                 data
             );
 
+
         const center =
             bounds.getCenter();
 
-
-        /*
-        Name based on uploaded file.
-        */
 
         const cleanFilename =
             filename
@@ -1247,10 +1643,6 @@ function loadField(
                 )
                 .replace(
                     /[-_]+/g,
-                    " "
-                )
-                .replace(
-                    /\s+/g,
                     " "
                 )
                 .trim();
@@ -1266,96 +1658,43 @@ function loadField(
                 : "ACTIVE FIELD";
 
 
-        /*
-        Update information.
-        */
-
-        if (fieldName) {
-
-            fieldName.textContent =
-                formattedName;
-
-        }
+        fieldName.textContent =
+            formattedName;
 
 
-        if (fieldMeta) {
-
-            fieldMeta.textContent =
-                `${area.toFixed(2)} ACRES · ` +
-                `${perimeter.toFixed(2)} MI PERIMETER`;
-
-        }
+        fieldMeta.textContent =
+            `${area.toFixed(2)} ACRES · ` +
+            `${perimeter.toFixed(2)} MI PERIMETER`;
 
 
-        if (areaValue) {
-
-            areaValue.textContent =
-                `${area.toFixed(2)} AC`;
-
-        }
+        areaValue.textContent =
+            `${area.toFixed(2)} AC`;
 
 
-        if (perimeterValue) {
-
-            perimeterValue.textContent =
-                `${perimeter.toFixed(2)} MI`;
-
-        }
+        perimeterValue.textContent =
+            `${perimeter.toFixed(2)} MI`;
 
 
-        if (centerValue) {
-
-            centerValue.textContent =
-                `${center.lat.toFixed(4)}°, ` +
-                `${center.lng.toFixed(4)}°`;
-
-        }
+        centerValue.textContent =
+            `${center.lat.toFixed(4)}°, ` +
+            `${center.lng.toFixed(4)}°`;
 
 
-        /*
-        No fake satellite data.
-        */
-
-        if (ndviValue) {
-
-            ndviValue.textContent =
-                "—";
-
-        }
+        ndviValue.textContent =
+            "—";
 
 
-        if (stressValue) {
-
-            stressValue.textContent =
-                "—";
-
-        }
+        stressValue.textContent =
+            "—";
 
 
-        /*
-        Hide upload interface.
-        */
-
-        if (uploadPanel) {
-
-            uploadPanel.style.display =
-                "none";
-
-        }
+        uploadPanel.style.display =
+            "none";
 
 
-        /*
-        Show field analysis.
-        */
-
-        if (fieldWorkspace) {
-
-            fieldWorkspace.classList.remove(
-                "hidden"
-            );
-
-        }
-
+        fieldWorkspace.classList.remove(
+            "hidden"
+        );
 
     }
 
@@ -1364,6 +1703,7 @@ function loadField(
         console.error(
             error
         );
+
 
         alert(
             "The uploaded GeoJSON does not contain a valid field boundary."
@@ -1375,7 +1715,7 @@ function loadField(
 
 
 /* =====================================================
-   AREA
+   AREA CALCULATION
 ===================================================== */
 
 function calculateArea(
@@ -1385,7 +1725,9 @@ function calculateArea(
     let area = 0;
 
 
-    function ringArea(ring) {
+    function ringArea(
+        ring
+    ) {
 
         if (
             !ring ||
@@ -1400,6 +1742,7 @@ function calculateArea(
         const radius =
             6378137;
 
+
         let total = 0;
 
 
@@ -1412,6 +1755,7 @@ function calculateArea(
             const a =
                 ring[i];
 
+
             const b =
                 ring[i + 1];
 
@@ -1421,15 +1765,18 @@ function calculateArea(
                 Math.PI /
                 180;
 
+
             const lat1 =
                 a[1] *
                 Math.PI /
                 180;
 
+
             const lon2 =
                 b[0] *
                 Math.PI /
                 180;
+
 
             const lat2 =
                 b[1] *
@@ -1466,7 +1813,9 @@ function calculateArea(
     ) {
 
         if (!geometry) {
+
             return;
+
         }
 
 
@@ -1581,10 +1930,12 @@ function calculatePerimeter(
             Math.PI /
             180;
 
+
         const lat2 =
             b[1] *
             Math.PI /
             180;
+
 
         const dLat =
             (
@@ -1593,6 +1944,7 @@ function calculatePerimeter(
             ) *
             Math.PI /
             180;
+
 
         const dLon =
             (
@@ -1636,6 +1988,7 @@ function calculatePerimeter(
         ) {
 
             return;
+
         }
 
 
@@ -1661,7 +2014,9 @@ function calculatePerimeter(
     ) {
 
         if (!geometry) {
+
             return;
+
         }
 
 
@@ -1743,10 +2098,12 @@ function calculatePerimeter(
 
 
 /* =====================================================
-   FIELD ANALYSIS
+   FIELD SCAN
 ===================================================== */
 
-if (scanButton) {
+if (
+    scanButton
+) {
 
     scanButton.addEventListener(
         "click",
@@ -1757,6 +2114,7 @@ if (scanButton) {
             ) {
 
                 return;
+
             }
 
 
@@ -1768,51 +2126,15 @@ if (scanButton) {
                 "PROCESSING FIELD...";
 
 
-            if (ndviValue) {
-
-                ndviValue.textContent =
-                    "PENDING";
-
-            }
-
-
-            if (stressValue) {
-
-                stressValue.textContent =
-                    "PENDING";
-
-            }
-
-
             setTimeout(
                 () => {
 
                     scanButton.disabled =
                         false;
 
+
                     scanButton.textContent =
                         "RUN FIELD ANALYSIS";
-
-
-                    /*
-                    Do NOT invent
-                    satellite measurements.
-                    */
-
-                    if (ndviValue) {
-
-                        ndviValue.textContent =
-                            "—";
-
-                    }
-
-
-                    if (stressValue) {
-
-                        stressValue.textContent =
-                            "—";
-
-                    }
 
 
                     alert(
@@ -1833,33 +2155,39 @@ if (scanButton) {
    RESET MAP
 ===================================================== */
 
-if (resetMap) {
+if (
+    resetMap
+) {
 
     resetMap.addEventListener(
         "click",
         () => {
 
-            if (!state.map) {
+            if (
+                !state.map
+            ) {
+
                 return;
+
             }
 
 
-            if (state.fieldLayer) {
+            if (
+                state.fieldLayer
+            ) {
 
                 state.map.flyToBounds(
                     state.fieldLayer.getBounds(),
                     {
 
                         padding:
-                            [70, 70],
+                            [70,70],
 
                         maxZoom:
                             17,
 
                         duration:
-                            reducedMotion
-                                ? 0
-                                : 1.2
+                            1.2
 
                     }
                 );
@@ -1877,9 +2205,7 @@ if (resetMap) {
                     {
 
                         duration:
-                            reducedMotion
-                                ? 0
-                                : 1.2
+                            1.2
 
                     }
                 );
@@ -1893,7 +2219,22 @@ if (resetMap) {
 
 
 /* =====================================================
-   INITIALIZE
+   CLOSE INFO
 ===================================================== */
 
-drawSpace();
+if (
+    closeBubble
+) {
+
+    closeBubble.addEventListener(
+        "click",
+        () => {
+
+            infoBubble.classList.remove(
+                "visible"
+            );
+
+        }
+    );
+
+}
