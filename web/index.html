@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -16,32 +17,46 @@
 
     <title>Satellite Agriculture Monitor</title>
 
-    <link
-        rel="stylesheet"
-        href="./style.css"
-    >
+
+    <!-- Leaflet -->
 
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     >
 
+
+    <!-- Main stylesheet -->
+
+    <link
+        rel="stylesheet"
+        href="./style.css"
+    >
+
+
+    <!-- Leaflet -->
+
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         defer
     ></script>
 
+
+    <!-- Application -->
+
     <script
         src="./script.js"
         defer
     ></script>
+
 </head>
 
 
 <body>
 
+
 <!-- =====================================================
-     MISSION SCREEN
+     FIRST SCREEN
 ===================================================== -->
 
 <section
@@ -49,14 +64,20 @@
     class="mission-screen"
 >
 
-    <canvas id="spaceCanvas"></canvas>
+
+    <!-- STAR BACKGROUND -->
+
+    <canvas
+        id="spaceCanvas"
+    ></canvas>
+
 
     <div class="mission-grid"></div>
 
     <div class="mission-vignette"></div>
 
 
-    <!-- IDENTIFICATION -->
+    <!-- TOP LEFT -->
 
     <div class="mission-identification">
 
@@ -79,91 +100,219 @@
     </div>
 
 
-    <!-- STATUS -->
+    <!-- TOP RIGHT -->
 
     <div class="mission-status">
 
         <div>
-            MISSION
-            <strong>READY</strong>
+
+            <span>
+                MISSION
+            </span>
+
+            <strong>
+                READY
+            </strong>
+
         </div>
 
-        <div>
-            SENSOR
-            <strong>ACTIVE</strong>
-        </div>
 
         <div>
-            LINK
-            <strong>98.7%</strong>
+
+            <span>
+                SENSOR
+            </span>
+
+            <strong>
+                ACTIVE
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                LINK
+            </span>
+
+            <strong>
+                98.7%
+            </strong>
+
         </div>
 
     </div>
 
 
-    <!-- TITLE -->
+    <!-- MAIN TITLE -->
 
     <div class="mission-title">
 
-        <span>SATELLITE</span>
+        <div>
+            SATELLITE
+        </div>
 
-        <span>AGRICULTURE</span>
+        <div>
+            AGRICULTURE
+        </div>
 
-        <span>MONITOR</span>
+        <div>
+            MONITOR
+        </div>
+
 
         <p>
+
             PRECISION AGRICULTURAL INTELLIGENCE
             <br>
+
             THROUGH EARTH OBSERVATION
+
         </p>
 
     </div>
 
 
-    <!-- SATELLITE -->
+    <!-- =================================================
+         SATELLITE
+    ================================================= -->
 
     <div
         id="satellite"
         class="satellite"
     >
 
-        <div class="satellite-body">
-
-            <div class="satellite-panel left-panel">
-
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
-
-            </div>
+        <div class="satellite-rotation">
 
 
-            <div class="satellite-core">
+            <!-- LEFT SOLAR ARRAY -->
 
-                <div class="satellite-band"></div>
+            <div class="solar-array solar-left">
 
-                <div class="sensor">
-                    ●
+                <div class="solar-frame">
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
                 </div>
 
-                <div class="antenna"></div>
+            </div>
+
+
+            <!-- SPACECRAFT -->
+
+            <div class="spacecraft">
+
+
+                <div class="spacecraft-body">
+
+                    <div class="body-panel panel-one"></div>
+
+                    <div class="body-panel panel-two"></div>
+
+                    <div class="body-panel panel-three"></div>
+
+                    <div class="body-panel panel-four"></div>
+
+                    <div class="body-highlight"></div>
+
+                </div>
+
+
+                <!-- TOP ANTENNA -->
+
+                <div class="antenna-mast"></div>
+
+                <div class="antenna-tip"></div>
+
+
+                <!-- COMMUNICATION DISH -->
+
+                <div class="dish-arm">
+
+                    <div class="dish">
+
+                        <div class="dish-center"></div>
+
+                        <div class="dish-spoke spoke-one"></div>
+
+                        <div class="dish-spoke spoke-two"></div>
+
+                        <div class="dish-spoke spoke-three"></div>
+
+                        <div class="dish-spoke spoke-four"></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SENSOR -->
+
+                <div class="satellite-sensor">
+
+                    <div class="sensor-glass"></div>
+
+                    <div class="sensor-ring"></div>
+
+                </div>
+
+
+                <!-- ANTENNAS -->
+
+                <div class="small-antenna antenna-one"></div>
+
+                <div class="small-antenna antenna-two"></div>
 
             </div>
 
 
-            <div class="satellite-panel right-panel">
+            <!-- RIGHT SOLAR ARRAY -->
 
-                <i></i>
-                <i></i>
-                <i></i>
-                <i></i>
+            <div class="solar-array solar-right">
+
+                <div class="solar-frame">
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+                    <div class="solar-cell"></div>
+
+                </div>
 
             </div>
 
         </div>
 
-        <div class="sensor-beam"></div>
+
+        <!-- ORBITAL GLOW -->
+
+        <div class="satellite-glow"></div>
+
+        <div class="orbital-ring"></div>
 
     </div>
 
@@ -176,9 +325,12 @@
             LIVE TELEMETRY
         </div>
 
+
         <div class="telemetry-row">
 
-            <span>ORBIT</span>
+            <span>
+                ORBIT
+            </span>
 
             <strong>
                 LOW EARTH ORBIT
@@ -186,9 +338,12 @@
 
         </div>
 
+
         <div class="telemetry-row">
 
-            <span>ALTITUDE</span>
+            <span>
+                ALTITUDE
+            </span>
 
             <strong>
                 705 KM
@@ -196,9 +351,12 @@
 
         </div>
 
+
         <div class="telemetry-row">
 
-            <span>VELOCITY</span>
+            <span>
+                VELOCITY
+            </span>
 
             <strong>
                 7.48 KM/S
@@ -206,9 +364,12 @@
 
         </div>
 
+
         <div class="telemetry-row">
 
-            <span>SENSOR</span>
+            <span>
+                SENSOR
+            </span>
 
             <strong>
                 MULTISPECTRAL
@@ -216,12 +377,15 @@
 
         </div>
 
+
         <div class="telemetry-row">
 
-            <span>TARGET</span>
+            <span>
+                TARGET
+            </span>
 
             <strong id="targetCoordinates">
-                39.828° N
+                EARTH
             </strong>
 
         </div>
@@ -229,7 +393,7 @@
     </div>
 
 
-    <!-- SCROLL -->
+    <!-- INSTRUCTIONS -->
 
     <div class="mission-instructions">
 
@@ -239,12 +403,14 @@
 
         </div>
 
+
         <strong>
             SCROLL TO BEGIN
         </strong>
 
+
         <small>
-            MOVE YOUR POINTER TO CONTROL THE SATELLITE
+            MOVE YOUR POINTER TO INTERACT
         </small>
 
     </div>
@@ -255,12 +421,15 @@
     <div class="mission-credit">
 
         DESIGNED BY
-        <strong>ALI BELTRAN</strong>
+
+        <strong>
+            ALI BELTRAN
+        </strong>
 
     </div>
 
 
-    <!-- BURST -->
+    <!-- COSMIC BURST -->
 
     <div
         id="spectralBurst"
@@ -285,11 +454,13 @@
 
     <header class="app-header">
 
+
         <div class="app-brand">
 
             <div class="app-logo">
                 ◇
             </div>
+
 
             <div>
 
@@ -319,13 +490,13 @@
 
 
     <!-- =================================================
-         WORLD MAP INTERFACE
+         WORLD
     ================================================= -->
 
     <section class="earth-interface">
 
 
-        <!-- WORLD MAP -->
+        <!-- MAP -->
 
         <div
             id="worldMap"
@@ -333,7 +504,7 @@
         ></div>
 
 
-        <!-- ATMOSPHERIC OVERLAY -->
+        <!-- DARK MAP GRADIENT -->
 
         <div class="earth-overlay"></div>
 
@@ -346,21 +517,27 @@
                 EARTH OBSERVATION SYSTEM
             </span>
 
+
             <h1>
+
                 AGRICULTURAL
                 <br>
                 INTELLIGENCE
+
             </h1>
 
+
             <p>
+
                 Explore the Earth's agricultural
                 landscape through satellite observation.
+
             </p>
 
         </div>
 
 
-        <!-- STATUS -->
+        <!-- MAP STATUS -->
 
         <div class="earth-status">
 
@@ -421,17 +598,23 @@
                     ◇
                 </div>
 
+
                 <span class="upload-kicker">
                     FIELD BOUNDARY
                 </span>
+
 
                 <h2>
                     LOAD AGRICULTURAL FIELD
                 </h2>
 
+
                 <p>
-                    Upload a GeoJSON boundary to identify
-                    and analyze an agricultural field.
+
+                    Upload a GeoJSON boundary
+                    to identify and analyze
+                    an agricultural field.
+
                 </p>
 
 
@@ -439,7 +622,9 @@
                     for="geojsonInput"
                     class="upload-button"
                 >
+
                     SELECT GEOJSON
+
                 </label>
 
 
@@ -456,9 +641,10 @@
                     <span class="privacy-dot"></span>
 
                     <span>
+
                         LOCAL PROCESSING ·
                         IMPORTED FILES ARE NOT SAVED
-                        OR UPLOADED
+
                     </span>
 
                 </div>
@@ -487,11 +673,15 @@
         </div>
 
 
-        <!-- TRACTOR -->
+        <!-- =================================================
+             TRACTOR
+        ================================================= -->
 
         <div class="tractor-track">
 
             <div class="tractor">
+
+                <div class="tractor-exhaust"></div>
 
                 <div class="tractor-cabin">
 
@@ -499,25 +689,28 @@
 
                 </div>
 
+
                 <div class="tractor-body"></div>
+
 
                 <div class="tractor-wheel rear"></div>
 
                 <div class="tractor-wheel front"></div>
-
-                <div class="tractor-exhaust"></div>
 
             </div>
 
         </div>
 
 
-        <!-- FIELD ANALYSIS -->
+        <!-- =================================================
+             FIELD WORKSPACE
+        ================================================= -->
 
         <section
             id="fieldWorkspace"
             class="field-workspace hidden"
         >
+
 
             <div class="field-header">
 
@@ -527,9 +720,11 @@
                         ACTIVE FIELD
                     </span>
 
+
                     <h2 id="fieldName">
                         FIELD
                     </h2>
+
 
                     <p id="fieldMeta">
                         FIELD INFORMATION
@@ -543,7 +738,9 @@
                     class="primary-button"
                     type="button"
                 >
+
                     RUN FIELD ANALYSIS
+
                 </button>
 
             </div>
@@ -560,11 +757,14 @@
                             SATELLITE IMAGERY
                         </span>
 
+
                         <button
                             id="resetMap"
                             type="button"
                         >
+
                             RESET VIEW
+
                         </button>
 
                     </div>
@@ -669,7 +869,9 @@
         </section>
 
 
-        <!-- ABOUT BUBBLE -->
+        <!-- =================================================
+             ABOUT BUBBLE
+        ================================================= -->
 
         <div
             id="infoBubble"
@@ -699,6 +901,7 @@
 
 
             <p>
+
                 Satellite Agriculture Monitor uses
                 geospatial and satellite-observation
                 technologies to help visualize and analyze
@@ -711,6 +914,7 @@
                 is being developed to make agricultural
                 technology more accessible to producers and
                 the agricultural community.
+
             </p>
 
         </div>
@@ -720,4 +924,5 @@
 </main>
 
 </body>
+
 </html>
