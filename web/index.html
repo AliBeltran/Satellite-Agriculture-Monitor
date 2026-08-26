@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
@@ -36,10 +37,11 @@
     ></script>
 </head>
 
+
 <body>
 
 <!-- =====================================================
-     MISSION INTRO
+     MISSION SCREEN
 ===================================================== -->
 
 <section
@@ -49,14 +51,12 @@
 
     <canvas id="spaceCanvas"></canvas>
 
-    <div class="star-layer"></div>
-
     <div class="mission-grid"></div>
 
     <div class="mission-vignette"></div>
 
 
-    <!-- TOP LEFT -->
+    <!-- IDENTIFICATION -->
 
     <div class="mission-identification">
 
@@ -79,12 +79,12 @@
     </div>
 
 
-    <!-- TOP RIGHT -->
+    <!-- STATUS -->
 
     <div class="mission-status">
 
         <div>
-            MISSION STATUS
+            MISSION
             <strong>READY</strong>
         </div>
 
@@ -101,21 +101,15 @@
     </div>
 
 
-    <!-- MAIN TITLE -->
+    <!-- TITLE -->
 
     <div class="mission-title">
 
-        <span>
-            SATELLITE
-        </span>
+        <span>SATELLITE</span>
 
-        <span>
-            AGRICULTURE
-        </span>
+        <span>AGRICULTURE</span>
 
-        <span>
-            MONITOR
-        </span>
+        <span>MONITOR</span>
 
         <p>
             PRECISION AGRICULTURAL INTELLIGENCE
@@ -136,11 +130,14 @@
         <div class="satellite-body">
 
             <div class="satellite-panel left-panel">
+
                 <i></i>
                 <i></i>
                 <i></i>
                 <i></i>
+
             </div>
+
 
             <div class="satellite-core">
 
@@ -154,11 +151,14 @@
 
             </div>
 
+
             <div class="satellite-panel right-panel">
+
                 <i></i>
                 <i></i>
                 <i></i>
                 <i></i>
+
             </div>
 
         </div>
@@ -178,9 +178,7 @@
 
         <div class="telemetry-row">
 
-            <span>
-                ORBIT
-            </span>
+            <span>ORBIT</span>
 
             <strong>
                 LOW EARTH ORBIT
@@ -190,9 +188,7 @@
 
         <div class="telemetry-row">
 
-            <span>
-                ALTITUDE
-            </span>
+            <span>ALTITUDE</span>
 
             <strong>
                 705 KM
@@ -202,9 +198,7 @@
 
         <div class="telemetry-row">
 
-            <span>
-                VELOCITY
-            </span>
+            <span>VELOCITY</span>
 
             <strong>
                 7.48 KM/S
@@ -214,9 +208,7 @@
 
         <div class="telemetry-row">
 
-            <span>
-                SENSOR
-            </span>
+            <span>SENSOR</span>
 
             <strong>
                 MULTISPECTRAL
@@ -226,12 +218,10 @@
 
         <div class="telemetry-row">
 
-            <span>
-                TARGET
-            </span>
+            <span>TARGET</span>
 
             <strong id="targetCoordinates">
-                39.8283° N
+                39.828° N
             </strong>
 
         </div>
@@ -239,7 +229,7 @@
     </div>
 
 
-    <!-- INSTRUCTIONS -->
+    <!-- SCROLL -->
 
     <div class="mission-instructions">
 
@@ -254,7 +244,7 @@
         </strong>
 
         <small>
-            POSITION THE SATELLITE WITH YOUR POINTER
+            MOVE YOUR POINTER TO CONTROL THE SATELLITE
         </small>
 
     </div>
@@ -270,7 +260,7 @@
     </div>
 
 
-    <!-- TRANSITION -->
+    <!-- BURST -->
 
     <div
         id="spectralBurst"
@@ -278,6 +268,7 @@
     ></div>
 
 </section>
+
 
 
 <!-- =====================================================
@@ -288,6 +279,9 @@
     id="agricultureApp"
     class="agriculture-app"
 >
+
+
+    <!-- HEADER -->
 
     <header class="app-header">
 
@@ -323,24 +317,88 @@
     </header>
 
 
-    <section class="app-content">
 
-        <div class="app-introduction">
+    <!-- =================================================
+         WORLD MAP INTERFACE
+    ================================================= -->
+
+    <section class="earth-interface">
+
+
+        <!-- WORLD MAP -->
+
+        <div
+            id="worldMap"
+            class="world-map"
+        ></div>
+
+
+        <!-- ATMOSPHERIC OVERLAY -->
+
+        <div class="earth-overlay"></div>
+
+
+        <!-- HEADING -->
+
+        <div class="earth-heading">
+
+            <span class="section-label">
+                EARTH OBSERVATION SYSTEM
+            </span>
+
+            <h1>
+                AGRICULTURAL
+                <br>
+                INTELLIGENCE
+            </h1>
+
+            <p>
+                Explore the Earth's agricultural
+                landscape through satellite observation.
+            </p>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="earth-status">
 
             <div>
 
-                <span class="section-label">
-                    AGRICULTURAL INTELLIGENCE
+                <span>
+                    VIEW
                 </span>
 
-                <h1>
-                    FIELD OBSERVATION
-                </h1>
+                <strong>
+                    GLOBAL
+                </strong>
 
-                <p>
-                    Upload a field boundary to begin
-                    geospatial analysis.
-                </p>
+            </div>
+
+
+            <div>
+
+                <span>
+                    SENSOR
+                </span>
+
+                <strong>
+                    MULTISPECTRAL
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    IMAGERY
+                </span>
+
+                <strong>
+                    SATELLITE
+                </strong>
 
             </div>
 
@@ -349,9 +407,9 @@
 
         <!-- UPLOAD -->
 
-        <section
+        <div
             id="uploadPanel"
-            class="upload-panel"
+            class="floating-upload"
         >
 
             <div
@@ -363,14 +421,19 @@
                     ◇
                 </div>
 
+                <span class="upload-kicker">
+                    FIELD BOUNDARY
+                </span>
+
                 <h2>
-                    LOAD FIELD BOUNDARY
+                    LOAD AGRICULTURAL FIELD
                 </h2>
 
                 <p>
-                    Drag and drop a GeoJSON file here
-                    or select a file from your computer.
+                    Upload a GeoJSON boundary to identify
+                    and analyze an agricultural field.
                 </p>
+
 
                 <label
                     for="geojsonInput"
@@ -379,6 +442,7 @@
                     SELECT GEOJSON
                 </label>
 
+
                 <input
                     id="geojsonInput"
                     type="file"
@@ -386,16 +450,69 @@
                     hidden
                 >
 
-                <small>
-                    GEOJSON · LOCAL PROCESSING
-                </small>
+
+                <div class="privacy-note">
+
+                    <span class="privacy-dot"></span>
+
+                    <span>
+                        LOCAL PROCESSING ·
+                        IMPORTED FILES ARE NOT SAVED
+                        OR UPLOADED
+                    </span>
+
+                </div>
 
             </div>
 
-        </section>
+        </div>
 
 
-        <!-- FIELD -->
+        <!-- MAP INSTRUCTIONS -->
+
+        <div class="map-instructions">
+
+            <span>
+                DRAG TO EXPLORE
+            </span>
+
+            <span>
+                SCROLL TO ZOOM
+            </span>
+
+            <span>
+                UPLOAD A FIELD TO BEGIN
+            </span>
+
+        </div>
+
+
+        <!-- TRACTOR -->
+
+        <div class="tractor-track">
+
+            <div class="tractor">
+
+                <div class="tractor-cabin">
+
+                    <div class="tractor-window"></div>
+
+                </div>
+
+                <div class="tractor-body"></div>
+
+                <div class="tractor-wheel rear"></div>
+
+                <div class="tractor-wheel front"></div>
+
+                <div class="tractor-exhaust"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FIELD ANALYSIS -->
 
         <section
             id="fieldWorkspace"
@@ -420,6 +537,7 @@
 
                 </div>
 
+
                 <button
                     id="scanButton"
                     class="primary-button"
@@ -432,6 +550,7 @@
 
 
             <div class="workspace-grid">
+
 
                 <section class="map-card">
 
@@ -450,10 +569,14 @@
 
                     </div>
 
-                    <div
-                        id="fieldMap"
-                        class="field-map"
-                    ></div>
+
+                    <div class="analysis-map-preview">
+
+                        FIELD BOUNDARY
+                        <br>
+                        ACTIVE
+
+                    </div>
 
                 </section>
 
@@ -463,6 +586,7 @@
                     <div class="card-label">
                         FIELD ANALYSIS
                     </div>
+
 
                     <div class="metric">
 
@@ -476,6 +600,7 @@
 
                     </div>
 
+
                     <div class="metric">
 
                         <span>
@@ -487,6 +612,7 @@
                         </strong>
 
                     </div>
+
 
                     <div class="metric">
 
@@ -500,6 +626,7 @@
 
                     </div>
 
+
                     <div class="metric">
 
                         <span>
@@ -511,6 +638,7 @@
                         </strong>
 
                     </div>
+
 
                     <div class="metric">
 
@@ -524,89 +652,70 @@
 
                     </div>
 
-                    <div class="analysis-message">
-                        Analysis values remain blank until
-                        a field analysis is performed.
-                    </div>
+
+                    <p class="analysis-note">
+
+                        Satellite-derived vegetation
+                        measurements will appear here
+                        when a remote-sensing data source
+                        is connected.
+
+                    </p>
 
                 </aside>
 
             </div>
 
+        </section>
 
-            <!-- MAP LAYERS -->
 
-            <div class="map-layers">
+        <!-- ABOUT BUBBLE -->
+
+        <div
+            id="infoBubble"
+            class="info-bubble"
+        >
+
+            <button
+                id="closeBubble"
+                class="close-bubble"
+                type="button"
+            >
+                ×
+            </button>
+
+
+            <div class="bubble-header">
 
                 <span>
-                    IMAGERY
+                    ◇
                 </span>
 
-                <button
-                    class="layer-button active"
-                    data-layer="satellite"
-                    type="button"
-                >
-                    SATELLITE
-                </button>
-
-                <button
-                    class="layer-button"
-                    data-layer="street"
-                    type="button"
-                >
-                    REFERENCE
-                </button>
+                <strong>
+                    ABOUT THIS PROJECT
+                </strong>
 
             </div>
 
-        </section>
 
-    </section>
-
-
-    <!-- CHAT BUBBLE -->
-
-    <div
-        id="infoBubble"
-        class="info-bubble"
-    >
-
-        <button
-            id="closeBubble"
-            class="close-bubble"
-            type="button"
-            aria-label="Close information"
-        >
-            ×
-        </button>
-
-        <div class="bubble-header">
-
-            <span class="bubble-icon">
-                ◇
-            </span>
-
-            <strong>
-                ABOUT THIS PROJECT
-            </strong>
+            <p>
+                Satellite Agriculture Monitor uses
+                geospatial and satellite-observation
+                technologies to help visualize and analyze
+                agricultural fields. It is designed to give
+                producers, agronomists, conservation
+                professionals, and anyone working in
+                agriculture a practical way to explore
+                field information and support better-informed
+                decisions. This project is open source and
+                is being developed to make agricultural
+                technology more accessible to producers and
+                the agricultural community.
+            </p>
 
         </div>
 
-        <p>
-            Satellite Agriculture Monitor uses geospatial
-            and satellite-observation technologies to help
-            visualize and analyze agricultural fields.
-            It is designed to give producers, agronomists,
-            conservation professionals, and anyone working
-            in agriculture a practical way to explore field
-            information and support better-informed decisions.
-            This project is open source and is being developed
-            to make agricultural technology more accessible
-            to producers and the agricultural community.
-        </p>
-
-    </div>
+    </section>
 
 </main>
 
