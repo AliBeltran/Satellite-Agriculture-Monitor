@@ -3,14 +3,24 @@
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
- Open-source agricultural earth observation interface
- Designed by Ali Beltran
+===========================================================
+ Features:
+ - 3D Earth landing page
+ - Interactive satellite world map
+ - GeoJSON support
+ - GPX support
+ - GPX tracks/routes/waypoints
+ - Local browser file processing
+ - Field geometry analysis
+ - Satellite imagery
+ - Agricultural interface
+ - Tractor animation
 ===========================================================
 */
 
 
 /* =========================================================
-   STATE
+   APPLICATION STATE
 ========================================================= */
 
 const state = {
@@ -37,6 +47,8 @@ const state = {
 
     fieldLayer: null,
 
+    fieldData: null,
+
     fieldLoaded: false,
 
     mouseX: 0,
@@ -57,127 +69,68 @@ const state = {
 ========================================================= */
 
 const missionScreen =
-    document.getElementById(
-        "missionScreen"
-    );
-
+    document.getElementById("missionScreen");
 
 const agricultureApp =
-    document.getElementById(
-        "agricultureApp"
-    );
-
+    document.getElementById("agricultureApp");
 
 const threeContainer =
-    document.getElementById(
-        "threeContainer"
-    );
-
+    document.getElementById("threeContainer");
 
 const targetCoordinates =
-    document.getElementById(
-        "targetCoordinates"
-    );
-
+    document.getElementById("targetCoordinates");
 
 const uploadBox =
-    document.getElementById(
-        "uploadBox"
-    );
-
+    document.getElementById("uploadBox");
 
 const uploadPanel =
-    document.getElementById(
-        "uploadPanel"
-    );
-
+    document.getElementById("uploadPanel");
 
 const geojsonInput =
-    document.getElementById(
-        "geojsonInput"
-    );
-
+    document.getElementById("geojsonInput");
 
 const fieldWorkspace =
-    document.getElementById(
-        "fieldWorkspace"
-    );
-
+    document.getElementById("fieldWorkspace");
 
 const fieldName =
-    document.getElementById(
-        "fieldName"
-    );
-
+    document.getElementById("fieldName");
 
 const fieldMeta =
-    document.getElementById(
-        "fieldMeta"
-    );
-
+    document.getElementById("fieldMeta");
 
 const areaValue =
-    document.getElementById(
-        "areaValue"
-    );
-
+    document.getElementById("areaValue");
 
 const perimeterValue =
-    document.getElementById(
-        "perimeterValue"
-    );
-
+    document.getElementById("perimeterValue");
 
 const centerValue =
-    document.getElementById(
-        "centerValue"
-    );
-
+    document.getElementById("centerValue");
 
 const ndviValue =
-    document.getElementById(
-        "ndviValue"
-    );
-
+    document.getElementById("ndviValue");
 
 const stressValue =
-    document.getElementById(
-        "stressValue"
-    );
-
+    document.getElementById("stressValue");
 
 const scanButton =
-    document.getElementById(
-        "scanButton"
-    );
-
+    document.getElementById("scanButton");
 
 const infoBubble =
-    document.getElementById(
-        "infoBubble"
-    );
-
+    document.getElementById("infoBubble");
 
 const closeBubble =
-    document.getElementById(
-        "closeBubble"
-    );
-
+    document.getElementById("closeBubble");
 
 const resetMap =
-    document.getElementById(
-        "resetMap"
-    );
-
+    document.getElementById("resetMap");
 
 const analysisMapPreview =
-    document.getElementById(
-        "analysisMapPreview"
-    );
+    document.getElementById("analysisMapPreview");
 
 
 /* =========================================================
-   INITIALIZE
+   START APPLICATION
 ========================================================= */
 
 window.addEventListener(
@@ -188,7 +141,7 @@ window.addEventListener(
 
         initializeInteractions();
 
-        initializeGeoJSON();
+        initializeSpatialFileSupport();
 
         initializeInfoBubble();
 
@@ -207,8 +160,7 @@ window.addEventListener(
 function initializeEarth() {
 
     if (
-        typeof THREE ===
-        "undefined"
+        typeof THREE === "undefined"
     ) {
 
         console.error(
@@ -220,22 +172,16 @@ function initializeEarth() {
     }
 
 
-    if (
-        !threeContainer
-    ) {
+    if (!threeContainer) {
 
         return;
 
     }
 
 
-    /* Scene */
-
     state.scene =
         new THREE.Scene();
 
-
-    /* Camera */
 
     state.camera =
         new THREE.PerspectiveCamera(
@@ -258,8 +204,6 @@ function initializeEarth() {
         7
     );
 
-
-    /* Renderer */
 
     state.renderer =
         new THREE.WebGLRenderer({
@@ -293,6 +237,17 @@ function initializeEarth() {
     );
 
 
+    if (
+        "outputColorSpace" in
+        state.renderer
+    ) {
+
+        state.renderer.outputColorSpace =
+            THREE.SRGBColorSpace;
+
+    }
+
+
     state.renderer.toneMapping =
         THREE.ACESFilmicToneMapping;
 
@@ -319,7 +274,6 @@ function initializeEarth() {
     createAtmosphere();
 
     createClouds();
-
 
     animateEarth();
 
@@ -385,7 +339,7 @@ function createLighting() {
 
 
 /* =========================================================
-   STARS
+   STAR FIELD
 ========================================================= */
 
 function createStars() {
@@ -521,8 +475,15 @@ function createEarth() {
 
             loadedTexture => {
 
-                loadedTexture.colorSpace =
-                    THREE.SRGBColorSpace;
+                if (
+                    "colorSpace" in
+                    loadedTexture
+                ) {
+
+                    loadedTexture.colorSpace =
+                        THREE.SRGBColorSpace;
+
+                }
 
             }
 
@@ -714,8 +675,6 @@ function animateEarth() {
         state.clock.getElapsedTime();
 
 
-    /* Smooth pointer movement */
-
     state.smoothMouseX +=
 
         (
@@ -734,11 +693,7 @@ function animateEarth() {
         0.025;
 
 
-    /* Earth */
-
-    if (
-        state.earth
-    ) {
+    if (state.earth) {
 
         state.earth.rotation.y +=
             0.0012;
@@ -756,11 +711,7 @@ function animateEarth() {
     }
 
 
-    /* Clouds */
-
-    if (
-        state.clouds
-    ) {
+    if (state.clouds) {
 
         state.clouds.rotation.y +=
             0.0015;
@@ -768,11 +719,7 @@ function animateEarth() {
     }
 
 
-    /* Atmosphere */
-
-    if (
-        state.atmosphere
-    ) {
+    if (state.atmosphere) {
 
         const pulse =
 
@@ -793,11 +740,7 @@ function animateEarth() {
     }
 
 
-    /* Stars */
-
-    if (
-        state.stars
-    ) {
+    if (state.stars) {
 
         state.stars.rotation.y +=
             0.00002;
@@ -830,9 +773,7 @@ function animateEarth() {
 
 function updateCoordinates() {
 
-    if (
-        !targetCoordinates
-    ) {
+    if (!targetCoordinates) {
 
         return;
 
@@ -871,8 +812,6 @@ function updateCoordinates() {
 
 function initializeInteractions() {
 
-    /* Pointer controls Earth */
-
     window.addEventListener(
 
         "pointermove",
@@ -901,15 +840,11 @@ function initializeInteractions() {
     );
 
 
-    /* Resize */
-
     window.addEventListener(
         "resize",
         resizeThree
     );
 
-
-    /* Scroll to page 2 */
 
     window.addEventListener(
 
@@ -942,8 +877,6 @@ function initializeInteractions() {
 
     );
 
-
-    /* Keyboard */
 
     window.addEventListener(
 
@@ -1021,6 +954,16 @@ function resizeThree() {
 
     );
 
+
+    if (state.map) {
+
+        setTimeout(
+            () => state.map.invalidateSize(),
+            100
+        );
+
+    }
+
 }
 
 
@@ -1086,25 +1029,16 @@ function launchTransition() {
 
 
 /* =========================================================
-   WORLD MAP
+   WORLD SATELLITE MAP
 ========================================================= */
 
 function initializeWorldMap() {
 
-    if (
-        state.map
-    ) {
+    if (state.map) {
 
         setTimeout(
-
-            () => {
-
-                state.map.invalidateSize();
-
-            },
-
+            () => state.map.invalidateSize(),
             300
-
         );
 
         return;
@@ -1113,8 +1047,7 @@ function initializeWorldMap() {
 
 
     if (
-        typeof L ===
-        "undefined"
+        typeof L === "undefined"
     ) {
 
         console.error(
@@ -1132,9 +1065,7 @@ function initializeWorldMap() {
         );
 
 
-    if (
-        !worldMap
-    ) {
+    if (!worldMap) {
 
         return;
 
@@ -1176,8 +1107,6 @@ function initializeWorldMap() {
     );
 
 
-    /* Satellite imagery */
-
     L.tileLayer(
 
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -1212,14 +1141,12 @@ function initializeWorldMap() {
 
 
 /* =========================================================
-   GEOJSON
+   GEOJSON + GPX SUPPORT
 ========================================================= */
 
-function initializeGeoJSON() {
+function initializeSpatialFileSupport() {
 
-    if (
-        !geojsonInput
-    ) {
+    if (!geojsonInput) {
 
         return;
 
@@ -1235,12 +1162,9 @@ function initializeGeoJSON() {
             const file =
                 event.target.files[0];
 
+            if (file) {
 
-            if (
-                file
-            ) {
-
-                readGeoJSON(
+                readSpatialFile(
                     file
                 );
 
@@ -1250,8 +1174,6 @@ function initializeGeoJSON() {
 
     );
 
-
-    /* Drag and drop */
 
     uploadBox.addEventListener(
 
@@ -1293,7 +1215,6 @@ function initializeGeoJSON() {
 
             event.preventDefault();
 
-
             uploadBox.classList.remove(
                 "dragging"
             );
@@ -1303,11 +1224,9 @@ function initializeGeoJSON() {
                 event.dataTransfer.files[0];
 
 
-            if (
-                file
-            ) {
+            if (file) {
 
-                readGeoJSON(
+                readSpatialFile(
                     file
                 );
 
@@ -1321,39 +1240,93 @@ function initializeGeoJSON() {
 
 
 /* =========================================================
-   READ GEOJSON
+   READ SPATIAL FILE
 ========================================================= */
 
-function readGeoJSON(
+function readSpatialFile(
     file
 ) {
+
+    const filename =
+        file.name.toLowerCase();
+
 
     const reader =
         new FileReader();
 
 
     reader.onload =
-
         event => {
 
             try {
 
-                const data =
-                    JSON.parse(
-                        event.target.result
+                const text =
+                    event.target.result;
+
+
+                /*
+                GPX
+                */
+
+                if (
+                    filename.endsWith(".gpx")
+                ) {
+
+                    const geojson =
+                        convertGPXtoGeoJSON(
+                            text
+                        );
+
+
+                    loadField(
+                        geojson,
+                        file.name
                     );
 
 
-                loadField(
-                    data,
-                    file.name
+                    return;
+
+                }
+
+
+                /*
+                GEOJSON
+                */
+
+                if (
+
+                    filename.endsWith(".geojson")
+
+                    ||
+
+                    filename.endsWith(".json")
+
+                ) {
+
+                    const data =
+                        JSON.parse(
+                            text
+                        );
+
+
+                    loadField(
+                        data,
+                        file.name
+                    );
+
+
+                    return;
+
+                }
+
+
+                throw new Error(
+                    "Unsupported file type."
                 );
 
             }
 
-            catch (
-                error
-            ) {
+            catch (error) {
 
                 console.error(
                     error
@@ -1361,7 +1334,7 @@ function readGeoJSON(
 
 
                 alert(
-                    "Unable to read this GeoJSON file."
+                    "Unable to read this file. Please use a valid GeoJSON or GPX file."
                 );
 
             }
@@ -1377,7 +1350,378 @@ function readGeoJSON(
 
 
 /* =========================================================
-   LOAD FIELD
+   GPX → GEOJSON
+========================================================= */
+
+function convertGPXtoGeoJSON(
+    gpxText
+) {
+
+    const parser =
+        new DOMParser();
+
+
+    const xml =
+        parser.parseFromString(
+            gpxText,
+            "application/xml"
+        );
+
+
+    const parserError =
+        xml.querySelector(
+            "parsererror"
+        );
+
+
+    if (parserError) {
+
+        throw new Error(
+            "Invalid GPX XML."
+        );
+
+    }
+
+
+    const features = [];
+
+
+    /*
+    =========================================================
+    TRACKS
+    =========================================================
+    */
+
+    const tracks =
+        Array.from(
+            xml.querySelectorAll(
+                "trk"
+            )
+        );
+
+
+    tracks.forEach(
+        track => {
+
+            const trackNameElement =
+                track.querySelector(
+                    "name"
+                );
+
+
+            const trackName =
+
+                trackNameElement
+                    ? trackNameElement.textContent.trim()
+                    : "GPX Track";
+
+
+            const segments =
+                Array.from(
+                    track.querySelectorAll(
+                        "trkseg"
+                    )
+                );
+
+
+            segments.forEach(
+                segment => {
+
+                    const points =
+                        Array.from(
+                            segment.querySelectorAll(
+                                "trkpt"
+                            )
+                        );
+
+
+                    const coordinates =
+                        points.map(
+                            point => {
+
+                                const lon =
+                                    parseFloat(
+                                        point.getAttribute(
+                                            "lon"
+                                        )
+                                    );
+
+
+                                const lat =
+                                    parseFloat(
+                                        point.getAttribute(
+                                            "lat"
+                                        )
+                                    );
+
+
+                                return [
+                                    lon,
+                                    lat
+                                ];
+
+                            }
+                        );
+
+
+                    if (
+                        coordinates.length >= 2
+                    ) {
+
+                        features.push({
+
+                            type:
+                                "Feature",
+
+                            properties: {
+
+                                name:
+                                    trackName,
+
+                                source:
+                                    "GPX",
+
+                                geometryType:
+                                    "Track"
+
+                            },
+
+                            geometry: {
+
+                                type:
+                                    "LineString",
+
+                                coordinates:
+                                    coordinates
+
+                            }
+
+                        });
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+    =========================================================
+    ROUTES
+    =========================================================
+    */
+
+    const routes =
+        Array.from(
+            xml.querySelectorAll(
+                "rte"
+            )
+        );
+
+
+    routes.forEach(
+        route => {
+
+            const routeNameElement =
+                route.querySelector(
+                    "name"
+                );
+
+
+            const routeName =
+
+                routeNameElement
+                    ? routeNameElement.textContent.trim()
+                    : "GPX Route";
+
+
+            const points =
+                Array.from(
+                    route.querySelectorAll(
+                        "rtept"
+                    )
+                );
+
+
+            const coordinates =
+                points.map(
+                    point => {
+
+                        const lon =
+                            parseFloat(
+                                point.getAttribute(
+                                    "lon"
+                                )
+                            );
+
+
+                        const lat =
+                            parseFloat(
+                                point.getAttribute(
+                                    "lat"
+                                )
+                            );
+
+
+                        return [
+                            lon,
+                            lat
+                        ];
+
+                    }
+                );
+
+
+            if (
+                coordinates.length >= 2
+            ) {
+
+                features.push({
+
+                    type:
+                        "Feature",
+
+                    properties: {
+
+                        name:
+                            routeName,
+
+                        source:
+                            "GPX",
+
+                        geometryType:
+                            "Route"
+
+                    },
+
+                    geometry: {
+
+                        type:
+                            "LineString",
+
+                        coordinates:
+                            coordinates
+
+                    }
+
+                });
+
+            }
+
+        }
+    );
+
+
+    /*
+    =========================================================
+    WAYPOINTS
+    =========================================================
+    */
+
+    const waypoints =
+        Array.from(
+            xml.querySelectorAll(
+                "wpt"
+            )
+        );
+
+
+    waypoints.forEach(
+        waypoint => {
+
+            const lat =
+                parseFloat(
+                    waypoint.getAttribute(
+                        "lat"
+                    )
+                );
+
+
+            const lon =
+                parseFloat(
+                    waypoint.getAttribute(
+                        "lon"
+                    )
+                );
+
+
+            const nameElement =
+                waypoint.querySelector(
+                    "name"
+                );
+
+
+            const name =
+
+                nameElement
+                    ? nameElement.textContent.trim()
+                    : "GPX Waypoint";
+
+
+            features.push({
+
+                type:
+                    "Feature",
+
+                properties: {
+
+                    name:
+                        name,
+
+                    source:
+                        "GPX",
+
+                    geometryType:
+                        "Waypoint"
+
+                },
+
+                geometry: {
+
+                    type:
+                        "Point",
+
+                    coordinates: [
+                        lon,
+                        lat
+                    ]
+
+                }
+
+            });
+
+        }
+    );
+
+
+    if (
+        features.length === 0
+    ) {
+
+        throw new Error(
+            "No GPX tracks, routes, or waypoints were found."
+        );
+
+    }
+
+
+    return {
+
+        type:
+            "FeatureCollection",
+
+        features:
+            features
+
+    };
+
+}
+
+
+/* =========================================================
+   LOAD FIELD / TRACK
 ========================================================= */
 
 function loadField(
@@ -1388,18 +1732,14 @@ function loadField(
     initializeWorldMap();
 
 
-    if (
-        !state.map
-    ) {
+    if (!state.map) {
 
         return;
 
     }
 
 
-    if (
-        state.fieldLayer
-    ) {
+    if (state.fieldLayer) {
 
         state.map.removeLayer(
             state.fieldLayer
@@ -1409,6 +1749,23 @@ function loadField(
 
 
     try {
+
+        state.fieldData =
+            data;
+
+
+        const isGPX =
+
+            filename
+                .toLowerCase()
+                .endsWith(".gpx");
+
+
+        /*
+        =====================================================
+        MAP STYLE
+        =====================================================
+        */
 
         state.fieldLayer =
 
@@ -1421,10 +1778,14 @@ function loadField(
                     style: {
 
                         color:
-                            "#eef6e8",
+                            isGPX
+                                ? "#d7b86a"
+                                : "#eef6e8",
 
                         weight:
-                            3,
+                            isGPX
+                                ? 4
+                                : 3,
 
                         opacity:
                             1,
@@ -1433,9 +1794,45 @@ function loadField(
                             "#71995e",
 
                         fillOpacity:
-                            0.30
+                            isGPX
+                                ? 0
+                                : 0.30
 
-                    }
+                    },
+
+
+                    pointToLayer:
+                        function (
+                            feature,
+                            latlng
+                        ) {
+
+                            return L.circleMarker(
+
+                                latlng,
+
+                                {
+
+                                    radius:
+                                        6,
+
+                                    fillColor:
+                                        "#d7b86a",
+
+                                    color:
+                                        "#ffffff",
+
+                                    weight:
+                                        1,
+
+                                    fillOpacity:
+                                        0.9
+
+                                }
+
+                            );
+
+                        }
 
                 }
 
@@ -1456,11 +1853,17 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid field boundary."
+                "Invalid spatial data."
             );
 
         }
 
+
+        /*
+        =====================================================
+        MAP CAMERA
+        =====================================================
+        */
 
         state.map.flyToBounds(
 
@@ -1486,31 +1889,27 @@ function loadField(
             true;
 
 
-        /* Geometry */
-
-        const area =
-            calculateArea(
-                data
-            );
-
-
-        const perimeter =
-            calculatePerimeter(
-                data
-            );
-
+        /*
+        =====================================================
+        FIELD CENTER
+        =====================================================
+        */
 
         const center =
             bounds.getCenter();
 
 
-        /* Name */
+        /*
+        =====================================================
+        FILE NAME
+        =====================================================
+        */
 
         let name =
 
             filename
                 .replace(
-                    /\.(geojson|json)$/i,
+                    /\.(geojson|json|gpx)$/i,
                     ""
                 )
                 .replace(
@@ -1520,12 +1919,12 @@ function loadField(
                 .trim();
 
 
-        if (
-            !name
-        ) {
+        if (!name) {
 
             name =
-                "ACTIVE FIELD";
+                isGPX
+                    ? "GPX TRACK"
+                    : "ACTIVE FIELD";
 
         }
 
@@ -1538,26 +1937,8 @@ function loadField(
             );
 
 
-        /* Interface */
-
         fieldName.textContent =
             name;
-
-
-        fieldMeta.textContent =
-
-            `${area.toFixed(2)} ACRES · ` +
-            `${perimeter.toFixed(2)} MI PERIMETER`;
-
-
-        areaValue.textContent =
-
-            `${area.toFixed(2)} AC`;
-
-
-        perimeterValue.textContent =
-
-            `${perimeter.toFixed(2)} MI`;
 
 
         centerValue.textContent =
@@ -1566,13 +1947,96 @@ function loadField(
             `${center.lng.toFixed(4)}°`;
 
 
-        ndviValue.textContent =
-            "—";
+        /*
+        =====================================================
+        GPX
+        =====================================================
+        */
+
+        if (isGPX) {
+
+            const trackDistance =
+                calculateGeoJSONLength(
+                    data
+                );
 
 
-        stressValue.textContent =
-            "—";
+            areaValue.textContent =
+                "TRACK";
 
+
+            perimeterValue.textContent =
+
+                `${trackDistance.toFixed(2)} MI`;
+
+
+            fieldMeta.textContent =
+
+                `GPX TRACK · ` +
+                `${trackDistance.toFixed(2)} MI`;
+
+
+            ndviValue.textContent =
+                "—";
+
+
+            stressValue.textContent =
+                "—";
+
+        }
+
+
+        /*
+        =====================================================
+        GEOJSON
+        =====================================================
+        */
+
+        else {
+
+            const area =
+                calculateArea(
+                    data
+                );
+
+
+            const perimeter =
+                calculatePerimeter(
+                    data
+                );
+
+
+            areaValue.textContent =
+
+                `${area.toFixed(2)} AC`;
+
+
+            perimeterValue.textContent =
+
+                `${perimeter.toFixed(2)} MI`;
+
+
+            fieldMeta.textContent =
+
+                `${area.toFixed(2)} ACRES · ` +
+                `${perimeter.toFixed(2)} MI PERIMETER`;
+
+
+            ndviValue.textContent =
+                "—";
+
+
+            stressValue.textContent =
+                "—";
+
+        }
+
+
+        /*
+        =====================================================
+        CHANGE INTERFACE
+        =====================================================
+        */
 
         uploadPanel.style.display =
             "none";
@@ -1583,16 +2047,25 @@ function loadField(
         );
 
 
+        /*
+        =====================================================
+        ANALYSIS MAP
+        =====================================================
+        */
+
         initializeAnalysisMap(
+
             data,
-            bounds
+
+            bounds,
+
+            isGPX
+
         );
 
     }
 
-    catch (
-        error
-    ) {
+    catch (error) {
 
         console.error(
             error
@@ -1600,7 +2073,7 @@ function loadField(
 
 
         alert(
-            "This GeoJSON does not contain a valid field boundary."
+            "This file does not contain valid spatial data."
         );
 
     }
@@ -1614,21 +2087,18 @@ function loadField(
 
 function initializeAnalysisMap(
     data,
-    bounds
+    bounds,
+    isGPX = false
 ) {
 
-    if (
-        !analysisMapPreview
-    ) {
+    if (!analysisMapPreview) {
 
         return;
 
     }
 
 
-    if (
-        state.analysisMap
-    ) {
+    if (state.analysisMap) {
 
         state.analysisMap.remove();
 
@@ -1678,18 +2148,58 @@ function initializeAnalysisMap(
             style: {
 
                 color:
-                    "#f0f6eb",
+                    isGPX
+                        ? "#d7b86a"
+                        : "#f0f6eb",
 
                 weight:
-                    3,
+                    isGPX
+                        ? 4
+                        : 3,
 
                 fillColor:
                     "#769b62",
 
                 fillOpacity:
-                    0.25
+                    isGPX
+                        ? 0
+                        : 0.25
 
-            }
+            },
+
+
+            pointToLayer:
+                function (
+                    feature,
+                    latlng
+                ) {
+
+                    return L.circleMarker(
+
+                        latlng,
+
+                        {
+
+                            radius:
+                                5,
+
+                            fillColor:
+                                "#d7b86a",
+
+                            color:
+                                "#ffffff",
+
+                            weight:
+                                1,
+
+                            fillOpacity:
+                                0.9
+
+                        }
+
+                    );
+
+                }
 
         }
 
@@ -1728,7 +2238,7 @@ function initializeAnalysisMap(
 
 
 /* =========================================================
-   AREA CALCULATION
+   GEOJSON AREA
 ========================================================= */
 
 function calculateArea(
@@ -1828,9 +2338,7 @@ function calculateArea(
         geometry
     ) {
 
-        if (
-            !geometry
-        ) {
+        if (!geometry) {
 
             return;
 
@@ -1925,7 +2433,7 @@ function calculateArea(
 
 
 /* =========================================================
-   PERIMETER
+   GEOJSON PERIMETER
 ========================================================= */
 
 function calculatePerimeter(
@@ -2046,9 +2554,7 @@ function calculatePerimeter(
         geometry
     ) {
 
-        if (
-            !geometry
-        ) {
+        if (!geometry) {
 
             return;
 
@@ -2139,14 +2645,216 @@ function calculatePerimeter(
 
 
 /* =========================================================
+   GPX / LINE DISTANCE
+========================================================= */
+
+function calculateGeoJSONLength(
+    geojson
+) {
+
+    let totalMeters =
+        0;
+
+
+    function distance(
+        a,
+        b
+    ) {
+
+        const R =
+            6371000;
+
+
+        const lat1 =
+            a[1] *
+            Math.PI /
+            180;
+
+
+        const lat2 =
+            b[1] *
+            Math.PI /
+            180;
+
+
+        const dLat =
+
+            (
+                b[1] -
+                a[1]
+            ) *
+            Math.PI /
+            180;
+
+
+        const dLon =
+
+            (
+                b[0] -
+                a[0]
+            ) *
+            Math.PI /
+            180;
+
+
+        const value =
+
+            Math.sin(
+                dLat / 2
+            ) ** 2 +
+
+            Math.cos(lat1) *
+            Math.cos(lat2) *
+
+            Math.sin(
+                dLon / 2
+            ) ** 2;
+
+
+        return (
+
+            2 *
+            R *
+            Math.atan2(
+
+                Math.sqrt(value),
+
+                Math.sqrt(
+                    1 - value
+                )
+
+            )
+
+        );
+
+    }
+
+
+    function processLine(
+        coordinates
+    ) {
+
+        if (
+            !coordinates ||
+            coordinates.length < 2
+        ) {
+
+            return;
+
+        }
+
+
+        for (
+            let i = 0;
+            i < coordinates.length - 1;
+            i++
+        ) {
+
+            totalMeters +=
+
+                distance(
+                    coordinates[i],
+                    coordinates[i + 1]
+                );
+
+        }
+
+    }
+
+
+    function processGeometry(
+        geometry
+    ) {
+
+        if (!geometry) {
+
+            return;
+
+        }
+
+
+        if (
+            geometry.type ===
+            "LineString"
+        ) {
+
+            processLine(
+                geometry.coordinates
+            );
+
+        }
+
+
+        if (
+            geometry.type ===
+            "MultiLineString"
+        ) {
+
+            geometry.coordinates.forEach(
+                processLine
+            );
+
+        }
+
+    }
+
+
+    if (
+        geojson.type ===
+        "Feature"
+    ) {
+
+        processGeometry(
+            geojson.geometry
+        );
+
+    }
+
+    else if (
+        geojson.type ===
+        "FeatureCollection"
+    ) {
+
+        geojson.features.forEach(
+
+            feature => {
+
+                processGeometry(
+                    feature.geometry
+                );
+
+            }
+
+        );
+
+    }
+
+    else {
+
+        processGeometry(
+            geojson
+        );
+
+    }
+
+
+    return (
+
+        totalMeters /
+        1609.344
+
+    );
+
+}
+
+
+/* =========================================================
    FIELD SCAN
 ========================================================= */
 
 function initializeScanButton() {
 
-    if (
-        !scanButton
-    ) {
+    if (!scanButton) {
 
         return;
 
@@ -2213,9 +2921,7 @@ function initializeScanButton() {
 
 function initializeResetButton() {
 
-    if (
-        !resetMap
-    ) {
+    if (!resetMap) {
 
         return;
 
@@ -2239,11 +2945,12 @@ function initializeResetButton() {
 
                 );
 
+                return;
+
             }
 
-            else if (
-                state.map
-            ) {
+
+            if (state.map) {
 
                 state.map.flyTo(
 
@@ -2252,8 +2959,10 @@ function initializeResetButton() {
                     2,
 
                     {
+
                         duration:
                             1.2
+
                     }
 
                 );
@@ -2268,44 +2977,46 @@ function initializeResetButton() {
 
 
 /* =========================================================
-   INFO BUBBLE
+   INFORMATION BUBBLE
 ========================================================= */
 
 function initializeInfoBubble() {
 
-    if (
-        closeBubble
-    ) {
+    if (!closeBubble) {
 
-        closeBubble.addEventListener(
-
-            "click",
-
-            () => {
-
-                infoBubble.classList.remove(
-                    "visible"
-                );
-
-            }
-
-        );
+        return;
 
     }
+
+
+    closeBubble.addEventListener(
+
+        "click",
+
+        () => {
+
+            infoBubble.classList.remove(
+                "visible"
+            );
+
+        }
+
+    );
 
 }
 
 
 function showInfoBubble() {
 
-    if (
-        infoBubble
-    ) {
+    if (!infoBubble) {
 
-        infoBubble.classList.add(
-            "visible"
-        );
+        return;
 
     }
+
+
+    infoBubble.classList.add(
+        "visible"
+    );
 
 }
