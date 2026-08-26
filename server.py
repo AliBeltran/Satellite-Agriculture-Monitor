@@ -13,39 +13,30 @@ app = Flask(__name__, static_folder="web")
 CLIENT_ID = os.environ.get("SENTINEL_CLIENT_ID")
 CLIENT_SECRET = os.environ.get("SENTINEL_CLIENT_SECRET")
 
-TOKEN_URL = (
-    "https://services.sentinel-hub.com/oauth/token"
-)
+TOKEN_URL = "https://services.sentinel-hub.com/oauth/token"
 
-STATISTICS_URL = (
-    "https://services.sentinel-hub.com/api/v1/statistics"
-)
+STATISTICS_URL = "https://services.sentinel-hub.com/api/v1/statistics"
 
 
 # ============================================================
-# GET SENTINEL HUB ACCESS TOKEN
+# SENTINEL HUB AUTHENTICATION
 # ============================================================
 
 def get_access_token():
 
     if not CLIENT_ID or not CLIENT_SECRET:
-
         raise Exception(
-            "Sentinel Hub credentials are not configured."
+            "Sentinel Hub credentials are missing."
         )
 
     response = requests.post(
-
         TOKEN_URL,
-
         data={
             "grant_type": "client_credentials",
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET
         },
-
         timeout=30
-
     )
 
     response.raise_for_status()
@@ -54,25 +45,20 @@ def get_access_token():
 
 
 # ============================================================
-# EXTRACT FIELD GEOMETRY
+# EXTRACT GEOMETRY
 # ============================================================
 
 def extract_geometry(data):
 
     if not data:
         raise Exception(
-            "No spatial data was supplied."
+            "No geometry was supplied."
         )
-
-
-    # Single Feature
 
     if data.get("type") == "Feature":
 
         return data.get("geometry")
 
-
-    # FeatureCollection
 
     if data.get("type") == "FeatureCollection":
 
@@ -81,8 +67,7 @@ def extract_geometry(data):
             []
         )
 
-        # Prefer a polygon because NDVI
-        # needs an area of interest.
+        # Prefer an agricultural field polygon.
 
         for feature in features:
 
@@ -101,7 +86,7 @@ def extract_geometry(data):
                 return geometry
 
 
-        # Fall back to first geometry
+        # Otherwise use the first geometry.
 
         for feature in features:
 
@@ -110,11 +95,8 @@ def extract_geometry(data):
             )
 
             if geometry:
-
                 return geometry
 
-
-    # Raw geometry
 
     if data.get("type") in [
         "Polygon",
@@ -128,39 +110,34 @@ def extract_geometry(data):
 
 
     raise Exception(
-        "Unable to find a valid geometry."
+        "Could not find a valid GeoJSON geometry."
     )
 
 
 # ============================================================
-# CHECK THAT GEOMETRY CAN BE USED FOR NDVI
+# NDVI REQUIRES A POLYGON
 # ============================================================
 
-def validate_ndvi_geometry(
-    geometry
-):
+def validate_geometry(geometry):
 
-    geometry_type =
-        geometry.get("type")
+    if not geometry:
 
+        raise Exception(
+            "No geometry found."
+        )
 
-    if geometry_type not in [
+    if geometry.get("type") not in [
         "Polygon",
         "MultiPolygon"
     ]:
 
         raise Exception(
-
-            "NDVI analysis requires a polygon field boundary. "
-            "A GPX track can be displayed on the map, but "
-            "a track by itself does not define an area for "
-            "field NDVI statistics."
-
+            "Real NDVI analysis requires a Polygon or MultiPolygon field boundary."
         )
 
 
 # ============================================================
-# SENTINEL-2 NDVI EVALSCRIPT
+# NDVI EVALSCRIPT
 # ============================================================
 
 NDVI_EVALSCRIPT = """
@@ -190,11 +167,6 @@ function setup() {
                 id: "ndvi",
                 bands: 1,
                 sampleType: "FLOAT32"
-            },
-
-            {
-                id: "dataMask",
-                bands: 1
             }
 
         ]
@@ -207,38 +179,20 @@ function setup() {
 function evaluatePixel(sample) {
 
     /*
-    --------------------------------------------------------
-    CLOUD / INVALID PIXEL FILTER
-    --------------------------------------------------------
+    ----------------------------------------------------------
+    Remove invalid pixels and clouds.
 
-    SCL classes:
-
+    Sentinel-2 SCL:
     3  = cloud shadow
-    8  = cloud medium probability
-    9  = cloud high probability
+    8  = medium probability cloud
+    9  = high probability cloud
     10 = cirrus
-    11 = snow / ice
-
-    --------------------------------------------------------
+    11 = snow/ice
+    ----------------------------------------------------------
     */
 
-
     if (
-        sample.dataMask === 0
-    ) {
-
-        return {
-
-            ndvi: [0],
-
-            dataMask: [0]
-
-        };
-
-    }
-
-
-    if (
+        sample.dataMask === 0 ||
         sample.SCL === 3 ||
         sample.SCL === 8 ||
         sample.SCL === 9 ||
@@ -247,34 +201,25 @@ function evaluatePixel(sample) {
     ) {
 
         return {
-
-            ndvi: [0],
-
-            dataMask: [0]
-
+            ndvi: [NaN]
         };
 
     }
 
 
     /*
-    --------------------------------------------------------
-    NDVI
-
-    NDVI = (NIR - RED) / (NIR + RED)
-
+    ----------------------------------------------------------
     Sentinel-2:
 
-    B08 = NIR
-    B04 = RED
-    --------------------------------------------------------
+    B04 = Red
+    B08 = Near Infrared
+
+    NDVI = (NIR - Red) / (NIR + Red)
+    ----------------------------------------------------------
     */
 
-
     const denominator =
-
-        sample.B08 +
-        sample.B04;
+        sample.B08 + sample.B04;
 
 
     if (
@@ -282,18 +227,13 @@ function evaluatePixel(sample) {
     ) {
 
         return {
-
-            ndvi: [0],
-
-            dataMask: [0]
-
+            ndvi: [NaN]
         };
 
     }
 
 
     const ndvi =
-
         (
             sample.B08 -
             sample.B04
@@ -303,16 +243,93 @@ function evaluatePixel(sample) {
 
 
     return {
-
-        ndvi: [ndvi],
-
-        dataMask: [1]
-
+        ndvi: [ndvi]
     };
 
 }
 
 """
+
+
+# ============================================================
+# FIND STATISTICS IN RESPONSE
+# ============================================================
+
+def extract_statistics(interval):
+
+    outputs = interval.get(
+        "outputs",
+        {}
+    )
+
+    # Usually the output is named "ndvi".
+
+    ndvi_output = outputs.get(
+        "ndvi"
+    )
+
+    if not ndvi_output:
+
+        # Defensive fallback.
+
+        for value in outputs.values():
+
+            if isinstance(value, dict):
+
+                if "bands" in value:
+
+                    ndvi_output = value
+                    break
+
+
+    if not ndvi_output:
+
+        return None
+
+
+    bands = ndvi_output.get(
+        "bands",
+        {}
+    )
+
+
+    band = None
+
+
+    if "B0" in bands:
+
+        band = bands["B0"]
+
+    elif "B1" in bands:
+
+        band = bands["B1"]
+
+    else:
+
+        for value in bands.values():
+
+            if isinstance(value, dict):
+
+                band = value
+                break
+
+
+    if not band:
+
+        return None
+
+
+    statistics = band.get(
+        "stats"
+    )
+
+
+    if not statistics:
+
+        return None
+
+
+    return statistics
 
 
 # ============================================================
@@ -324,29 +341,22 @@ def calculate_ndvi():
 
     try:
 
-        payload =
-            request.get_json()
-
+        payload = request.get_json()
 
         if not payload:
 
             return jsonify({
-
                 "success": False,
-
-                "error":
-                    "No request data supplied."
-
+                "error": "No request body supplied."
             }), 400
 
 
-        geometry =
-            extract_geometry(
-                payload.get("geometry")
-            )
+        geometry = extract_geometry(
+            payload.get("geometry")
+        )
 
 
-        validate_ndvi_geometry(
+        validate_geometry(
             geometry
         )
 
@@ -355,62 +365,58 @@ def calculate_ndvi():
         # DATE RANGE
         # ----------------------------------------------------
 
-        end_date =
-            payload.get(
-                "endDate"
-            )
+        end_date = payload.get(
+            "endDate"
+        )
 
 
-        start_date =
-            payload.get(
-                "startDate"
-            )
+        start_date = payload.get(
+            "startDate"
+        )
 
 
         if not end_date:
 
-            end_date =
-                datetime.utcnow().date().isoformat()
+            end_date = (
+                datetime.utcnow()
+                .date()
+                .isoformat()
+            )
 
 
         if not start_date:
 
-            end =
-                datetime.fromisoformat(
-                    end_date
-                )
-
-
-            start =
-                end -
-                timedelta(days=30)
-
-
-            start_date =
-                start.isoformat()
-
-
-        # ----------------------------------------------------
-        # CLOUD COVER
-        # ----------------------------------------------------
-
-        max_cloud =
-            payload.get(
-                "maxCloudCoverage",
-                30
+            end = datetime.fromisoformat(
+                end_date
             )
 
+            start = (
+                end -
+                timedelta(days=30)
+            )
+
+            start_date = start.isoformat()
+
 
         # ----------------------------------------------------
-        # AUTHENTICATION
+        # CLOUD FILTER
         # ----------------------------------------------------
 
-        token =
-            get_access_token()
+        max_cloud = payload.get(
+            "maxCloudCoverage",
+            30
+        )
 
 
         # ----------------------------------------------------
-        # STATISTICAL API REQUEST
+        # AUTH
+        # ----------------------------------------------------
+
+        token = get_access_token()
+
+
+        # ----------------------------------------------------
+        # SENTINEL HUB REQUEST
         # ----------------------------------------------------
 
         request_body = {
@@ -419,8 +425,7 @@ def calculate_ndvi():
 
                 "bounds": {
 
-                    "geometry":
-                        geometry,
+                    "geometry": geometry,
 
                     "properties": {
 
@@ -457,12 +462,10 @@ def calculate_ndvi():
                 "timeRange": {
 
                     "from":
-                        start_date +
-                        "T00:00:00Z",
+                        f"{start_date}T00:00:00Z",
 
                     "to":
-                        end_date +
-                        "T23:59:59Z"
+                        f"{end_date}T23:59:59Z"
 
                 },
 
@@ -487,48 +490,35 @@ def calculate_ndvi():
 
             "calculations": {
 
-                "default": {
-
-                    "statistics": {
-
-                        "default": {}
-
-                    }
-
-                }
+                "default": {}
 
             }
 
         }
 
 
-        # ----------------------------------------------------
-        # CALL SENTINEL HUB
-        # ----------------------------------------------------
+        response = requests.post(
 
-        response =
-            requests.post(
+            STATISTICS_URL,
 
-                STATISTICS_URL,
+            headers={
 
-                headers={
+                "Authorization":
+                    f"Bearer {token}",
 
-                    "Authorization":
-                        f"Bearer {token}",
+                "Content-Type":
+                    "application/json",
 
-                    "Content-Type":
-                        "application/json",
+                "Accept":
+                    "application/json"
 
-                    "Accept":
-                        "application/json"
+            },
 
-                },
+            json=request_body,
 
-                json=request_body,
+            timeout=120
 
-                timeout=120
-
-            )
+        )
 
 
         if not response.ok:
@@ -538,7 +528,7 @@ def calculate_ndvi():
                 "success": False,
 
                 "error":
-                    "Sentinel Hub returned an error.",
+                    "Sentinel Hub request failed.",
 
                 "details":
                     response.text
@@ -546,49 +536,17 @@ def calculate_ndvi():
             }), response.status_code
 
 
-        result =
-            response.json()
+        result = response.json()
 
 
         # ----------------------------------------------------
-        # PARSE RESULTS
+        # PROCESS INTERVALS
         # ----------------------------------------------------
 
-        if (
-            result.get("status")
-            == "FAILED"
-        ):
-
-            return jsonify({
-
-                "success": False,
-
-                "error":
-                    "NDVI calculation failed.",
-
-                "details":
-                    result
-
-            }), 500
-
-
-        intervals =
-            result.get(
-                "data",
-                []
-            )
-
-
-        if not intervals:
-
-            return jsonify({
-
-                "success": False,
-
-                "error":
-                    "No Sentinel-2 observations were found for this field and date range."
-
-            }), 404
+        intervals = result.get(
+            "data",
+            []
+        )
 
 
         processed = []
@@ -596,57 +554,32 @@ def calculate_ndvi():
 
         for interval in intervals:
 
-            interval_outputs =
-                interval.get(
-                    "outputs",
-                    {}
-                )
-
-
-            ndvi_output =
-                interval_outputs.get(
-                    "ndvi",
-                    {}
-                )
-
-
-            bands =
-                ndvi_output.get(
-                    "bands",
-                    {}
-                )
-
-
-            band =
-                bands.get(
-                    "B0",
-                    {}
-                )
-
-
-            stats =
-                band.get(
-                    "stats",
-                    {}
-                )
+            stats = extract_statistics(
+                interval
+            )
 
 
             if not stats:
-
                 continue
+
+
+            interval_info = interval.get(
+                "interval",
+                {}
+            )
 
 
             processed.append({
 
                 "from":
-                    interval
-                    .get("interval", {})
-                    .get("from"),
+                    interval_info.get(
+                        "from"
+                    ),
 
                 "to":
-                    interval
-                    .get("interval", {})
-                    .get("to"),
+                    interval_info.get(
+                        "to"
+                    ),
 
                 "minimum":
                     stats.get(
@@ -688,68 +621,48 @@ def calculate_ndvi():
                 "success": False,
 
                 "error":
-                    "Sentinel-2 data was found, but no valid NDVI pixels were available. Try a longer date range or lower cloud filtering."
+                    "No valid Sentinel-2 NDVI observations were found. Try increasing the date range or cloud threshold."
 
             }), 404
 
 
         # ----------------------------------------------------
-        # MOST RECENT VALID INTERVAL
+        # MOST RECENT OBSERVATION
         # ----------------------------------------------------
 
-        latest =
-            processed[-1]
+        latest = processed[-1]
 
 
-        mean =
-            latest["mean"]
-
-
-        minimum =
-            latest["minimum"]
-
-
-        maximum =
-            latest["maximum"]
-
-
-        standard_deviation =
-            latest["standardDeviation"]
+        mean = latest["mean"]
 
 
         # ----------------------------------------------------
-        # CONDITION
+        # VEGETATION CONDITION
         # ----------------------------------------------------
 
         if mean is None:
 
-            condition =
-                "NO DATA"
+            condition = "NO DATA"
 
         elif mean >= 0.70:
 
-            condition =
-                "HIGH VEGETATION"
+            condition = "HIGH VEGETATION"
 
         elif mean >= 0.50:
 
-            condition =
-                "HEALTHY"
+            condition = "HEALTHY"
 
         elif mean >= 0.30:
 
-            condition =
-                "MODERATE"
+            condition = "MODERATE"
 
         elif mean >= 0.15:
 
-            condition =
-                "LOW"
+            condition = "LOW"
 
         else:
 
-            condition =
-                "VERY LOW"
+            condition = "VERY LOW"
 
 
         # ----------------------------------------------------
@@ -758,47 +671,44 @@ def calculate_ndvi():
 
         return jsonify({
 
-            "success":
-                True,
+            "success": True,
 
             "source":
                 "Sentinel-2 L2A",
 
             "provider":
-                "Copernicus Sentinel data via Sentinel Hub",
+                "Copernicus Sentinel data",
 
-            "analysis":
+            "analysis": {
 
-                {
+                "from":
+                    latest["from"],
 
-                    "from":
-                        latest["from"],
+                "to":
+                    latest["to"],
 
-                    "to":
-                        latest["to"],
+                "mean":
+                    latest["mean"],
 
-                    "mean":
-                        mean,
+                "minimum":
+                    latest["minimum"],
 
-                    "minimum":
-                        minimum,
+                "maximum":
+                    latest["maximum"],
 
-                    "maximum":
-                        maximum,
+                "standardDeviation":
+                    latest["standardDeviation"],
 
-                    "standardDeviation":
-                        standard_deviation,
+                "sampleCount":
+                    latest["sampleCount"],
 
-                    "sampleCount":
-                        latest["sampleCount"],
+                "noDataCount":
+                    latest["noDataCount"],
 
-                    "noDataCount":
-                        latest["noDataCount"],
+                "condition":
+                    condition
 
-                    "condition":
-                        condition
-
-                },
+            },
 
             "history":
                 processed
@@ -816,8 +726,7 @@ def calculate_ndvi():
 
         return jsonify({
 
-            "success":
-                False,
+            "success": False,
 
             "error":
                 str(error)
@@ -826,7 +735,7 @@ def calculate_ndvi():
 
 
 # ============================================================
-# SYSTEM STATUS
+# STATUS
 # ============================================================
 
 @app.get("/api/status")
@@ -842,9 +751,6 @@ def status():
 
         "source":
             "Sentinel-2 L2A",
-
-        "provider":
-            "Sentinel Hub / Copernicus",
 
         "credentialsConfigured":
             bool(
@@ -878,14 +784,14 @@ def static_files(path):
 
 
 # ============================================================
-# START SERVER
+# START
 # ============================================================
 
 if __name__ == "__main__":
 
-    print("")
+    print()
     print(
-        "=========================================="
+        "=============================================="
     )
     print(
         " SATELLITE AGRICULTURE MONITOR"
@@ -894,10 +800,9 @@ if __name__ == "__main__":
         " REAL SENTINEL-2 NDVI"
     )
     print(
-        "=========================================="
+        "=============================================="
     )
-    print("")
-
+    print()
 
     if CLIENT_ID and CLIENT_SECRET:
 
@@ -911,20 +816,14 @@ if __name__ == "__main__":
             "Sentinel Hub credentials: MISSING"
         )
 
-
-    print("")
+    print()
     print(
         "Open: http://localhost:8000"
     )
-    print("")
-
+    print()
 
     app.run(
-
         host="127.0.0.1",
-
         port=8000,
-
         debug=True
-
     )
