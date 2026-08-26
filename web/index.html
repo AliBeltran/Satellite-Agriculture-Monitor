@@ -20,9 +20,7 @@
     </title>
 
 
-    <!-- =====================================================
-         LEAFLET MAP CSS
-    ====================================================== -->
+    <!-- Leaflet -->
 
     <link
         rel="stylesheet"
@@ -30,18 +28,14 @@
     >
 
 
-    <!-- =====================================================
-         THREE.JS
-    ====================================================== -->
+    <!-- Three.js -->
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
     ></script>
 
 
-    <!-- =====================================================
-         MAIN CSS
-    ====================================================== -->
+    <!-- Site CSS -->
 
     <link
         rel="stylesheet"
@@ -54,25 +48,15 @@
 <body>
 
 
-<!-- =========================================================
-     PAGE 1
-     SINGLE FULL-SCREEN LANDING PAGE
-========================================================= -->
+<!-- ======================================================
+     LANDING PAGE
+======================================================= -->
 
 <section id="missionScreen">
 
 
-    <!-- =====================================================
-         3D EARTH
-    ====================================================== -->
-
     <div id="threeContainer"></div>
 
-
-
-    <!-- =====================================================
-         LANDING HEADER
-    ====================================================== -->
 
     <header class="mission-header">
 
@@ -82,13 +66,11 @@
                 ◈
             </div>
 
-
             <div>
 
                 <div class="brand-title">
                     SATELLITE AGRICULTURE MONITOR
                 </div>
-
 
                 <div class="brand-subtitle">
                     OPEN-SOURCE EARTH OBSERVATION
@@ -144,11 +126,6 @@
     </header>
 
 
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-
     <main class="hero-content">
 
         <div class="hero-kicker">
@@ -180,17 +157,10 @@
     </main>
 
 
-
-    <!-- =====================================================
-         TELEMETRY
-    ====================================================== -->
-
     <aside class="telemetry-panel">
 
         <div class="panel-title">
-
             EARTH OBSERVATION TELEMETRY
-
         </div>
 
 
@@ -261,11 +231,6 @@
     </aside>
 
 
-
-    <!-- =====================================================
-         COORDINATES
-    ====================================================== -->
-
     <div class="coordinates">
 
         <span id="targetCoordinates">
@@ -275,22 +240,15 @@
     </div>
 
 
-
-    <!-- =====================================================
-         SCROLL PROMPT
-    ====================================================== -->
-
     <div class="scroll-prompt">
 
         <div class="scroll-icon">
             ↓
         </div>
 
-
         <strong>
             SCROLL TO ENTER EARTH OBSERVATION
         </strong>
-
 
         <span>
             MOVE YOUR POINTER TO INTERACT
@@ -299,15 +257,11 @@
     </div>
 
 
-
-    <!-- =====================================================
-         TRACTOR
-    ====================================================== -->
+    <!-- TRACTOR -->
 
     <div class="tractor-track landing-tractor">
 
         <div class="tractor">
-
 
             <div class="tractor-cab">
 
@@ -326,18 +280,14 @@
             <div class="tractor-body"></div>
 
 
-            <div
-                class="tractor-wheel tractor-wheel-large"
-            >
+            <div class="tractor-wheel tractor-wheel-large">
 
                 <div class="wheel-hub"></div>
 
             </div>
 
 
-            <div
-                class="tractor-wheel tractor-wheel-small"
-            >
+            <div class="tractor-wheel tractor-wheel-small">
 
                 <div class="wheel-hub"></div>
 
@@ -351,11 +301,6 @@
     </div>
 
 
-
-    <!-- =====================================================
-         DESIGNER
-    ====================================================== -->
-
     <div class="designer">
 
         DESIGNED BY
@@ -366,43 +311,32 @@
 
     </div>
 
-
 </section>
 
 
 
-<!-- =========================================================
-     PAGE 2
-     SINGLE FULL-SCREEN AGRICULTURAL MAP
-========================================================= -->
+<!-- ======================================================
+     AGRICULTURE APPLICATION
+======================================================= -->
 
 <section id="agricultureApp">
 
 
-    <!-- =====================================================
-         FULL-SCREEN SATELLITE WORLD MAP
-    ====================================================== -->
+    <!-- WORLD MAP -->
 
     <div class="world-section">
-
 
         <div id="worldMap"></div>
 
 
         <div class="map-overlay-top">
 
-
             <div class="map-label">
-
                 GLOBAL EARTH OBSERVATION
-
             </div>
 
-
             <div class="map-coordinates">
-
                 PAN · ZOOM · EXPLORE
-
             </div>
 
         </div>
@@ -414,11 +348,9 @@
                 SATELLITE IMAGERY
             </span>
 
-
             <span>
                 WORLDWIDE COVERAGE
             </span>
-
 
             <span>
                 GEOJSON + GPX READY
@@ -430,15 +362,11 @@
 
 
 
-    <!-- =====================================================
-         APPLICATION HEADER
-    ====================================================== -->
+    <!-- APP HEADER -->
 
     <header class="app-header">
 
-
         <div class="brand">
-
 
             <div class="brand-mark">
                 ◈
@@ -461,9 +389,7 @@
         </div>
 
 
-
         <nav>
-
 
             <button
                 class="nav-button active"
@@ -499,7 +425,6 @@
         </nav>
 
 
-
         <div class="system-online">
 
             <span></span>
@@ -512,24 +437,15 @@
 
 
 
-    <!-- =====================================================
-         MAIN FIELD WORKSPACE
-    ====================================================== -->
+    <!-- WORKSPACE -->
 
     <main class="workspace">
 
 
-        <!-- =================================================
-             INTRO
-        ================================================== -->
-
         <div class="workspace-intro">
 
-
             <div class="section-kicker">
-
                 AGRICULTURAL INTELLIGENCE
-
             </div>
 
 
@@ -544,19 +460,15 @@
 
             <p>
 
-                Upload a field boundary or GPS
-                track to begin geospatial analysis.
+                Upload a field boundary to retrieve
+                real Sentinel-2 NDVI information.
 
             </p>
 
 
-
-            <!-- =============================================
-                 PRIVACY
-            ============================================== -->
+            <!-- PRIVACY -->
 
             <div class="privacy-note">
-
 
                 <span class="privacy-icon">
                     ◇
@@ -565,16 +477,15 @@
 
                 <div>
 
-
                     <strong>
-                        YOUR DATA STAYS LOCAL
+                        YOUR FILES STAY LOCAL
                     </strong>
 
 
                     <p>
 
                         Imported files are processed
-                        directly in your browser.
+                        locally by this application.
                         This site does not save your
                         imported files.
 
@@ -588,21 +499,17 @@
 
 
 
-        <!-- =================================================
-             FILE UPLOAD
-        ================================================== -->
+        <!-- UPLOAD -->
 
         <div
             id="uploadPanel"
             class="upload-panel"
         >
 
-
             <div
                 id="uploadBox"
                 class="upload-box"
             >
-
 
                 <div class="upload-symbol">
                     ◇
@@ -610,7 +517,7 @@
 
 
                 <h3>
-                    LOAD SPATIAL DATA
+                    LOAD FIELD DATA
                 </h3>
 
 
@@ -653,9 +560,7 @@
 
 
 
-        <!-- =================================================
-             FIELD RESULTS
-        ================================================== -->
+        <!-- FIELD WORKSPACE -->
 
         <div
             id="fieldWorkspace"
@@ -665,9 +570,7 @@
 
             <div class="field-header">
 
-
                 <div>
-
 
                     <div class="field-kicker">
                         ACTIVE DATASET
@@ -686,14 +589,13 @@
                 </div>
 
 
-
                 <button
                     id="scanButton"
                     class="scan-button"
                     type="button"
                 >
 
-                    ◈ RUN FIELD SCAN
+                    ◈ RUN NDVI ANALYSIS
 
                 </button>
 
@@ -701,9 +603,7 @@
 
 
 
-            <!-- =============================================
-                 ANALYSIS CARDS
-            ============================================== -->
+            <!-- ANALYSIS CARDS -->
 
             <div class="field-grid">
 
@@ -712,11 +612,8 @@
 
                 <div class="field-analysis-card">
 
-
                     <div class="card-title">
-
                         FIELD GEOMETRY
-
                     </div>
 
 
@@ -765,15 +662,12 @@
 
 
 
-                <!-- REMOTE SENSING -->
+                <!-- NDVI -->
 
                 <div class="field-analysis-card">
 
-
                     <div class="card-title">
-
-                        REMOTE SENSING
-
+                        VEGETATION INDEX
                     </div>
 
 
@@ -785,7 +679,7 @@
 
 
                         <strong id="ndviValue">
-                            —
+                            READY
                         </strong>
 
                     </div>
@@ -794,12 +688,12 @@
                     <div class="metric">
 
                         <span>
-                            STRESS RISK
+                            VEGETATION CONDITION
                         </span>
 
 
                         <strong id="stressValue">
-                            —
+                            NOT ANALYZED
                         </strong>
 
                     </div>
@@ -807,9 +701,9 @@
 
                     <p class="data-warning">
 
-                        Actual satellite-derived
-                        values require a connected
-                        remote-sensing data source.
+                        Real Sentinel-2 NDVI analysis
+                        will be performed for this
+                        field.
 
                     </p>
 
@@ -819,12 +713,9 @@
 
 
 
-            <!-- =============================================
-                 ANALYSIS MAP
-            ============================================== -->
+            <!-- MAP -->
 
             <div class="analysis-preview">
-
 
                 <div id="analysisMapPreview"></div>
 
@@ -847,15 +738,12 @@
 
 
 
-    <!-- =====================================================
-         ABOUT / CHAT BUBBLE
-    ====================================================== -->
+    <!-- INFORMATION BUBBLE -->
 
     <aside
         id="infoBubble"
         class="info-bubble"
     >
-
 
         <button
             id="closeBubble"
@@ -876,16 +764,14 @@
 
 
         <h3>
-
             Open agricultural intelligence.
-
         </h3>
 
 
         <p>
 
             Satellite Agriculture Monitor uses
-            geospatial and satellite-observation
+            geospatial and Earth-observation
             technologies to help visualize and
             analyze agricultural fields.
 
@@ -894,11 +780,10 @@
 
         <p>
 
-            It is designed to give producers,
-            agronomists, conservation professionals,
-            and anyone working in agriculture a
-            practical way to explore field information
-            and support better-informed decisions.
+            Producers, agronomists, conservation
+            professionals, and others in agriculture
+            can use the platform to explore field
+            information and vegetation conditions.
 
         </p>
 
@@ -907,8 +792,7 @@
 
             This project is open source and is being
             developed to make agricultural technology
-            more accessible to producers and the
-            agricultural community.
+            more accessible.
 
         </p>
 
@@ -916,15 +800,11 @@
 
 
 
-    <!-- =====================================================
-         SECOND PAGE TRACTOR
-    ====================================================== -->
+    <!-- TRACTOR -->
 
     <div class="tractor-track map-tractor">
 
-
         <div class="tractor">
-
 
             <div class="tractor-cab">
 
@@ -943,18 +823,14 @@
             <div class="tractor-body"></div>
 
 
-            <div
-                class="tractor-wheel tractor-wheel-large"
-            >
+            <div class="tractor-wheel tractor-wheel-large">
 
                 <div class="wheel-hub"></div>
 
             </div>
 
 
-            <div
-                class="tractor-wheel tractor-wheel-small"
-            >
+            <div class="tractor-wheel tractor-wheel-small">
 
                 <div class="wheel-hub"></div>
 
@@ -969,53 +845,40 @@
 
 
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
     <footer class="app-footer">
 
-
         <span>
-
             SATELLITE AGRICULTURE MONITOR
-
         </span>
 
 
         <span>
-
             OPEN SOURCE · LOCAL FILE PROCESSING
-
         </span>
 
 
         <span>
-
-            DESIGNED BY ALI BELTRAN
-
+            SENTINEL-2 NDVI
         </span>
 
     </footer>
-
 
 </section>
 
 
 
-<!-- =========================================================
-     LEAFLET JAVASCRIPT
-========================================================= -->
+<!-- ======================================================
+     LEAFLET
+======================================================= -->
 
 <script
     src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
 ></script>
 
 
-
-<!-- =========================================================
-     APPLICATION JAVASCRIPT
-========================================================= -->
+<!-- ======================================================
+     APPLICATION
+======================================================= -->
 
 <script src="script.js"></script>
 
