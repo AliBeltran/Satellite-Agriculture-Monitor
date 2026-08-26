@@ -3,32 +3,48 @@
 /*
 ===========================================================
  SATELLITE AGRICULTURE MONITOR
- 3D EARTH OBSERVATION INTERFACE
+ 3D EARTH OBSERVATION SYSTEM
  Designed by Ali Beltran
 ===========================================================
 */
 
+
 const state = {
+
     scene: null,
+
     camera: null,
+
     renderer: null,
+
     earth: null,
+
     atmosphere: null,
+
     clouds: null,
+
     stars: null,
+
     clock: null,
 
+    map: null,
+
+    analysisMap: null,
+
+    fieldLayer: null,
+
+    fieldLoaded: false,
+
     mouseX: 0,
+
     mouseY: 0,
+
     smoothMouseX: 0,
+
     smoothMouseY: 0,
 
-    transitioning: false,
+    transitioning: false
 
-    map: null,
-    analysisMap: null,
-    fieldLayer: null,
-    fieldLoaded: false
 };
 
 
@@ -37,64 +53,123 @@ const state = {
 ========================================================= */
 
 const missionScreen =
-    document.getElementById("missionScreen");
+    document.getElementById(
+        "missionScreen"
+    );
+
 
 const agricultureApp =
-    document.getElementById("agricultureApp");
+    document.getElementById(
+        "agricultureApp"
+    );
+
 
 const threeContainer =
-    document.getElementById("threeContainer");
+    document.getElementById(
+        "threeContainer"
+    );
+
 
 const targetCoordinates =
-    document.getElementById("targetCoordinates");
+    document.getElementById(
+        "targetCoordinates"
+    );
+
 
 const uploadBox =
-    document.getElementById("uploadBox");
+    document.getElementById(
+        "uploadBox"
+    );
+
 
 const uploadPanel =
-    document.getElementById("uploadPanel");
+    document.getElementById(
+        "uploadPanel"
+    );
+
 
 const geojsonInput =
-    document.getElementById("geojsonInput");
+    document.getElementById(
+        "geojsonInput"
+    );
+
 
 const fieldWorkspace =
-    document.getElementById("fieldWorkspace");
+    document.getElementById(
+        "fieldWorkspace"
+    );
+
 
 const fieldName =
-    document.getElementById("fieldName");
+    document.getElementById(
+        "fieldName"
+    );
+
 
 const fieldMeta =
-    document.getElementById("fieldMeta");
+    document.getElementById(
+        "fieldMeta"
+    );
+
 
 const areaValue =
-    document.getElementById("areaValue");
+    document.getElementById(
+        "areaValue"
+    );
+
 
 const perimeterValue =
-    document.getElementById("perimeterValue");
+    document.getElementById(
+        "perimeterValue"
+    );
+
 
 const centerValue =
-    document.getElementById("centerValue");
+    document.getElementById(
+        "centerValue"
+    );
+
 
 const ndviValue =
-    document.getElementById("ndviValue");
+    document.getElementById(
+        "ndviValue"
+    );
+
 
 const stressValue =
-    document.getElementById("stressValue");
+    document.getElementById(
+        "stressValue"
+    );
+
 
 const scanButton =
-    document.getElementById("scanButton");
+    document.getElementById(
+        "scanButton"
+    );
+
 
 const infoBubble =
-    document.getElementById("infoBubble");
+    document.getElementById(
+        "infoBubble"
+    );
+
 
 const closeBubble =
-    document.getElementById("closeBubble");
+    document.getElementById(
+        "closeBubble"
+    );
+
 
 const resetMap =
-    document.getElementById("resetMap");
+    document.getElementById(
+        "resetMap"
+    );
+
 
 const analysisMapPreview =
-    document.getElementById("analysisMapPreview");
+    document.getElementById(
+        "analysisMapPreview"
+    );
 
 
 /* =========================================================
@@ -114,17 +189,18 @@ window.addEventListener(
 
 
 /* =========================================================
-   3D EARTH
+   INITIALIZE THREE
 ========================================================= */
 
 function initializeEarth() {
 
     if (
-        typeof THREE === "undefined"
+        typeof THREE ===
+        "undefined"
     ) {
 
         console.error(
-            "Three.js is not loaded."
+            "Three.js did not load."
         );
 
         return;
@@ -132,10 +208,12 @@ function initializeEarth() {
     }
 
 
-    if (!threeContainer) {
+    if (
+        !threeContainer
+    ) {
 
         console.error(
-            "threeContainer was not found."
+            "#threeContainer is missing."
         );
 
         return;
@@ -147,37 +225,36 @@ function initializeEarth() {
         new THREE.Scene();
 
 
-    /*
-    CAMERA
-    */
-
     state.camera =
         new THREE.PerspectiveCamera(
+
             38,
+
             window.innerWidth /
             window.innerHeight,
+
             0.1,
+
             1000
+
         );
 
 
     state.camera.position.set(
         0,
-        0.25,
-        7.5
+        0.15,
+        7.2
     );
 
-
-    /*
-    RENDERER
-    */
 
     state.renderer =
         new THREE.WebGLRenderer({
 
-            antialias: true,
+            antialias:
+                true,
 
-            alpha: true,
+            alpha:
+                true,
 
             powerPreference:
                 "high-performance"
@@ -186,16 +263,20 @@ function initializeEarth() {
 
 
     state.renderer.setPixelRatio(
+
         Math.min(
             window.devicePixelRatio,
             2
         )
+
     );
 
 
     state.renderer.setSize(
+
         window.innerWidth,
         window.innerHeight
+
     );
 
 
@@ -220,17 +301,17 @@ function initializeEarth() {
         new THREE.Clock();
 
 
-    createEarthLighting();
+    createLighting();
 
-    createStarField();
+    createStars();
 
     createEarth();
 
     createAtmosphere();
 
-    createCloudLayer();
+    createClouds();
 
-    animateEarth();
+    animate();
 
 }
 
@@ -239,11 +320,7 @@ function initializeEarth() {
    LIGHTING
 ========================================================= */
 
-function createEarthLighting() {
-
-    /*
-    Sun
-    */
+function createLighting() {
 
     const sun =
         new THREE.DirectionalLight(
@@ -253,7 +330,7 @@ function createEarthLighting() {
 
 
     sun.position.set(
-        -6,
+        -5,
         3,
         8
     );
@@ -264,14 +341,10 @@ function createEarthLighting() {
     );
 
 
-    /*
-    Subtle blue ambient light
-    */
-
     const ambient =
         new THREE.AmbientLight(
-            0x5d7280,
-            0.55
+            0x5f7580,
+            0.65
         );
 
 
@@ -280,21 +353,17 @@ function createEarthLighting() {
     );
 
 
-    /*
-    Cool rim light
-    */
-
     const rim =
         new THREE.DirectionalLight(
-            0x7199b8,
-            1.3
+            0x6594b0,
+            1.2
         );
 
 
     rim.position.set(
         7,
-        -2,
-        -7
+        -3,
+        -6
     );
 
 
@@ -306,13 +375,13 @@ function createEarthLighting() {
 
 
 /* =========================================================
-   STARS
+   STAR FIELD
 ========================================================= */
 
-function createStarField() {
+function createStars() {
 
     const count =
-        4500;
+        4000;
 
 
     const geometry =
@@ -332,7 +401,7 @@ function createStarField() {
     ) {
 
         const radius =
-            35 +
+            30 +
             Math.random() * 100;
 
 
@@ -376,12 +445,14 @@ function createStarField() {
 
 
     geometry.setAttribute(
+
         "position",
 
         new THREE.BufferAttribute(
             positions,
             3
         )
+
     );
 
 
@@ -389,7 +460,7 @@ function createStarField() {
         new THREE.PointsMaterial({
 
             color:
-                0xd8dedf,
+                0xd9e0df,
 
             size:
                 0.045,
@@ -398,7 +469,7 @@ function createStarField() {
                 true,
 
             opacity:
-                0.65,
+                0.7,
 
             sizeAttenuation:
                 true
@@ -428,22 +499,22 @@ function createEarth() {
 
     const geometry =
         new THREE.SphereGeometry(
+
             2.65,
+
             128,
+
             128
+
         );
 
 
-    /*
-    Earth texture.
-    */
-
-    const textureLoader =
+    const loader =
         new THREE.TextureLoader();
 
 
-    const earthTexture =
-        textureLoader.load(
+    const texture =
+        loader.load(
 
             "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
 
@@ -451,6 +522,17 @@ function createEarth() {
 
                 texture.colorSpace =
                     THREE.SRGBColorSpace;
+
+            },
+
+            undefined,
+
+            error => {
+
+                console.warn(
+                    "Earth texture could not load.",
+                    error
+                );
 
             }
 
@@ -461,10 +543,10 @@ function createEarth() {
         new THREE.MeshStandardMaterial({
 
             map:
-                earthTexture,
+                texture,
 
             roughness:
-                0.82,
+                0.9,
 
             metalness:
                 0.02
@@ -474,15 +556,18 @@ function createEarth() {
 
     state.earth =
         new THREE.Mesh(
+
             geometry,
+
             material
+
         );
 
 
     state.earth.position.set(
-        1.2,
-        -0.1,
-        -0.4
+        1.1,
+        -0.05,
+        -0.25
     );
 
 
@@ -501,9 +586,13 @@ function createAtmosphere() {
 
     const geometry =
         new THREE.SphereGeometry(
-            2.73,
-            128,
-            128
+
+            2.76,
+
+            96,
+
+            96
+
         );
 
 
@@ -511,7 +600,7 @@ function createAtmosphere() {
         new THREE.MeshBasicMaterial({
 
             color:
-                0x4d9fc7,
+                0x62afd0,
 
             transparent:
                 true,
@@ -527,8 +616,11 @@ function createAtmosphere() {
 
     state.atmosphere =
         new THREE.Mesh(
+
             geometry,
+
             material
+
         );
 
 
@@ -542,23 +634,23 @@ function createAtmosphere() {
     );
 
 
-    /*
-    Outer atmospheric rim
-    */
-
-    const rimGeometry =
+    const outerGeometry =
         new THREE.SphereGeometry(
-            2.80,
+
+            2.84,
+
             96,
+
             96
+
         );
 
 
-    const rimMaterial =
+    const outerMaterial =
         new THREE.MeshBasicMaterial({
 
             color:
-                0x78c6e7,
+                0x78c9e7,
 
             transparent:
                 true,
@@ -572,36 +664,43 @@ function createAtmosphere() {
         });
 
 
-    const rim =
+    const outer =
         new THREE.Mesh(
-            rimGeometry,
-            rimMaterial
+
+            outerGeometry,
+
+            outerMaterial
+
         );
 
 
-    rim.position.copy(
+    outer.position.copy(
         state.earth.position
     );
 
 
     state.scene.add(
-        rim
+        outer
     );
 
 }
 
 
 /* =========================================================
-   CLOUDS
+   CLOUD LAYER
 ========================================================= */
 
-function createCloudLayer() {
+function createClouds() {
 
     const geometry =
         new THREE.SphereGeometry(
+
             2.69,
-            128,
-            128
+
+            96,
+
+            96
+
         );
 
 
@@ -615,7 +714,7 @@ function createCloudLayer() {
                 true,
 
             opacity:
-                0.07,
+                0.055,
 
             roughness:
                 1,
@@ -628,8 +727,11 @@ function createCloudLayer() {
 
     state.clouds =
         new THREE.Mesh(
+
             geometry,
+
             material
+
         );
 
 
@@ -646,13 +748,13 @@ function createCloudLayer() {
 
 
 /* =========================================================
-   EARTH ANIMATION
+   ANIMATION
 ========================================================= */
 
-function animateEarth() {
+function animate() {
 
     requestAnimationFrame(
-        animateEarth
+        animate
     );
 
 
@@ -660,70 +762,51 @@ function animateEarth() {
         state.clock.getElapsedTime();
 
 
-    /*
-    Smooth mouse movement.
-    */
-
     state.smoothMouseX +=
         (
             state.mouseX -
             state.smoothMouseX
-        ) * 0.025;
+        ) *
+        0.025;
 
 
     state.smoothMouseY +=
         (
             state.mouseY -
             state.smoothMouseY
-        ) * 0.025;
+        ) *
+        0.025;
 
-
-    /*
-    Earth rotation.
-    */
 
     if (
         state.earth
     ) {
 
         state.earth.rotation.y +=
-            0.0009;
+            0.001;
 
-
-        /*
-        Mouse subtly changes
-        the globe's attitude.
-        */
 
         state.earth.rotation.x =
             state.smoothMouseY *
-            0.055;
+            0.04;
 
 
         state.earth.rotation.z =
             state.smoothMouseX *
-            0.025;
+            0.02;
 
     }
 
-
-    /*
-    Cloud movement.
-    */
 
     if (
         state.clouds
     ) {
 
         state.clouds.rotation.y +=
-            0.00115;
+            0.0013;
 
     }
 
-
-    /*
-    Atmosphere breathing effect.
-    */
 
     if (
         state.atmosphere
@@ -732,9 +815,9 @@ function animateEarth() {
         const pulse =
             1 +
             Math.sin(
-                time * 0.45
+                time * 0.5
             ) *
-            0.008;
+            0.006;
 
 
         state.atmosphere.scale.set(
@@ -746,23 +829,15 @@ function animateEarth() {
     }
 
 
-    /*
-    Slowly rotate stars.
-    */
-
     if (
         state.stars
     ) {
 
         state.stars.rotation.y +=
-            0.000025;
+            0.00002;
 
     }
 
-
-    /*
-    Telemetry coordinates.
-    */
 
     if (
         targetCoordinates
@@ -796,16 +871,24 @@ function animateEarth() {
     }
 
 
-    state.renderer.render(
-        state.scene,
+    if (
+        state.renderer &&
+        state.scene &&
         state.camera
-    );
+    ) {
+
+        state.renderer.render(
+            state.scene,
+            state.camera
+        );
+
+    }
 
 }
 
 
 /* =========================================================
-   MOUSE
+   INTERACTION
 ========================================================= */
 
 function initializeInteractions() {
@@ -839,10 +922,6 @@ function initializeInteractions() {
     );
 
 
-    /*
-    Scroll into agriculture interface.
-    */
-
     window.addEventListener(
         "wheel",
         event => {
@@ -855,16 +934,7 @@ function initializeInteractions() {
 
 
             if (
-                Math.abs(
-                    event.deltaY
-                ) < 4
-            ) {
-                return;
-            }
-
-
-            if (
-                event.deltaY > 0
+                event.deltaY > 3
             ) {
 
                 launchTransition();
@@ -878,10 +948,6 @@ function initializeInteractions() {
     );
 
 
-    /*
-    Keyboard alternative.
-    */
-
     window.addEventListener(
         "keydown",
         event => {
@@ -894,9 +960,14 @@ function initializeInteractions() {
 
 
             if (
-                event.key === "ArrowDown" ||
-                event.key === "PageDown" ||
-                event.key === " "
+                event.key ===
+                "ArrowDown" ||
+
+                event.key ===
+                "PageDown" ||
+
+                event.key ===
+                " "
             ) {
 
                 launchTransition();
@@ -919,7 +990,9 @@ function resizeThree() {
         !state.camera ||
         !state.renderer
     ) {
+
         return;
+
     }
 
 
@@ -932,15 +1005,17 @@ function resizeThree() {
 
 
     state.renderer.setSize(
+
         window.innerWidth,
         window.innerHeight
+
     );
 
 }
 
 
 /* =========================================================
-   COSMIC TRANSITION
+   TRANSITION
 ========================================================= */
 
 function launchTransition() {
@@ -948,7 +1023,9 @@ function launchTransition() {
     if (
         state.transitioning
     ) {
+
         return;
+
     }
 
 
@@ -967,72 +1044,15 @@ function launchTransition() {
     }
 
 
-    /*
-    Push Earth toward the viewer.
-    */
+    if (
+        state.earth
+    ) {
 
-    let progress =
-        0;
-
-
-    const burst =
-        setInterval(
-            () => {
-
-                progress +=
-                    0.04;
-
-
-                if (
-                    state.earth
-                ) {
-
-                    state.earth.scale.setScalar(
-                        1 +
-                        progress *
-                        2.5
-                    );
-
-
-                    state.earth.position.z =
-                        -0.4 +
-                        progress *
-                        5;
-
-                }
-
-
-                if (
-                    progress >= 1
-                ) {
-
-                    clearInterval(
-                        burst
-                    );
-
-                }
-
-            },
-            20
+        state.earth.scale.setScalar(
+            1
         );
 
-
-    setTimeout(
-        () => {
-
-            if (
-                missionScreen
-            ) {
-
-                missionScreen.classList.add(
-                    "departing"
-                );
-
-            }
-
-        },
-        700
-    );
+    }
 
 
     setTimeout(
@@ -1076,11 +1096,11 @@ function launchTransition() {
                     }
 
                 },
-                4000
+                3500
             );
 
         },
-        1500
+        1450
     );
 
 }
@@ -1111,11 +1131,12 @@ function initializeMap() {
 
 
     if (
-        typeof L === "undefined"
+        typeof L ===
+        "undefined"
     ) {
 
         console.error(
-            "Leaflet is not loaded."
+            "Leaflet did not load."
         );
 
         return;
@@ -1140,7 +1161,9 @@ function initializeMap() {
 
     state.map =
         L.map(
+
             worldMap,
+
             {
 
                 minZoom:
@@ -1165,6 +1188,7 @@ function initializeMap() {
                     true
 
             }
+
         );
 
 
@@ -1173,10 +1197,6 @@ function initializeMap() {
         2
     );
 
-
-    /*
-    Satellite imagery.
-    */
 
     L.tileLayer(
 
@@ -1210,7 +1230,7 @@ function initializeMap() {
 
 
 /* =========================================================
-   GEOJSON INPUT
+   GEOJSON
 ========================================================= */
 
 if (
@@ -1240,10 +1260,6 @@ if (
 
 }
 
-
-/* =========================================================
-   READ GEOJSON
-========================================================= */
 
 function readGeoJSON(
     file
@@ -1296,7 +1312,7 @@ function readGeoJSON(
 
 
 /* =========================================================
-   DRAG & DROP
+   DRAG AND DROP
 ========================================================= */
 
 if (
@@ -1376,7 +1392,9 @@ function loadField(
     if (
         !state.map
     ) {
+
         return;
+
     }
 
 
@@ -1395,29 +1413,32 @@ function loadField(
 
         state.fieldLayer =
             L.geoJSON(
+
                 data,
+
                 {
 
                     style: {
 
                         color:
-                            "#f0f3ef",
+                            "#f2f5f3",
 
                         weight:
                             3,
 
                         opacity:
-                            0.95,
+                            1,
 
                         fillColor:
-                            "#7fa28c",
+                            "#8da895",
 
                         fillOpacity:
-                            0.2
+                            0.22
 
                     }
 
                 }
+
             );
 
 
@@ -1435,14 +1456,16 @@ function loadField(
         ) {
 
             throw new Error(
-                "Invalid field boundary."
+                "Invalid boundary."
             );
 
         }
 
 
         state.map.flyToBounds(
+
             bounds,
+
             {
 
                 padding:
@@ -1455,6 +1478,7 @@ function loadField(
                     2
 
             }
+
         );
 
 
@@ -1480,14 +1504,17 @@ function loadField(
 
         let name =
             filename
+
                 .replace(
                     /\.(geojson|json)$/i,
                     ""
                 )
+
                 .replace(
                     /[-_]+/g,
                     " "
                 )
+
                 .trim();
 
 
@@ -1562,8 +1589,7 @@ function loadField(
 
 
         /*
-        NDVI requires actual
-        remote sensing imagery.
+        Do not invent satellite measurements.
         */
 
         if (
@@ -1660,13 +1686,16 @@ function initializeAnalysisMap(
 
     state.analysisMap =
         L.map(
+
             analysisMapPreview,
+
             {
 
                 attributionControl:
                     false
 
             }
+
         );
 
 
@@ -1687,19 +1716,21 @@ function initializeAnalysisMap(
 
 
     L.geoJSON(
+
         data,
+
         {
 
             style: {
 
                 color:
-                    "#f3f5f3",
+                    "#f4f7f5",
 
                 weight:
                     3,
 
                 fillColor:
-                    "#8fae98",
+                    "#91aa99",
 
                 fillOpacity:
                     0.2
@@ -1707,6 +1738,7 @@ function initializeAnalysisMap(
             }
 
         }
+
     ).addTo(
         state.analysisMap
     );
@@ -1734,7 +1766,7 @@ function initializeAnalysisMap(
 
 
 /* =========================================================
-   AREA
+   AREA CALCULATION
 ========================================================= */
 
 function calculateArea(
@@ -1769,12 +1801,14 @@ function calculateArea(
 
         for (
             let i = 0;
-            i < ring.length - 1;
+            i <
+            ring.length - 1;
             i++
         ) {
 
             const a =
                 ring[i];
+
 
             const b =
                 ring[i + 1];
@@ -1832,7 +1866,9 @@ function calculateArea(
         if (
             !geometry
         ) {
+
             return;
+
         }
 
 
@@ -1968,8 +2004,10 @@ function calculatePerimeter(
             Math.sin(
                 dLat / 2
             ) ** 2 +
+
             Math.cos(lat1) *
             Math.cos(lat2) *
+
             Math.sin(
                 dLon / 2
             ) ** 2;
@@ -2005,7 +2043,8 @@ function calculatePerimeter(
 
         for (
             let i = 0;
-            i < ring.length - 1;
+            i <
+            ring.length - 1;
             i++
         ) {
 
@@ -2027,7 +2066,9 @@ function calculatePerimeter(
         if (
             !geometry
         ) {
+
             return;
+
         }
 
 
@@ -2143,11 +2184,11 @@ if (
 
 
                     scanButton.textContent =
-                        "RUN FIELD ANALYSIS";
+                        "◈ RUN FIELD SCAN";
 
 
                     alert(
-                        "Field geometry processed successfully. Connect a remote-sensing data source to calculate actual NDVI and crop-stress measurements."
+                        "Field geometry processed successfully. Actual NDVI and crop-stress measurements require a connected satellite remote-sensing data source."
                     );
 
                 },
@@ -2204,7 +2245,7 @@ if (
 
 
 /* =========================================================
-   INFO BUBBLE
+   CLOSE ABOUT BUBBLE
 ========================================================= */
 
 if (
