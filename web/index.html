@@ -20,7 +20,9 @@
     </title>
 
 
-    <!-- LEAFLET -->
+    <!-- =====================================================
+         LEAFLET MAP CSS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -28,14 +30,18 @@
     >
 
 
-    <!-- THREE.JS -->
+    <!-- =====================================================
+         THREE.JS
+    ====================================================== -->
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
     ></script>
 
 
-    <!-- SITE CSS -->
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -56,12 +62,17 @@
 <section id="missionScreen">
 
 
-    <!-- 3D EARTH -->
+    <!-- =====================================================
+         3D EARTH
+    ====================================================== -->
 
     <div id="threeContainer"></div>
 
 
-    <!-- HEADER -->
+
+    <!-- =====================================================
+         LANDING HEADER
+    ====================================================== -->
 
     <header class="mission-header">
 
@@ -71,11 +82,13 @@
                 ◈
             </div>
 
+
             <div>
 
                 <div class="brand-title">
                     SATELLITE AGRICULTURE MONITOR
                 </div>
+
 
                 <div class="brand-subtitle">
                     OPEN-SOURCE EARTH OBSERVATION
@@ -89,18 +102,41 @@
         <div class="mission-status">
 
             <div>
-                <span>MISSION</span>
-                <strong>READY</strong>
+
+                <span>
+                    MISSION
+                </span>
+
+                <strong>
+                    READY
+                </strong>
+
             </div>
 
-            <div>
-                <span>ORBIT</span>
-                <strong>LEO</strong>
-            </div>
 
             <div>
-                <span>LINK</span>
-                <strong>98.7%</strong>
+
+                <span>
+                    ORBIT
+                </span>
+
+                <strong>
+                    LEO
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    LINK
+                </span>
+
+                <strong>
+                    98.7%
+                </strong>
+
             </div>
 
         </div>
@@ -108,7 +144,10 @@
     </header>
 
 
-    <!-- HERO -->
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
     <main class="hero-content">
 
@@ -121,7 +160,9 @@
 
             SATELLITE<br>
 
-            <span>AGRICULTURE</span><br>
+            <span>
+                AGRICULTURE
+            </span><br>
 
             MONITOR
 
@@ -139,12 +180,17 @@
     </main>
 
 
-    <!-- TELEMETRY -->
+
+    <!-- =====================================================
+         TELEMETRY
+    ====================================================== -->
 
     <aside class="telemetry-panel">
 
         <div class="panel-title">
+
             EARTH OBSERVATION TELEMETRY
+
         </div>
 
 
@@ -215,7 +261,10 @@
     </aside>
 
 
-    <!-- COORDINATES -->
+
+    <!-- =====================================================
+         COORDINATES
+    ====================================================== -->
 
     <div class="coordinates">
 
@@ -226,7 +275,10 @@
     </div>
 
 
-    <!-- SCROLL PROMPT -->
+
+    <!-- =====================================================
+         SCROLL PROMPT
+    ====================================================== -->
 
     <div class="scroll-prompt">
 
@@ -234,9 +286,11 @@
             ↓
         </div>
 
+
         <strong>
             SCROLL TO ENTER EARTH OBSERVATION
         </strong>
+
 
         <span>
             MOVE YOUR POINTER TO INTERACT
@@ -245,29 +299,50 @@
     </div>
 
 
-    <!-- TRACTOR -->
+
+    <!-- =====================================================
+         TRACTOR
+    ====================================================== -->
 
     <div class="tractor-track landing-tractor">
 
         <div class="tractor">
 
+
             <div class="tractor-cab">
+
                 <div class="tractor-window"></div>
+
             </div>
 
+
             <div class="tractor-hood">
+
                 <div class="tractor-light"></div>
+
             </div>
+
 
             <div class="tractor-body"></div>
 
-            <div class="tractor-wheel tractor-wheel-large">
+
+            <div
+                class="tractor-wheel tractor-wheel-large"
+            >
+
                 <div class="wheel-hub"></div>
+
             </div>
 
-            <div class="tractor-wheel tractor-wheel-small">
+
+            <div
+                class="tractor-wheel tractor-wheel-small"
+            >
+
                 <div class="wheel-hub"></div>
+
             </div>
+
 
             <div class="tractor-exhaust"></div>
 
@@ -276,7 +351,10 @@
     </div>
 
 
-    <!-- DESIGNER -->
+
+    <!-- =====================================================
+         DESIGNER
+    ====================================================== -->
 
     <div class="designer">
 
@@ -302,23 +380,29 @@
 
 
     <!-- =====================================================
-         WORLD SATELLITE MAP
+         FULL-SCREEN SATELLITE WORLD MAP
     ====================================================== -->
 
     <div class="world-section">
+
 
         <div id="worldMap"></div>
 
 
         <div class="map-overlay-top">
 
+
             <div class="map-label">
+
                 GLOBAL EARTH OBSERVATION
+
             </div>
 
 
             <div class="map-coordinates">
+
                 PAN · ZOOM · EXPLORE
+
             </div>
 
         </div>
@@ -330,12 +414,14 @@
                 SATELLITE IMAGERY
             </span>
 
+
             <span>
                 WORLDWIDE COVERAGE
             </span>
 
+
             <span>
-                GEOJSON READY
+                GEOJSON + GPX READY
             </span>
 
         </div>
@@ -350,17 +436,21 @@
 
     <header class="app-header">
 
+
         <div class="brand">
+
 
             <div class="brand-mark">
                 ◈
             </div>
+
 
             <div>
 
                 <div class="brand-title">
                     SATELLITE AGRICULTURE MONITOR
                 </div>
+
 
                 <div class="brand-subtitle">
                     GEOSPATIAL AGRICULTURAL INTELLIGENCE
@@ -371,7 +461,9 @@
         </div>
 
 
+
         <nav>
+
 
             <button
                 class="nav-button active"
@@ -380,6 +472,7 @@
                 OVERVIEW
             </button>
 
+
             <button
                 class="nav-button"
                 type="button"
@@ -387,12 +480,14 @@
                 FIELDS
             </button>
 
+
             <button
                 class="nav-button"
                 type="button"
             >
                 SATELLITE
             </button>
+
 
             <button
                 class="nav-button"
@@ -402,6 +497,7 @@
             </button>
 
         </nav>
+
 
 
         <div class="system-online">
@@ -417,34 +513,50 @@
 
 
     <!-- =====================================================
-         FIELD PANEL
+         MAIN FIELD WORKSPACE
     ====================================================== -->
 
     <main class="workspace">
 
 
+        <!-- =================================================
+             INTRO
+        ================================================== -->
+
         <div class="workspace-intro">
 
+
             <div class="section-kicker">
+
                 AGRICULTURAL INTELLIGENCE
+
             </div>
 
 
             <h2>
+
                 FIELD<br>
+
                 OBSERVATION
+
             </h2>
 
 
             <p>
-                Upload a field boundary to begin
-                geospatial analysis.
+
+                Upload a field boundary or GPS
+                track to begin geospatial analysis.
+
             </p>
 
 
-            <!-- PRIVACY -->
+
+            <!-- =============================================
+                 PRIVACY
+            ============================================== -->
 
             <div class="privacy-note">
+
 
                 <span class="privacy-icon">
                     ◇
@@ -453,15 +565,19 @@
 
                 <div>
 
+
                     <strong>
                         YOUR DATA STAYS LOCAL
                     </strong>
 
 
                     <p>
+
                         Imported files are processed
-                        in your browser and are not
-                        saved by this site.
+                        directly in your browser.
+                        This site does not save your
+                        imported files.
+
                     </p>
 
                 </div>
@@ -473,7 +589,7 @@
 
 
         <!-- =================================================
-             UPLOAD
+             FILE UPLOAD
         ================================================== -->
 
         <div
@@ -481,10 +597,12 @@
             class="upload-panel"
         >
 
+
             <div
                 id="uploadBox"
                 class="upload-box"
             >
+
 
                 <div class="upload-symbol">
                     ◇
@@ -492,14 +610,16 @@
 
 
                 <h3>
-                    LOAD FIELD BOUNDARY
+                    LOAD SPATIAL DATA
                 </h3>
 
 
                 <p>
-                    Drag and drop a GeoJSON file
-                    here or select one from your
-                    computer.
+
+                    Drag and drop a GeoJSON or GPX
+                    file here or select one from
+                    your computer.
+
                 </p>
 
 
@@ -507,20 +627,24 @@
                     for="geojsonInput"
                     class="upload-button"
                 >
-                    SELECT GEOJSON
+
+                    SELECT GEOJSON / GPX
+
                 </label>
 
 
                 <input
                     id="geojsonInput"
                     type="file"
-                    accept=".geojson,.json,application/geo+json,application/json"
+                    accept=".geojson,.json,.gpx,application/geo+json,application/json,application/gpx+xml,text/xml,application/xml"
                     hidden
                 >
 
 
                 <div class="upload-meta">
-                    GEOJSON · LOCAL PROCESSING
+
+                    GEOJSON · GPX · LOCAL PROCESSING
+
                 </div>
 
             </div>
@@ -541,10 +665,12 @@
 
             <div class="field-header">
 
+
                 <div>
 
+
                     <div class="field-kicker">
-                        ACTIVE FIELD
+                        ACTIVE DATASET
                     </div>
 
 
@@ -560,25 +686,37 @@
                 </div>
 
 
+
                 <button
                     id="scanButton"
                     class="scan-button"
                     type="button"
                 >
+
                     ◈ RUN FIELD SCAN
+
                 </button>
 
             </div>
 
 
 
+            <!-- =============================================
+                 ANALYSIS CARDS
+            ============================================== -->
+
             <div class="field-grid">
 
 
+                <!-- GEOMETRY -->
+
                 <div class="field-analysis-card">
 
+
                     <div class="card-title">
+
                         FIELD GEOMETRY
+
                     </div>
 
 
@@ -587,6 +725,7 @@
                         <span>
                             AREA
                         </span>
+
 
                         <strong id="areaValue">
                             —
@@ -598,8 +737,9 @@
                     <div class="metric">
 
                         <span>
-                            PERIMETER
+                            PERIMETER / DISTANCE
                         </span>
+
 
                         <strong id="perimeterValue">
                             —
@@ -614,6 +754,7 @@
                             CENTER
                         </span>
 
+
                         <strong id="centerValue">
                             —
                         </strong>
@@ -624,10 +765,15 @@
 
 
 
+                <!-- REMOTE SENSING -->
+
                 <div class="field-analysis-card">
 
+
                     <div class="card-title">
+
                         REMOTE SENSING
+
                     </div>
 
 
@@ -636,6 +782,7 @@
                         <span>
                             NDVI
                         </span>
+
 
                         <strong id="ndviValue">
                             —
@@ -650,6 +797,7 @@
                             STRESS RISK
                         </span>
 
+
                         <strong id="stressValue">
                             —
                         </strong>
@@ -660,7 +808,8 @@
                     <p class="data-warning">
 
                         Actual satellite-derived
-                        values require imagery data.
+                        values require a connected
+                        remote-sensing data source.
 
                     </p>
 
@@ -669,7 +818,13 @@
             </div>
 
 
+
+            <!-- =============================================
+                 ANALYSIS MAP
+            ============================================== -->
+
             <div class="analysis-preview">
+
 
                 <div id="analysisMapPreview"></div>
 
@@ -679,7 +834,9 @@
                     class="map-reset"
                     type="button"
                 >
+
                     RESET VIEW
+
                 </button>
 
             </div>
@@ -691,7 +848,7 @@
 
 
     <!-- =====================================================
-         ABOUT BUBBLE
+         ABOUT / CHAT BUBBLE
     ====================================================== -->
 
     <aside
@@ -699,76 +856,110 @@
         class="info-bubble"
     >
 
+
         <button
             id="closeBubble"
             class="close-bubble"
             type="button"
         >
+
             ×
+
         </button>
 
 
         <div class="bubble-label">
+
             ◇ ABOUT THIS PROJECT
+
         </div>
 
 
         <h3>
+
             Open agricultural intelligence.
+
         </h3>
 
 
         <p>
+
             Satellite Agriculture Monitor uses
             geospatial and satellite-observation
             technologies to help visualize and
             analyze agricultural fields.
+
         </p>
 
 
         <p>
+
             It is designed to give producers,
             agronomists, conservation professionals,
             and anyone working in agriculture a
             practical way to explore field information
             and support better-informed decisions.
+
         </p>
 
 
         <p>
+
             This project is open source and is being
             developed to make agricultural technology
             more accessible to producers and the
             agricultural community.
+
         </p>
 
     </aside>
 
 
 
-    <!-- SECOND PAGE TRACTOR -->
+    <!-- =====================================================
+         SECOND PAGE TRACTOR
+    ====================================================== -->
 
     <div class="tractor-track map-tractor">
 
+
         <div class="tractor">
 
+
             <div class="tractor-cab">
+
                 <div class="tractor-window"></div>
+
             </div>
 
+
             <div class="tractor-hood">
+
                 <div class="tractor-light"></div>
+
             </div>
+
 
             <div class="tractor-body"></div>
 
-            <div class="tractor-wheel tractor-wheel-large">
+
+            <div
+                class="tractor-wheel tractor-wheel-large"
+            >
+
                 <div class="wheel-hub"></div>
+
             </div>
 
-            <div class="tractor-wheel tractor-wheel-small">
+
+            <div
+                class="tractor-wheel tractor-wheel-small"
+            >
+
                 <div class="wheel-hub"></div>
+
             </div>
+
 
             <div class="tractor-exhaust"></div>
 
@@ -778,20 +969,31 @@
 
 
 
-    <!-- FOOTER -->
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
     <footer class="app-footer">
 
+
         <span>
+
             SATELLITE AGRICULTURE MONITOR
+
         </span>
 
+
         <span>
+
             OPEN SOURCE · LOCAL FILE PROCESSING
+
         </span>
 
+
         <span>
+
             DESIGNED BY ALI BELTRAN
+
         </span>
 
     </footer>
@@ -801,14 +1003,19 @@
 
 
 
-<!-- LEAFLET -->
+<!-- =========================================================
+     LEAFLET JAVASCRIPT
+========================================================= -->
 
 <script
     src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
 ></script>
 
 
-<!-- APPLICATION -->
+
+<!-- =========================================================
+     APPLICATION JAVASCRIPT
+========================================================= -->
 
 <script src="script.js"></script>
 
