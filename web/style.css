@@ -5,15 +5,23 @@
 html,
 body {
     margin: 0;
+    width: 100%;
     min-height: 100%;
-    background: #050709;
-    color: #e7ebeb;
+
+    background: #050708;
+
+    color: #e4e9e8;
+
     font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 button,
@@ -28,17 +36,19 @@ input {
 
 .mission-screen {
     position: fixed;
+
     inset: 0;
+
     z-index: 1000;
 
     overflow: hidden;
 
     background:
         radial-gradient(
-            circle at 65% 45%,
-            #172124 0%,
-            #090e10 42%,
-            #030506 100%
+            circle at 67% 45%,
+            #1a272a 0%,
+            #091012 42%,
+            #020405 100%
         );
 
     transition:
@@ -48,19 +58,25 @@ input {
 
 .mission-screen.departing {
     opacity: 0;
-    transform: scale(1.12);
+
+    transform:
+        scale(1.12);
+
     pointer-events: none;
 }
 
 #spaceCanvas {
     position: absolute;
+
     inset: 0;
+
     width: 100%;
     height: 100%;
 }
 
 .mission-grid {
     position: absolute;
+
     inset: 0;
 
     opacity: .12;
@@ -76,7 +92,8 @@ input {
             transparent 1px
         );
 
-    background-size: 80px 80px;
+    background-size:
+        80px 80px;
 
     mask-image:
         radial-gradient(
@@ -88,30 +105,35 @@ input {
 
 .mission-vignette {
     position: absolute;
+
     inset: 0;
+
     pointer-events: none;
 
     background:
         radial-gradient(
             ellipse at center,
             transparent 25%,
-            rgba(0,0,0,.25) 60%,
-            rgba(0,0,0,.85) 100%
+            rgba(0,0,0,.3) 60%,
+            rgba(0,0,0,.9) 100%
         );
 }
 
 
 /* =====================================================
-   IDENTIFICATION
+   MISSION IDENTIFICATION
 ===================================================== */
 
 .mission-identification {
     position: absolute;
+
     top: 34px;
     left: 40px;
 
     display: flex;
+
     align-items: center;
+
     gap: 14px;
 
     z-index: 10;
@@ -122,9 +144,11 @@ input {
     height: 32px;
 
     display: grid;
+
     place-items: center;
 
-    border: 1px solid #889598;
+    border:
+        1px solid #889598;
 
     color: #d7dddd;
 
@@ -137,6 +161,7 @@ input {
     color: #dce2e3;
 
     font-size: 10px;
+
     font-weight: 500;
 
     letter-spacing: .16em;
@@ -156,7 +181,7 @@ input {
 
 
 /* =====================================================
-   STATUS
+   MISSION STATUS
 ===================================================== */
 
 .mission-status {
@@ -166,6 +191,7 @@ input {
     right: 40px;
 
     display: flex;
+
     gap: 25px;
 
     z-index: 10;
@@ -184,18 +210,21 @@ input {
 
 .mission-status div {
     display: flex;
+
     flex-direction: column;
+
     gap: 5px;
 }
 
 .mission-status strong {
     color: #d5dcdd;
+
     font-weight: 500;
 }
 
 
 /* =====================================================
-   TITLE
+   MISSION TITLE
 ===================================================== */
 
 .mission-title {
@@ -283,7 +312,9 @@ input {
     inset: 0;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 }
 
@@ -334,6 +365,7 @@ input {
     height: 18px;
 
     display: grid;
+
     place-items: center;
 
     border-radius: 50%;
@@ -433,9 +465,6 @@ input {
             rgba(130,180,160,.06),
             transparent
         );
-
-    filter:
-        blur(.2px);
 }
 
 
@@ -509,7 +538,7 @@ input {
 
 
 /* =====================================================
-   INSTRUCTIONS
+   MISSION INSTRUCTIONS
 ===================================================== */
 
 .mission-instructions {
@@ -524,7 +553,9 @@ input {
     z-index: 10;
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
 
     text-align: center;
@@ -587,6 +618,7 @@ input {
 }
 
 @keyframes scrollPulse {
+
     0% {
         transform: translateY(0);
         opacity: 1;
@@ -600,6 +632,7 @@ input {
     100% {
         opacity: 0;
     }
+
 }
 
 
@@ -667,8 +700,10 @@ input {
 @keyframes cosmicBurst {
 
     0% {
+
         width: 0;
         height: 0;
+
         opacity: 1;
 
         background:
@@ -686,6 +721,7 @@ input {
     }
 
     45% {
+
         width: 100vmax;
         height: 100vmax;
 
@@ -693,6 +729,7 @@ input {
     }
 
     100% {
+
         width: 180vmax;
         height: 180vmax;
 
@@ -707,20 +744,21 @@ input {
                 transparent 65%
             );
     }
+
 }
 
 
 /* =====================================================
-   AGRICULTURE APP
+   AGRICULTURE APPLICATION
 ===================================================== */
 
 .agriculture-app {
     display: none;
 
+    width: 100%;
     min-height: 100vh;
 
-    background:
-        #080b0c;
+    background: #0a0f10;
 }
 
 .agriculture-app.visible {
@@ -741,14 +779,19 @@ input {
         opacity: 1;
         transform: scale(1);
     }
+
 }
 
 
 /* =====================================================
-   APP HEADER
+   HEADER
 ===================================================== */
 
 .app-header {
+    position: relative;
+
+    z-index: 100;
+
     height: 72px;
 
     display: flex;
@@ -761,10 +804,10 @@ input {
         0 32px;
 
     border-bottom:
-        1px solid #22292b;
+        1px solid rgba(220,230,230,.15);
 
     background:
-        #0a0e0f;
+        rgba(5,9,10,.94);
 }
 
 .app-brand {
@@ -780,6 +823,7 @@ input {
     height: 32px;
 
     display: grid;
+
     place-items: center;
 
     border:
@@ -826,7 +870,7 @@ input {
 
     gap: 8px;
 
-    color: #8e999b;
+    color: #b5c0bf;
 
     font-family:
         "SFMono-Regular",
@@ -845,30 +889,101 @@ input {
     border-radius: 50%;
 
     background: #91b6a2;
+
+    box-shadow:
+        0 0 10px rgba(145,182,162,.5);
 }
 
 
 /* =====================================================
-   APP CONTENT
+   EARTH INTERFACE
 ===================================================== */
 
-.app-content {
-    width:
-        min(1450px, 92%);
+.earth-interface {
+    position: relative;
 
-    margin:
-        0 auto;
+    width: 100%;
 
-    padding:
-        70px 0 100px;
+    height:
+        calc(100vh - 72px);
+
+    min-height: 650px;
+
+    overflow: hidden;
+
+    background: #182224;
 }
 
-.app-introduction {
-    margin-bottom: 40px;
+
+/* =====================================================
+   WORLD MAP
+===================================================== */
+
+.world-map {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background: #182224;
+}
+
+.world-map .leaflet-tile {
+    filter:
+        saturate(.84)
+        contrast(1.04)
+        brightness(.9);
+}
+
+
+/* =====================================================
+   EARTH OVERLAY
+===================================================== */
+
+.earth-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3,8,9,.78) 0%,
+            rgba(3,8,9,.20) 24%,
+            rgba(3,8,9,.02) 50%,
+            rgba(3,8,9,.18) 74%,
+            rgba(3,8,9,.88) 100%
+        );
+
+    box-shadow:
+        inset 0 0 180px rgba(0,0,0,.5);
+}
+
+
+/* =====================================================
+   EARTH HEADING
+===================================================== */
+
+.earth-heading {
+    position: absolute;
+
+    left: 42px;
+    top: 48px;
+
+    z-index: 10;
+
+    max-width: 600px;
+
+    pointer-events: none;
 }
 
 .section-label {
-    color: #6f7b7e;
+    color: #c0c9c7;
 
     font-family:
         "SFMono-Regular",
@@ -878,108 +993,217 @@ input {
     font-size: 8px;
 
     letter-spacing: .18em;
+
+    text-shadow:
+        0 2px 10px rgba(0,0,0,.8);
 }
 
-.app-introduction h1 {
+.earth-heading h1 {
     margin:
-        9px 0;
+        10px 0 15px;
 
-    color: #e0e5e5;
+    color: #eef2f1;
 
     font-size:
-        clamp(2.2rem, 5vw, 4.5rem);
+        clamp(3rem, 6vw, 6rem);
+
+    line-height: .86;
 
     font-weight: 500;
 
-    letter-spacing: -.045em;
+    letter-spacing: -.06em;
+
+    text-shadow:
+        0 4px 30px rgba(0,0,0,.55);
 }
 
-.app-introduction p {
-    color: #747f82;
+.earth-heading p {
+    max-width: 430px;
 
-    font-size: 14px;
+    color: #e0e6e4;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    text-shadow:
+        0 2px 15px rgba(0,0,0,.9);
 }
 
 
 /* =====================================================
-   UPLOAD
+   EARTH STATUS
 ===================================================== */
 
-.upload-panel {
-    min-height: 500px;
+.earth-status {
+    position: absolute;
 
-    display: grid;
-    place-items: center;
+    top: 48px;
+    right: 40px;
 
-    border:
-        1px solid #20282a;
+    z-index: 10;
 
-    background:
-        linear-gradient(
-            135deg,
-            #0a0f10,
-            #080b0c
-        );
-}
+    display: flex;
 
-.upload-box {
-    width:
-        min(620px, 90%);
+    gap: 25px;
 
     padding:
-        70px 45px;
+        13px 17px;
+
+    border:
+        1px solid rgba(220,230,230,.25);
+
+    background:
+        rgba(4,8,9,.68);
+
+    backdrop-filter:
+        blur(12px);
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+}
+
+.earth-status div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.earth-status span {
+    color: #9ba5a4;
+
+    font-size: 7px;
+
+    letter-spacing: .14em;
+}
+
+.earth-status strong {
+    color: #e0e6e5;
+
+    font-size: 8px;
+
+    font-weight: 500;
+
+    letter-spacing: .08em;
+}
+
+
+/* =====================================================
+   FLOATING UPLOAD
+===================================================== */
+
+.floating-upload {
+    position: absolute;
+
+    left: 50%;
+    top: 53%;
+
+    z-index: 20;
+
+    transform:
+        translate(-50%, -50%);
+
+    width:
+        min(560px, 90%);
+}
+
+.floating-upload .upload-box {
+    width: 100%;
+
+    padding:
+        42px 48px;
 
     text-align: center;
 
     border:
-        1px dashed #3a4547;
+        1px solid rgba(220,230,230,.42);
 
     background:
-        rgba(255,255,255,.012);
+        rgba(6,11,12,.76);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.42);
+
+    backdrop-filter:
+        blur(20px);
 
     transition:
-        border-color .25s ease,
-        background .25s ease,
-        transform .25s ease;
+        transform .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+}
+
+.floating-upload .upload-box:hover {
+    border-color:
+        rgba(235,242,240,.65);
+
+    background:
+        rgba(6,11,12,.84);
+
+    transform:
+        translateY(-3px);
 }
 
 .upload-box.dragging {
-    border-color: #a4b6b0;
+    border-color:
+        #c4d4cc !important;
 
     background:
-        rgba(150,180,170,.06);
+        rgba(80,110,95,.3) !important;
 
     transform:
-        scale(1.015);
+        scale(1.02);
 }
 
 .upload-symbol {
-    color: #aab5b5;
+    margin-bottom: 15px;
 
-    font-size: 38px;
+    color: #d7dfdd;
 
-    margin-bottom: 18px;
+    font-size: 26px;
 }
 
-.upload-box h2 {
-    color: #dbe0e0;
+.upload-kicker {
+    display: block;
 
-    font-size: 22px;
+    margin-bottom: 8px;
+
+    color: #aeb9b7;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 8px;
+
+    letter-spacing: .16em;
+}
+
+.floating-upload .upload-box h2 {
+    margin:
+        8px 0;
+
+    color: #edf1f0;
+
+    font-size: 25px;
 
     font-weight: 500;
 
-    letter-spacing: -.01em;
+    letter-spacing: -.02em;
 }
 
-.upload-box p {
-    max-width: 480px;
-
+.floating-upload .upload-box p {
     margin:
-        15px auto;
+        12px auto 20px;
 
-    color: #737e81;
+    color: #c1cac8;
 
-    line-height: 1.7;
+    line-height: 1.6;
 
     font-size: 13px;
 }
@@ -987,15 +1211,13 @@ input {
 .upload-button {
     display: inline-block;
 
-    margin-top: 16px;
-
     padding:
         13px 21px;
 
     border:
-        1px solid #647174;
+        1px solid #8c9997;
 
-    color: #d3d9d9;
+    color: #edf2f0;
 
     cursor: pointer;
 
@@ -1009,21 +1231,34 @@ input {
     letter-spacing: .12em;
 
     transition:
-        .2s ease;
+        background .2s ease,
+        border-color .2s ease;
 }
 
 .upload-button:hover {
-    border-color: #bdc8c8;
+    border-color: #e1e8e6;
 
-    background: #151b1d;
+    background:
+        rgba(220,230,225,.12);
 }
 
-.upload-box small {
-    display: block;
 
-    margin-top: 22px;
+/* =====================================================
+   PRIVACY
+===================================================== */
 
-    color: #505b5e;
+.privacy-note {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 20px;
+
+    color: #b6c0be;
 
     font-family:
         "SFMono-Regular",
@@ -1032,13 +1267,266 @@ input {
 
     font-size: 7px;
 
-    letter-spacing: .13em;
+    line-height: 1.5;
+
+    letter-spacing: .08em;
+}
+
+.privacy-dot {
+    width: 5px;
+    height: 5px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #9ab9a8;
+
+    box-shadow:
+        0 0 10px rgba(154,185,168,.55);
+}
+
+
+/* =====================================================
+   MAP INSTRUCTIONS
+===================================================== */
+
+.map-instructions {
+    position: absolute;
+
+    left: 50%;
+    bottom: 70px;
+
+    z-index: 15;
+
+    transform:
+        translateX(-50%);
+
+    display: flex;
+
+    gap: 25px;
+
+    padding:
+        9px 15px;
+
+    border:
+        1px solid rgba(220,230,230,.22);
+
+    background:
+        rgba(4,8,9,.7);
+
+    backdrop-filter:
+        blur(10px);
+
+    color: #c1cbca;
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 7px;
+
+    letter-spacing: .1em;
+
+    pointer-events: none;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   TRACTOR
+===================================================== */
+
+.tractor-track {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    height: 43px;
+
+    z-index: 25;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(4,8,8,.95),
+            rgba(4,8,8,.18)
+        );
+
+    border-top:
+        1px solid rgba(230,240,235,.15);
+}
+
+.tractor {
+    position: absolute;
+
+    left: -70px;
+    bottom: 8px;
+
+    width: 55px;
+    height: 28px;
+
+    animation:
+        tractorJourney 30s linear infinite;
+}
+
+@keyframes tractorJourney {
+
+    from {
+        left: -70px;
+    }
+
+    to {
+        left: calc(100% + 70px);
+    }
+
+}
+
+.tractor-cabin {
+    position: absolute;
+
+    left: 18px;
+    top: 0;
+
+    width: 22px;
+    height: 17px;
+
+    border:
+        1px solid #d0d7d3;
+
+    background:
+        #56625e;
+
+    transform:
+        skew(-8deg);
+}
+
+.tractor-window {
+    position: absolute;
+
+    left: 4px;
+    top: 3px;
+
+    width: 12px;
+    height: 8px;
+
+    border:
+        1px solid #aebbb7;
+
+    background:
+        rgba(120,150,155,.55);
+}
+
+.tractor-body {
+    position: absolute;
+
+    left: 11px;
+    top: 16px;
+
+    width: 35px;
+    height: 10px;
+
+    border:
+        1px solid #b8c1bd;
+
+    background:
+        #6e7975;
+}
+
+.tractor-wheel {
+    position: absolute;
+
+    bottom: -5px;
+
+    border:
+        2px solid #b4bfba;
+
+    background:
+        #111718;
+
+    border-radius: 50%;
+}
+
+.tractor-wheel.rear {
+    left: 12px;
+
+    width: 14px;
+    height: 14px;
+}
+
+.tractor-wheel.front {
+    right: 4px;
+
+    width: 9px;
+    height: 9px;
+}
+
+.tractor-exhaust {
+    position: absolute;
+
+    left: 7px;
+    top: 7px;
+
+    width: 3px;
+    height: 10px;
+
+    background:
+        #343d3d;
 }
 
 
 /* =====================================================
    FIELD WORKSPACE
 ===================================================== */
+
+.field-workspace {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 50;
+
+    overflow: auto;
+
+    padding:
+        100px 5vw;
+
+    background:
+        rgba(5,9,10,.96);
+
+    backdrop-filter:
+        blur(10px);
+
+    animation:
+        workspaceEnter .7s ease;
+}
+
+@keyframes workspaceEnter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            scale(1.02);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            scale(1);
+    }
+
+}
 
 .hidden {
     display: none !important;
@@ -1073,7 +1561,7 @@ input {
 .field-header p {
     margin: 0;
 
-    color: #707c7f;
+    color: #879290;
 
     font-size: 12px;
 }
@@ -1083,7 +1571,7 @@ input {
         13px 18px;
 
     border:
-        1px solid #647174;
+        1px solid #788582;
 
     background:
         #101617;
@@ -1104,12 +1592,14 @@ input {
 
 .primary-button:hover {
     background: #182021;
-    border-color: #a4b0b1;
+
+    border-color:
+        #c2ccca;
 }
 
 
 /* =====================================================
-   WORKSPACE
+   ANALYSIS
 ===================================================== */
 
 .workspace-grid {
@@ -1125,7 +1615,7 @@ input {
 .map-card,
 .analysis-card {
     border:
-        1px solid #222a2c;
+        1px solid #2a3435;
 
     background: #0a0e0f;
 }
@@ -1143,9 +1633,9 @@ input {
         0 16px;
 
     border-bottom:
-        1px solid #222a2c;
+        1px solid #2a3435;
 
-    color: #7b8789;
+    color: #9ba5a5;
 
     font-family:
         "SFMono-Regular",
@@ -1162,16 +1652,39 @@ input {
 
     background: transparent;
 
-    color: #879294;
+    color: #aab5b3;
 
     cursor: pointer;
 
     font-size: 8px;
 }
 
-.field-map {
-    width: 100%;
-    height: 620px;
+.analysis-map-preview {
+    height: 500px;
+
+    display: grid;
+
+    place-items: center;
+
+    text-align: center;
+
+    color: #8e9b98;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #23312f,
+            #101817
+        );
+
+    font-family:
+        "SFMono-Regular",
+        Consolas,
+        monospace;
+
+    font-size: 10px;
+
+    letter-spacing: .12em;
 }
 
 .analysis-card {
@@ -1184,7 +1697,7 @@ input {
     border-bottom:
         1px solid #242c2e;
 
-    color: #737f82;
+    color: #8d9998;
 
     font-family:
         "SFMono-Regular",
@@ -1213,7 +1726,7 @@ input {
 }
 
 .metric span {
-    color: #6e7a7d;
+    color: #84908e;
 
     font-family:
         "SFMono-Regular",
@@ -1235,10 +1748,8 @@ input {
     text-align: right;
 }
 
-.analysis-message {
-    margin-top: 22px;
-
-    color: #596568;
+.analysis-note {
+    color: #7c8986;
 
     font-size: 11px;
 
@@ -1247,93 +1758,25 @@ input {
 
 
 /* =====================================================
-   MAP LAYERS
-===================================================== */
-
-.map-layers {
-    display: flex;
-
-    align-items: center;
-
-    gap: 6px;
-
-    margin-top: 14px;
-
-    padding:
-        11px 14px;
-
-    border:
-        1px solid #20282a;
-
-    background:
-        #0a0e0f;
-}
-
-.map-layers > span {
-    margin-right: auto;
-
-    color: #657174;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
-
-    letter-spacing: .12em;
-}
-
-.layer-button {
-    padding:
-        8px 11px;
-
-    border:
-        1px solid transparent;
-
-    background:
-        transparent;
-
-    color: #6d797b;
-
-    cursor: pointer;
-
-    font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-    font-size: 8px;
-}
-
-.layer-button.active {
-    border-color: #4d5a5c;
-
-    background: #12191a;
-
-    color: #d0d7d7;
-}
-
-
-/* =====================================================
-   CHAT BUBBLE
+   INFORMATION BUBBLE
 ===================================================== */
 
 .info-bubble {
-    position: fixed;
+    position: absolute;
 
     right: 28px;
-    bottom: 28px;
+    bottom: 70px;
 
-    z-index: 500;
+    z-index: 60;
 
     width:
         min(370px, calc(100% - 40px));
 
-    padding: 20px 21px;
+    padding:
+        20px 21px;
 
     border:
-        1px solid #3a4547;
+        1px solid #52605e;
 
     background:
         rgba(9,13,14,.96);
@@ -1375,7 +1818,7 @@ input {
 
     background: transparent;
 
-    color: #788487;
+    color: #9da8a6;
 
     cursor: pointer;
 
@@ -1392,10 +1835,8 @@ input {
     margin-bottom: 13px;
 }
 
-.bubble-icon {
-    color: #b7c2c0;
-
-    font-size: 14px;
+.bubble-header span {
+    color: #c4cfcc;
 }
 
 .bubble-header strong {
@@ -1416,7 +1857,7 @@ input {
 .info-bubble p {
     margin: 0;
 
-    color: #8a9597;
+    color: #aab5b2;
 
     font-size: 12px;
 
@@ -1429,22 +1870,39 @@ input {
 ===================================================== */
 
 .leaflet-container {
-    background: #080b0c;
+    background: #182224;
+}
+
+.leaflet-control-zoom {
+    border:
+        1px solid rgba(220,230,230,.3) !important;
 }
 
 .leaflet-control-zoom a {
-    background: #0d1213 !important;
+    width: 34px !important;
+    height: 34px !important;
 
-    color: #d0d7d7 !important;
+    line-height: 34px !important;
 
-    border-color: #30393b !important;
+    background:
+        rgba(7,11,12,.9) !important;
+
+    color: #e0e6e5 !important;
+
+    border-color:
+        rgba(220,230,230,.2) !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background:
+        #1b2627 !important;
 }
 
 .leaflet-control-attribution {
     background:
-        rgba(5,7,8,.85) !important;
+        rgba(4,8,9,.8) !important;
 
-    color: #7b8587 !important;
+    color: #aab3b2 !important;
 }
 
 
@@ -1458,32 +1916,29 @@ input {
         display: none;
     }
 
-    .mission-title {
-        top: 19vh;
+    .earth-heading {
+        left: 22px;
+        top: 30px;
     }
 
-    .satellite {
-        left: 65%;
-        top: 52%;
-
-        transform:
-            translate(-50%, -50%)
-            scale(.7)
-            rotate(-5deg);
+    .earth-heading h1 {
+        font-size: 3.3rem;
     }
 
-    .telemetry-card {
-        bottom: 7vh;
+    .earth-status {
+        display: none;
+    }
+
+    .floating-upload {
+        top: 55%;
     }
 
     .workspace-grid {
         grid-template-columns: 1fr;
     }
 
-    .field-map {
-        height: 500px;
-    }
 }
+
 
 @media (max-width: 650px) {
 
@@ -1508,30 +1963,37 @@ input {
         display: none;
     }
 
-    .satellite {
-        left: 68%;
-        top: 53%;
-        transform:
-            translate(-50%, -50%)
-            scale(.52)
-            rotate(-5deg);
+    .earth-heading h1 {
+        font-size: 2.7rem;
     }
 
-    .mission-instructions {
-        bottom: 9vh;
+    .earth-heading p {
+        font-size: 11px;
     }
 
-    .app-header {
-        padding: 0 18px;
+    .floating-upload {
+        width: 92%;
     }
 
-    .app-brand span {
-        display: none;
+    .floating-upload .upload-box {
+        padding:
+            30px 22px;
     }
 
-    .app-content {
-        width: 94%;
-        padding-top: 40px;
+    .map-instructions {
+        width: 90%;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        white-space: normal;
+
+        text-align: center;
+    }
+
+    .privacy-note {
+        font-size: 6px;
     }
 
     .field-header {
@@ -1542,11 +2004,4 @@ input {
         margin-top: 20px;
     }
 
-    .map-layers {
-        flex-wrap: wrap;
-    }
-
-    .map-layers > span {
-        width: 100%;
-    }
 }
